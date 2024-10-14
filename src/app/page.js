@@ -1,101 +1,162 @@
+"use client";
 import Image from "next/image";
+import dihi from "../public/logo-dihi.png";
+import { Breadcrumb, Layout, Menu, theme, Button } from "antd";
 
 export default function Home() {
+  const { Header, Content, Footer } = Layout;
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.js
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+    <Layout>
+      <Header
+        style={{
+          position: "fixed",
+          top: 20,
+          zIndex: 1,
+          width: "100%",
+          display: "flex",
+          alignItems: "center",
+        }}
+        className="bg-transparent justify-center"
+      >
+        <div className="flex items-center bg-white h-auto gap-x-8 px-12 rounded-full">
+          <div className="demo-logo">
             <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+              src={dihi}
+              alt="logo"
+              style={{
+                marginRight: 16,
+              }}
+              className="h-10 w-10"
             />
-            Deploy now
-          </a>
+          </div>
+          <a href="#section1">Section 1</a>
+          <a href="#section2">Section 2</a>
+          <a href="#section3">Section 3</a>
           <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            aria-describedby="get-started"
+            className="flex items-center justify-center w-auto px-6 py-2.5 text-center text-white duration-200 bg-[#027D01] border-2 border-black rounded-full hover:bg-transparent hover:border-black hover:text-black focus:outline-none focus-visible:outline-black text-sm focus-visible:ring-black"
+            href="/dashboard"
           >
-            Read our docs
+            Get Started
           </a>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+      </Header>
+      <Content
+        style={{
+          padding: "0 48px",
+        }}
+        className="flex flex-col h-auto"
+      >
+        <div className="flex">
+          <div id="section1" className="flex w-1/2 h-dvh items-center">
+            <p>
+              (Section 1) Lorem ipsum dolor sit amet consectetur adipisicing
+              elit. Deserunt perspiciatis dolore nostrum eaque inventore fuga.
+              Suscipit ipsam minus sit omnis dolorum perspiciatis sed itaque
+              natus corporis quas, aliquam porro officiis?
+            </p>
+          </div>
+          <div className="flex w-1/2 justify-center items-center">
+            <div className="grid grid-cols-2 grid-rows-2 gap-4 w-1/2 h-1/2">
+              <div className="flex justify-center items-center bg-gray-200 rounded-r-[60px] rounded-bl-[60px]">
+                <Image src={dihi} alt="logo" width={100} height={50} />
+              </div>
+              <div className="flex justify-center items-center bg-gray-200 rounded-l-[60px] rounded-br-[60px]">
+                <Image src={dihi} alt="logo" width={100} height={50} />
+              </div>
+              <div className="flex row-start-2 justify-center items-center bg-gray-200 rounded-r-[60px] rounded-tl-[60px]">
+                <Image src={dihi} alt="logo" width={100} height={50} />
+              </div>
+              <div className="flex row-start-2 justify-center items-center bg-gray-200 rounded-l-[60px] rounded-tr-[60px]">
+                <Image src={dihi} alt="logo" width={100} height={50} />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="flex">
+          <div id="section2" className="flex w-full h-dvh items-center gap-x-8">
+            <div className="card card-compact bg-base-100 w-1/3 shadow-xl">
+              <figure>
+                <img
+                  src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
+                  alt="Shoes"
+                />
+              </figure>
+              <div className="card-body">
+                <h2 className="card-title">Shoes!</h2>
+                <p>If a dog chews shoes whose shoes does he choose?</p>
+                <div className="card-actions justify-end">
+                  <button className="btn btn-primary">Buy Now</button>
+                </div>
+              </div>
+            </div>
+            <div className="card card-compact bg-base-100 w-1/3 shadow-xl">
+              <figure>
+                <img
+                  src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
+                  alt="Shoes"
+                />
+              </figure>
+              <div className="card-body">
+                <h2 className="card-title">Shoes!</h2>
+                <p>If a dog chews shoes whose shoes does he choose?</p>
+                <div className="card-actions justify-end">
+                  <button className="btn btn-primary">Buy Now</button>
+                </div>
+              </div>
+            </div>
+            <div className="card card-compact bg-base-100 w-1/3 shadow-xl">
+              <figure>
+                <img
+                  src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
+                  alt="Shoes"
+                />
+              </figure>
+              <div className="card-body">
+                <h2 className="card-title">Shoes!</h2>
+                <p>If a dog chews shoes whose shoes does he choose?</p>
+                <div className="card-actions justify-end">
+                  <button className="btn btn-primary">Buy Now</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="flex">
+          <div id="section3" className="flex w-1/2 h-dvh items-center">
+            <p>
+              (Section 3) Lorem ipsum dolor sit amet consectetur adipisicing
+              elit. Deserunt perspiciatis dolore nostrum eaque inventore fuga.
+              Suscipit ipsam minus sit omnis dolorum perspiciatis sed itaque
+              natus corporis quas, aliquam porro officiis?
+            </p>
+          </div>
+          <div className="flex w-1/2 justify-center items-center">
+            <div className="grid grid-cols-2 grid-rows-2 gap-4 w-1/2 h-1/2">
+              <div className="flex justify-center items-center bg-gray-200 rounded-r-[60px] rounded-bl-[60px]">
+                <Image src={dihi} alt="logo" width={100} height={50} />
+              </div>
+              <div className="flex justify-center items-center bg-gray-200 rounded-l-[60px] rounded-br-[60px]">
+                <Image src={dihi} alt="logo" width={100} height={50} />
+              </div>
+              <div className="flex row-start-2 justify-center items-center bg-gray-200 rounded-r-[60px] rounded-tl-[60px]">
+                <Image src={dihi} alt="logo" width={100} height={50} />
+              </div>
+              <div className="flex row-start-2 justify-center items-center bg-gray-200 rounded-l-[60px] rounded-tr-[60px]">
+                <Image src={dihi} alt="logo" width={100} height={50} />
+              </div>
+            </div>
+          </div>
+        </div>
+      </Content>
+      <Footer
+        style={{
+          textAlign: "center",
+        }}
+        className="bg-[#027D01]"
+      >
+        Ant Design ©{new Date().getFullYear()} Created by Ant UED
+      </Footer>
+    </Layout>
   );
 }
