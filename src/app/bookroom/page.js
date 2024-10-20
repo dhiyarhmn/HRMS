@@ -8,19 +8,20 @@ import RoomForm from "@/components/roomform";
 
 export default function BookRoom() {
   const links = [
-    { href: "#section1", text: "Cuti" },
-    { href: "#section2", text: "Lembur" },
-    { href: "#section3", text: "Ruangan" },
-    { href: "#section4", text: "Gaji" },
+    { href: "/home", text: "Home" },
+    { href: "/cuti", text: "Cuti" },
+    { href: "/lembuer", text: "Lembur" },
+    { href: "/bookroom", text: "Ruangan" },
+    { href: "/gaji", text: "Gaji" },
   ];
   return (
     <div>
       <header>
         <div className="flex w-full h-20 items-center justify-between px-8 bg-first">
-          <div className="flex justify-center items-center w-auto h-12 px-4 rounded-full">
+          <a href="/" className="flex justify-center items-center w-auto h-12 px-4 rounded-full cursor-pointer">
             <Image src={dihi} className="w-12 h-12" />
-            <p className="font-semibold">HR Management System</p>
-          </div>
+            <span className="font-semibold">HR Management System</span>
+          </a>
           <div className="flex justify-center items-center w-auto h-20 rounded-full">
             <Profile />
           </div>

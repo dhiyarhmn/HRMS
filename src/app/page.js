@@ -16,12 +16,11 @@ export default function Home() {
         style={{
           position: "fixed",
           top: 20,
-          zIndex: 1,
           width: "100%",
           display: "flex",
           alignItems: "center",
         }}
-        className="bg-transparent justify-center"
+        className="bg-transparent justify-center z-50"
       >
         <div className="flex items-center z-10 bg-white h-auto gap-x-8 px-12 rounded-full shadow-2xl border-2 border-black">
           <div className="demo-logo">
@@ -39,8 +38,8 @@ export default function Home() {
           <a href="#section3">Section 3</a>
           <a
             aria-describedby="get-started"
-            className="flex items-center justify-center w-auto px-6 py-2.5 text-center text-white duration-200 bg-[#027D01] border-2 border-black rounded-full hover:bg-transparent hover:border-black hover:text-black focus:outline-none focus-visible:outline-black text-sm focus-visible:ring-black"
-            href="/dashboard"
+            className="flex cursor-pointer items-center justify-center w-auto px-6 py-2.5 text-center text-white duration-200 bg-[#027D01] border-2 border-black rounded-full hover:bg-transparent hover:border-black hover:text-black focus:outline-none focus-visible:outline-black text-sm focus-visible:ring-black"
+            href="/home"
           >
             Get Started
           </a>
