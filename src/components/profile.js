@@ -47,7 +47,7 @@ const Profile = () => {
       placement="bottomRight"
       className="hover:cursor-pointer"
     >
-      <Button type="primary" className="p-5 rounded-full">
+      <Button type="none" className="p-5 rounded-full bg-third hover:bg-[#A7DCA5]">
         <div className="flex items-center gap-x-4">
           <Avatar icon={<UserOutlined />} />
           <span>Satria</span>
