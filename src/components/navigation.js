@@ -1,7 +1,5 @@
 "use client";
 import { Layout } from "antd";
-import Image from "next/image";
-import dihi from "../public/logo-dihi.png"; // Sesuaikan path ke /public
 
 export default function Navigation({ links, headerBg, navigationBg }) {
   const { Header } = Layout;
@@ -14,14 +12,11 @@ export default function Navigation({ links, headerBg, navigationBg }) {
           display: "flex",
           alignItems: "center",
         }}
-        className={`justify-center ${headerBg || "bg-none"}`}
+        className={`justify-center flex mt-8 bg-transparent`}
       >
         <div
-          className={`flex items-center h-auto gap-x-12 px-12 py-2 rounded-full ${
-            navigationBg || "bg-white"
-          }`}
+          className={`flex items-center h-auto gap-x-12 px-12 py-2 rounded-full bg-third border-2 border-black`}
         >
-          {/* Links */}
           {links.map((link, index) => (
             <a
               key={index}
@@ -33,11 +28,11 @@ export default function Navigation({ links, headerBg, navigationBg }) {
                 width="24"
                 height="24"
                 viewBox="0 0 24 24"
-                stroke-width="2"
+                strokeWidth="2"
                 stroke="currentColor"
                 fill="none"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               >
                 {" "}
                 <path stroke="none" d="M0 0h24v24H0z" />{" "}

@@ -1,16 +1,15 @@
 "use client";
-import Navigation from "@/components/navigation";
-import Image from "next/image";
-import dihi from "@/public/logo-dihi.png";
 import Navbar from "@/components/navbar";
-import room from "@/public/room-1.jpeg";
+import Navigation from "@/components/navigation";
 import RoomForm from "@/components/roomform";
+import room from "@/public/room-1.jpeg";
+import Image from "next/image";
 
 export default function BookRoom() {
   const links = [
     { href: "/home", text: "Home" },
     { href: "/cuti", text: "Cuti" },
-    { href: "/lembuer", text: "Lembur" },
+    { href: "/lembur", text: "Lembur" },
     { href: "/bookroom", text: "Ruangan" },
     { href: "/gaji", text: "Gaji" },
   ];
