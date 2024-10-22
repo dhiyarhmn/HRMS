@@ -3,8 +3,6 @@ import Navigation from "@/components/navigation";
 import Image from "next/image";
 import dihi from "@/public/logo-dihi.png";
 import Profile from "@/components/profile";
-import room from "@/public/room-1.jpeg";
-import RoomForm from "@/components/roomform";
 
 export default function Home() {
   const links = [
@@ -33,11 +31,22 @@ export default function Home() {
       <Navigation
         links={links}
         headerBg="flex mt-8 bg-transparent"
-        navigationBg="bg-third"
+        navigationBg="bg-third border-2 border-black"
       />
       <section>
-        <div className="flex flex-col w-full h-auto gap-y-8 mt-6 p-8">
-          
+        <div className="flex flex-col w-full h-[70dvh] gap-y-8 mt-6 p-8">
+          <div className="hero bg-second h-full rounded-xl">
+            <div className="hero-content flex-col lg:flex-row">
+              <Image src={dihi} className="w-64"/>
+              <div>
+                <h1 className="text-3xl font-bold">Selamat Datang di Dashboard Admin</h1>
+                <p className="py-6">
+                  Lorem, ipsum dolor sit amet consectetur adipisicing elit. Incidunt, neque officia, atque mollitia facilis ea beatae voluptate blanditiis modi vero labore. Totam sit nostrum consectetur ratione aspernatur doloremque minus eius.
+                </p>
+
+              </div>
+            </div>
+          </div>
         </div>
       </section>
     </div>

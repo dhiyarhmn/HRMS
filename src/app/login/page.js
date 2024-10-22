@@ -5,8 +5,11 @@ import Image from "next/image";
 import satria from "@/public/satria.gif";
 import dihi from "@/public/logo-dihi.png";
 import { Button } from "antd";
+import { useRouter } from "next/navigation";
 
 export default function Login() {
+
+  const router = useRouter();
   return (
     <div>
       <div className="flex w-full h-dvh justify-center items-center bg-first">
@@ -24,7 +27,7 @@ export default function Login() {
               Login
             </span>
             <Input className="flex flex-col" />
-            <Button type="primary">Login</Button>
+            <Button type="primary" onClick={() => router.push("/home")}>Login</Button>
           </div>
         </div>
       </div>
