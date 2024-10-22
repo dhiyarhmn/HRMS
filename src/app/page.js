@@ -41,7 +41,7 @@ export default function Home() {
             className="flex cursor-pointer items-center justify-center w-auto px-6 py-2.5 text-center text-white duration-200 bg-[#027D01] border-2 border-black rounded-full hover:bg-transparent hover:border-black hover:text-black focus:outline-none focus-visible:outline-black text-sm focus-visible:ring-black"
             href="/login"
           >
-            Get Started
+            Get Started!
           </a>
         </div>
       </Header>
