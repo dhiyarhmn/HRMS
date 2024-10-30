@@ -21,7 +21,7 @@ const Tabel = ({ detail }) => {
   const searchInput = useRef(null);
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
-    confirm();
+    confirm({ closeDropdown: false }); // Dropdown tetap terbuka
     setSearchText(selectedKeys[0]);
     setSearchedColumn(dataIndex);
   };
@@ -66,15 +66,8 @@ const Tabel = ({ detail }) => {
           >
             Reset
           </Button>
-          <Button
-            type="link"
-            size="small"
-            onClick={() => confirm({ closeDropdown: false })}
-          >
-            Filter
-          </Button>
           <Button type="link" size="small" onClick={() => close()}>
-            close
+            Close
           </Button>
         </Space>
       </div>
