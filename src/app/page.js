@@ -1,10 +1,10 @@
 "use client";
 import Image from "next/image";
-import dihi from "../public/logo-dihi.png";
-import bg1 from "../public/bg-1.jpg";
-import bg2 from "../public/bg-2.jpg";
-import bg3 from "../public/bg-3.jpg";
-import satria from "../public/satria.gif";
+import dihi from "@/public/logo-dihi.png";
+import bg1 from "@/public/bg-1.jpg";
+import bg2 from "@/public/bg-2.jpg";
+import bg3 from "@/public/bg-3.jpg";
+import satria from "@/public/satria.gif";
 import { Breadcrumb, Layout, Menu, theme, Button } from "antd";
 import Navigation from "@/components/navigation";
 
