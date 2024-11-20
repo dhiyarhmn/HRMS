@@ -11,10 +11,13 @@ const RoomForm = () => {
   };
   const handleOk = () => {
     setIsModalOpen(false);
+    console.log("Checked: ", checked);
   };
+
   const handleCancel = () => {
     setIsModalOpen(false);
     setChecked({});
+    
   };
   const handleCheckboxChange = (index) => {
     setChecked((prev) => ({

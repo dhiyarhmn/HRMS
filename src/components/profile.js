@@ -14,15 +14,13 @@ const Profile = () => {
     <Popover
       content={[
         <div className="flex flex-col w-full font-medium divide-y-2 gap-y-2">
-          <a href="/bookroom" className="hover:bg-red-300">
-            lorem
+          <a href="/Admin/generate" className="hover:bg-red-300">
+            Generate
           </a>
-          <a href="/bookroom" className="hover:bg-red-300">
-            lorem
+          <a href="/profile" className="hover:bg-red-300">
+            Edit Profile
           </a>
-          <a href="/bookroom" className="hover:bg-red-300">
-            lorem
-          </a>
+          
         </div>,
         <div className="flex justify-center mt-4">
           <a

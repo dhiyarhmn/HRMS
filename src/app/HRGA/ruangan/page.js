@@ -1,6 +1,6 @@
 "use client";
 import Navbar from "@/components/navbar";
-import Navigation from "@/components/navigation";
+import NavigationHRGA from "@/components/navigationHRGA";
 import RoomForm from "@/components/roomform";
 import room from "@/public/room-1.jpeg";
 import Image from "next/image";
@@ -12,11 +12,12 @@ export default function Ruangan() {
     { href: "/lembur", text: "Lembur" },
     { href: "/bookroom", text: "Ruangan" },
     { href: "/gaji", text: "Gaji" },
+    { href: "/HRGA/approval", text: "Approval" },
   ];
   return (
     <div>
       <Navbar />
-      <Navigation
+      <NavigationHRGA
         links={links}
         headerBg="flex mt-8 bg-transparent"
         navigationBg="bg-third"

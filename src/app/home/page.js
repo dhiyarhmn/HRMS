@@ -3,6 +3,7 @@ import Navigation from "@/components/navigation";
 import Profile from "@/components/profile";
 import dihi from "@/public/logo-dihi.png";
 import Image from "next/image";
+import Carousel from "@/components/carousel";
 
 export default function Home() {
   const links = [
@@ -34,22 +35,7 @@ export default function Home() {
       />
       <section>
         <div className="flex flex-col w-full h-[70dvh] gap-y-8 mt-6 p-8">
-          <div className="hero bg-second h-full rounded-xl">
-            <div className="hero-content flex-col lg:flex-row">
-              <Image src={dihi} className="w-64" />
-              <div>
-                <h1 className="text-3xl font-bold">
-                  Selamat Datang di Dashboard Admin
-                </h1>
-                <p className="py-6">
-                  Lorem, ipsum dolor sit amet consectetur adipisicing elit.
-                  Incidunt, neque officia, atque mollitia facilis ea beatae
-                  voluptate blanditiis modi vero labore. Totam sit nostrum
-                  consectetur ratione aspernatur doloremque minus eius.
-                </p>
-              </div>
-            </div>
-          </div>
+          <Carousel />
         </div>
       </section>
     </div>
