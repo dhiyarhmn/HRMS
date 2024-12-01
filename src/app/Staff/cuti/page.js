@@ -89,7 +89,7 @@ export default function cuti() {
                       <div className="p-2 flex flex-wrap">
                         <div className="w-full flex">
                           <div className="w-1/3 font-semibold">
-                            Tanggal Pengajuan
+                            Tanggal Pengajuann
                           </div>
                           <div className="w-1/12 text-center">:</div>
                           <div className="w-7/12">
