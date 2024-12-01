@@ -15,11 +15,11 @@ export default function cuti() {
   const [selectedRecord, setSelectedRecord] = useState(null);
 
   const links = [
-    { href: "/home", text: "Home" },
+    { href: "/Staff/home", text: "Home" },
     { href: "/Staff/cuti", text: "Cuti" },
-    { href: "/lembur", text: "Lembur" },
-    { href: "/bookroom", text: "Ruangan" },
-    { href: "/gaji", text: "Gaji" },
+    { href: "/Staff/lembur", text: "Lembur" },
+    { href: "/Staff/ruangan", text: "Ruangan" },
+    
   ];
 
   const showmodal = (record) => {
