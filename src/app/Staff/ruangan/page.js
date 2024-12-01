@@ -7,11 +7,11 @@ import Image from "next/image";
 
 export default function Ruangan() {
   const links = [
-    { href: "/home", text: "Home" },
-    { href: "/cuti", text: "Cuti" },
-    { href: "/lembur", text: "Lembur" },
-    { href: "/bookroom", text: "Ruangan" },
-    { href: "/gaji", text: "Gaji" },
+    { href: "/Staff/home", text: "Home" },
+    { href: "/Staff/cuti", text: "Cuti" },
+    { href: "/Staff/lembur", text: "Lembur" },
+    { href: "/Staff/ruangan", text: "Ruangan" },
+    
   ];
   return (
     <div>
