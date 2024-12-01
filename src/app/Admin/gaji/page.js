@@ -58,7 +58,7 @@ export default function Gaji() {
               <strong>Age:</strong> {selectedRecord.age}
             </p>
             <p>
-              <strong>Address:</strong> {selectedRecord.address}
+              <strong>Addresss:</strong> {selectedRecord.address}
             </p>
           </div>
         )}
