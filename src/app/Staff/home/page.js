@@ -7,11 +7,11 @@ import Carousel from "@/components/carousel";
 
 export default function Home() {
   const links = [
-    { href: "/Admin/home", text: "Home" },
-    { href: "/Admin/cuti", text: "Cuti" },
-    { href: "/Admin/lembur", text: "Lembur" },
-    { href: "/Admin/ruangan", text: "Ruangan" },
-    { href: "/Admin/gaji", text: "Gaji" },
+    { href: "/Karyawan/home", text: "Home" },
+    { href: "/Karyawan/cuti", text: "Cuti" },
+    { href: "/Karyawan/lembur", text: "Lembur" },
+    { href: "/Karyawan/ruangan", text: "Ruangan" },
+    { href: "/Karyawan/gaji", text: "Gaji" },
   ];
   return (
     <div>

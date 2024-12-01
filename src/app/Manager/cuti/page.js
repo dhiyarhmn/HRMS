@@ -10,8 +10,8 @@ import {
   CheckOutlined,
   CalendarOutlined
 } from "@ant-design/icons";
-import Tabelhpl from "@/components/tabelhpl";
-import FormPengajuanLembur from "@/components/formPengajuanLembur";
+import Tabelhpc from "@/components/tabelhpc";
+import FormPengajuanCuti from "@/components/formPengajuanCuti";
 import { Card } from "antd";
 
 export default function cuti() {
@@ -45,7 +45,7 @@ export default function cuti() {
           <div className="flex justify-center space-x-4 mb-4">
             <button
               className="btn bg-second"
-              onClick={() => document.getElementById("modal8").showModal()}
+              onClick={() => document.getElementById("modal3").showModal()}
             >
               <PlusOutlined />
               Tambah Pengajuan Baru
@@ -55,7 +55,7 @@ export default function cuti() {
               className="btn bg-second"
               onClick={() =>
                 (window.location.href =
-                  "/hrga/lembur/verifikasiLembur")
+                  "/Manager/cuti/verifikasiPengajuan")
               }
             >
               <CheckOutlined />
@@ -65,7 +65,7 @@ export default function cuti() {
               className="btn bg-second"
               onClick={() =>
                 (window.location.href =
-                  "/hrga/lembur/listDataLembur")
+                  "/Manager/cuti/listData")
               }
             >
               <UnorderedListOutlined />
@@ -75,15 +75,23 @@ export default function cuti() {
               className="btn bg-second"
               onClick={() =>
                 (window.location.href =
-                  "/hrga/lembur/calendar")
+                  "/Manager/cuti/calendar")
               }
             >
               <CalendarOutlined />
               Calendar
             </button>
           </div>
+          <div className="flex justify-end">
+            <button
+              className="btn bg-second"
+              // onClick={() => document.getElementById("modal3").showModal()}
+            >
+              Sisa Cuti Tahunan : 12
+            </button>
+          </div>
 
-          <FormPengajuanLembur
+          <FormPengajuanCuti
             selectedAbsensi={selectedAbsensi}
             setSelectedAbsensi={setSelectedAbsensi}
             periode={periode}
@@ -92,12 +100,12 @@ export default function cuti() {
 
           <div className="flex w-full justify-center bg-second p-4 rounded-lg">
             <div className="overflow-x-auto w-full">
-              <Tabelhpl detail={showmodal} />
+              <Tabelhpc detail={showmodal} />
               <dialog
-                  id={"modal4"}
-                  className="modal modal-bottom sm:modal-middle"
-                >
-                  {selectedRecord && (
+                id="modal4"
+                className="modal modal-bottom sm:modal-middle"
+              >
+                {selectedRecord && (
                     <Card
                       title="Detail"
                       style={{
@@ -123,29 +131,36 @@ export default function cuti() {
                         </div>
                         <div className="w-full flex">
                           <div className="w-1/3 font-semibold">
-                          Start Time
+                            Jenis Absensi
                           </div>
                           <div className="w-1/12 text-center">:</div>
                           <div className="w-7/12">
-                            {selectedRecord.startTime}
+                            {selectedRecord.jenisAbsensi}
                           </div>
                         </div>
                         <div className="w-full flex">
                           <div className="w-1/3 font-semibold">
-                          End Time
+                            Periode Awal
                           </div>
                           <div className="w-1/12 text-center">:</div>
                           <div className="w-7/12">
-                            {selectedRecord.endTime}
+                            {selectedRecord.periodeAwal}
                           </div>
                         </div>
                         <div className="w-full flex">
                           <div className="w-1/3 font-semibold">
-                          Total Hour
+                            Periode Akhir
                           </div>
                           <div className="w-1/12 text-center">:</div>
                           <div className="w-7/12">
-                            {selectedRecord.totalHour}
+                            {selectedRecord.periodeAkhir}
+                          </div>
+                        </div>
+                        <div className="w-full flex">
+                          <div className="w-1/3 font-semibold">Keterangan</div>
+                          <div className="w-1/12 text-center">:</div>
+                          <div className="w-7/12">
+                            {selectedRecord.keterangan}
                           </div>
                         </div>
                       </div>

@@ -4,13 +4,8 @@ import Navigation from "@/components/navigation";
 import Image from "next/image";
 import dihi from "@/public/logo-dihi.png";
 import { useState } from "react";
-import {
-  PlusOutlined,
-  UnorderedListOutlined,
-  CheckOutlined,
-  CalendarOutlined
-} from "@ant-design/icons";
-import Tabelhpl from "@/components/tabelhpl";
+import { PlusOutlined } from "@ant-design/icons";
+import Tabelhpls from "@/components/tabelhpls";
 import FormPengajuanLembur from "@/components/formPengajuanLembur";
 import { Card } from "antd";
 
@@ -21,7 +16,7 @@ export default function cuti() {
 
   const links = [
     { href: "/home", text: "Home" },
-    { href: "/Manager/cuti", text: "Cuti" },
+    { href: "/Staff/cuti", text: "Cuti" },
     { href: "/lembur", text: "Lembur" },
     { href: "/bookroom", text: "Ruangan" },
     { href: "/gaji", text: "Gaji" },
@@ -29,7 +24,7 @@ export default function cuti() {
 
   const showmodal = (record) => {
     setSelectedRecord(record);
-    document.getElementById("modal4").showModal();
+    document.getElementById("modal9").showModal();
   };
 
   return (
@@ -50,37 +45,6 @@ export default function cuti() {
               <PlusOutlined />
               Tambah Pengajuan Baru
             </button>
-
-            <button
-              className="btn bg-second"
-              onClick={() =>
-                (window.location.href =
-                  "/hrga/lembur/verifikasiLembur")
-              }
-            >
-              <CheckOutlined />
-              Verifikasi
-            </button>
-            <button
-              className="btn bg-second"
-              onClick={() =>
-                (window.location.href =
-                  "/hrga/lembur/listDataLembur")
-              }
-            >
-              <UnorderedListOutlined />
-              List Data Pegawai
-            </button>
-            <button
-              className="btn bg-second"
-              onClick={() =>
-                (window.location.href =
-                  "/hrga/lembur/calendar")
-              }
-            >
-              <CalendarOutlined />
-              Calendar
-            </button>
           </div>
 
           <FormPengajuanLembur
@@ -90,11 +54,12 @@ export default function cuti() {
             setPeriode={setPeriode}
           />
 
-          <div className="flex w-full justify-center bg-second p-4 rounded-lg">
-            <div className="overflow-x-auto w-full">
-              <Tabelhpl detail={showmodal} />
-              <dialog
-                  id={"modal4"}
+          <div className="flex w-full justify-center">
+            <div className="w-full bg-second p-4 rounded-lg">
+              <div className="overflow-x-auto w-full">
+                <Tabelhpls detail={showmodal} />
+                <dialog
+                  id={"modal9"}
                   className="modal modal-bottom sm:modal-middle"
                 >
                   {selectedRecord && (
@@ -122,27 +87,19 @@ export default function cuti() {
                           </div>
                         </div>
                         <div className="w-full flex">
-                          <div className="w-1/3 font-semibold">
-                          Start Time
-                          </div>
+                          <div className="w-1/3 font-semibold">Start Time</div>
                           <div className="w-1/12 text-center">:</div>
                           <div className="w-7/12">
                             {selectedRecord.startTime}
                           </div>
                         </div>
                         <div className="w-full flex">
-                          <div className="w-1/3 font-semibold">
-                          End Time
-                          </div>
+                          <div className="w-1/3 font-semibold">End Time</div>
                           <div className="w-1/12 text-center">:</div>
-                          <div className="w-7/12">
-                            {selectedRecord.endTime}
-                          </div>
+                          <div className="w-7/12">{selectedRecord.endTime}</div>
                         </div>
                         <div className="w-full flex">
-                          <div className="w-1/3 font-semibold">
-                          Total Hour
-                          </div>
+                          <div className="w-1/3 font-semibold">Total Hour</div>
                           <div className="w-1/12 text-center">:</div>
                           <div className="w-7/12">
                             {selectedRecord.totalHour}
@@ -153,7 +110,7 @@ export default function cuti() {
                         <button
                           className="btn"
                           onClick={() =>
-                            document.getElementById(`modal4`).close()
+                            document.getElementById(`modal9`).close()
                           }
                         >
                           Close
@@ -161,7 +118,8 @@ export default function cuti() {
                       </div>
                     </Card>
                   )}
-              </dialog>
+                </dialog>
+              </div>
             </div>
           </div>
         </div>

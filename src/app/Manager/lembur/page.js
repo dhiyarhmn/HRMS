@@ -14,7 +14,7 @@ import Tabelhpl from "@/components/tabelhpl";
 import FormPengajuanLembur from "@/components/formPengajuanLembur";
 import { Card } from "antd";
 
-export default function cuti() {
+export default function lembur() {
   const [selectedAbsensi, setSelectedAbsensi] = useState("1");
   const [periode, setPeriode] = useState("1");
   const [selectedRecord, setSelectedRecord] = useState(null);
@@ -55,7 +55,7 @@ export default function cuti() {
               className="btn bg-second"
               onClick={() =>
                 (window.location.href =
-                  "/hrga/lembur/verifikasiLembur")
+                  "/Manager/lembur/verifikasiLembur")
               }
             >
               <CheckOutlined />
@@ -65,7 +65,7 @@ export default function cuti() {
               className="btn bg-second"
               onClick={() =>
                 (window.location.href =
-                  "/hrga/lembur/listDataLembur")
+                  "/Manager/lembur/listDataLembur")
               }
             >
               <UnorderedListOutlined />
@@ -75,7 +75,7 @@ export default function cuti() {
               className="btn bg-second"
               onClick={() =>
                 (window.location.href =
-                  "/hrga/lembur/calendar")
+                  "/Manager/lembur/calendar")
               }
             >
               <CalendarOutlined />

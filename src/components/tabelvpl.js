@@ -6,22 +6,49 @@ import Highlighter from "react-highlight-words";
 const data = [
   {
     key: "1",
-    name: "John Brown",
-    age: 32,
-    address: "New York No. 1 Lake Park",
+    id: 1,
+    nik: 123,
+    nama: "Puti Dhiya",
+    departemen: "Marketing",
+    jabatan: "Manager",
+    tanggalPengajuan: "26-09-2024",
+    startTime: "17.00",
+    endTime: "19.00",
+    totalHour: "2 Jam",
   },
-  { key: "2", name: "Joe Black", age: 42, address: "London No. 1 Lake Park" },
-  { key: "3", name: "Jim Green", age: 32, address: "Sydney No. 1 Lake Park" },
-  { key: "4", name: "Jim Red", age: 32, address: "London No. 2 Lake Park" },
+  {
+    key: "2",
+    id: 2,
+    nik: 234,
+    nama: "Fikri Prasetya",
+    departemen: "Accounting",
+    jabatan: "Staff",
+    tanggalPengajuan: "01-10-2024",
+    startTime: "17.00",
+    endTime: "20.00",
+    totalHour: "3 Jam",
+  },
+  {
+    key: "3",
+    id: 3,
+    nik: "345",
+    nama: "Satria Bintang",
+    departemen: "Accounting",
+    jabatan: "Manager",
+    tanggalPengajuan: "10-10-2024",
+    startTime: "17.00",
+    endTime: "18.00",
+    totalHour: "1 Jam",
+  },
 ];
 
-const Tabel = ({ detail }) => {
+const Tabelvpl = ({ detail }) => {
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef(null);
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
-    confirm();
+    confirm({ closeDropdown: false });
     setSearchText(selectedKeys[0]);
     setSearchedColumn(dataIndex);
   };
@@ -66,13 +93,6 @@ const Tabel = ({ detail }) => {
           >
             Reset
           </Button>
-          <Button
-            type="link"
-            size="small"
-            onClick={() => confirm({ closeDropdown: false })}
-          >
-            Filter
-          </Button>
           <Button type="link" size="small" onClick={() => close()}>
             close
           </Button>
@@ -99,26 +119,42 @@ const Tabel = ({ detail }) => {
 
   const columns = [
     {
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
-      ...getColumnSearchProps("name"),
+      title: "No",
+      dataIndex: "no",
+      align: "center",
+      render: (_, __, index) => index + 1,
     },
     {
-      title: "Age",
-      dataIndex: "age",
-      key: "age",
-      ...getColumnSearchProps("age"),
+      title: "NIK",
+      dataIndex: "nik",
+      align: "center",
+      ...getColumnSearchProps("nik"),
+      render: (text) => text,
     },
     {
-      title: "Address",
-      dataIndex: "address",
-      key: "address",
-      ...getColumnSearchProps("address"),
+        title: "Nama",
+        dataIndex: "nama",
+        align: "center",
+        ...getColumnSearchProps("nama"),
+        render: (text) => text,
+      },
+    {
+      title: "Tanggal Pengajuan",
+      dataIndex: "tanggalPengajuan",
+      align: "center",
+      ...getColumnSearchProps("tanggalpengajuan"),
+      render: (text) => text,
     },
+    {
+        title: "Total Hour",
+        dataIndex: "totalHour",
+        align: "center",
+        ...getColumnSearchProps("totalHour"),
+        render: (text) => text,
+      },
     {
       title: "Action",
-      key: "action",
+      align: "center",
       render: (_, record) => (
         <Space size="middle">
           <button onClick={() => detail(record)} className="text-blue-500">
@@ -134,8 +170,9 @@ const Tabel = ({ detail }) => {
       columns={columns}
       dataSource={data}
       className="w-full bg-white rounded-lg"
+      align="center"
     />
   );
 };
 
-export default Tabel;
+export default Tabelvpl;

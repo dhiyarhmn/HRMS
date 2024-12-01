@@ -14,7 +14,7 @@ import Tabelhpl from "@/components/tabelhpl";
 import FormPengajuanLembur from "@/components/formPengajuanLembur";
 import Calendar from "@/components/calendar2";
 
-export default function lembur() {
+export default function cuti() {
   const [selectedAbsensi, setSelectedAbsensi] = useState("1");
   const [periode, setPeriode] = useState("1");
   const [selectedRecord, setSelectedRecord] = useState(null);
@@ -46,7 +46,7 @@ export default function lembur() {
             <button
               className="btn bg-second"
               onClick={() =>
-                (window.location.href = "/Admin/lembur/listDataLembur")
+                (window.location.href = "/Admin/cuti/listData")
               }
             >
               <UnorderedListOutlined />

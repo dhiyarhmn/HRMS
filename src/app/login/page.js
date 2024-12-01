@@ -27,7 +27,7 @@ export default function Login() {
               Login
             </span>
             <Input className="flex flex-col" />
-            <Button type="primary" onClick={() => router.push("/home")}>Login</Button>
+            <Button type="primary" onClick={() => router.push("/Karyawan/home")}>Login</Button>
           </div>
         </div>
       </div>

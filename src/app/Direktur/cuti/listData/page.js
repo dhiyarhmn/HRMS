@@ -3,18 +3,13 @@ import Navbar from "@/components/navbar";
 import Navigation from "@/components/navigation";
 import Image from "next/image";
 import dihi from "@/public/logo-dihi.png";
-import {
-  PlusOutlined,
-  UnorderedListOutlined,
-  CheckOutlined,
-  CalendarOutlined,
-} from "@ant-design/icons";
-import Calendar from "@/components/calendar2";
+import { ArrowLeftOutlined } from "@ant-design/icons";
+import Tabelldpc from "@/components/tabelldpc";
 
 export default function listData() {
   const links = [
     { href: "/home", text: "Home" },
-    { href: "/Direktur/cuti", text: "Cuti" },
+    { href: "/Manager/cuti", text: "Cuti" },
     { href: "/lembur", text: "Lembur" },
     { href: "/bookroom", text: "Ruangan" },
     { href: "/gaji", text: "Gaji" },
@@ -34,32 +29,25 @@ export default function listData() {
       />
       <section>
         <div className="flex flex-col w-full h-auto gap-y-8 mt-6 p-8">
-          <div className="flex justify-center space-x-4 mb-4">
+          <div className="w-full flex justify-between items-center">
             <button
               className="btn bg-second"
               onClick={() =>
-                (window.location.href = "/Direktur/cuti/verifikasiPengajuan")
+                (window.location.href = "/Direktur/cuti")
               }
             >
-              <CheckOutlined />
-              Verifikasi
-            </button>
-            <button
-              className="btn bg-second"
-              onClick={() => (window.location.href = "/Direktur/cuti/listData")}
-            >
-              <UnorderedListOutlined />
-              List Data Pegawai
+              <ArrowLeftOutlined />
+              Kembali
             </button>
           </div>
-          {/* <h2 className="text-xl font-bold text-black text-center">
-            Calendar
-          </h2> */}
+          <h2 className="text-xl font-bold text-black text-center">
+            List Data Pengajuan Ketidakhadiran
+          </h2>
 
           <div className="flex w-full justify-center">
             <div className="w-full bg-second p-4 rounded-lg">
               <div className="overflow-x-auto w-full">
-                <Calendar />
+                <Tabelldpc onDetail={goToDetail}/>
               </div>
             </div>
           </div>

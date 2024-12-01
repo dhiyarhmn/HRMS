@@ -7,11 +7,11 @@ import { Modal } from "antd";
 
 export default function Gaji() {
   const links = [
-    { href: "/home", text: "Home" },
-    { href: "/cuti", text: "Cuti" },
-    { href: "/lembur", text: "Lembur" },
-    { href: "/bookroom", text: "Ruangan" },
-    { href: "/gaji", text: "Gaji" },
+    { href: "/Admin/home", text: "Home" },
+    { href: "/Admin/cuti", text: "Cuti" },
+    { href: "/Admin/lembur", text: "Lembur" },
+    { href: "/Admin/ruangan", text: "Ruangan" },
+    { href: "/Admin/gaji", text: "Gaji" },
   ];
 
   const [isModalOpen, setIsModalOpen] = useState(false);

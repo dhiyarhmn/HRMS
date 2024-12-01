@@ -1,23 +1,16 @@
 "use client";
 import Navbar from "@/components/navbar";
 import Navigation from "@/components/navigation";
+import { useState, useRef } from "react";
 import Image from "next/image";
 import dihi from "@/public/logo-dihi.png";
-import { useState } from "react";
-import {
-  PlusOutlined,
-  UnorderedListOutlined,
-  CheckOutlined,
-  CalendarOutlined
-} from "@ant-design/icons";
-import Tabelhpl from "@/components/tabelhpl";
-import FormPengajuanLembur from "@/components/formPengajuanLembur";
-import { Card } from "antd";
+import { ArrowLeftOutlined } from "@ant-design/icons";
+import Tabelvpl from "@/components/tabelvpl";
+import { Card, Input } from "antd";
 
-export default function cuti() {
-  const [selectedAbsensi, setSelectedAbsensi] = useState("1");
-  const [periode, setPeriode] = useState("1");
+export default function verifikasiPengajuan() {
   const [selectedRecord, setSelectedRecord] = useState(null);
+  const { TextArea } = Input;
 
   const links = [
     { href: "/home", text: "Home" },
@@ -29,7 +22,7 @@ export default function cuti() {
 
   const showmodal = (record) => {
     setSelectedRecord(record);
-    document.getElementById("modal4").showModal();
+    document.getElementById("modal11").showModal();
   };
 
   return (
@@ -42,59 +35,27 @@ export default function cuti() {
       />
       <section>
         <div className="flex flex-col w-full h-auto gap-y-8 mt-6 p-8">
-          <div className="flex justify-center space-x-4 mb-4">
-            <button
-              className="btn bg-second"
-              onClick={() => document.getElementById("modal8").showModal()}
-            >
-              <PlusOutlined />
-              Tambah Pengajuan Baru
-            </button>
-
+          <div className="w-full flex justify-between items-center">
             <button
               className="btn bg-second"
               onClick={() =>
-                (window.location.href =
-                  "/hrga/lembur/verifikasiLembur")
+                (window.location.href = "/Manager/lembur")
               }
             >
-              <CheckOutlined />
-              Verifikasi
-            </button>
-            <button
-              className="btn bg-second"
-              onClick={() =>
-                (window.location.href =
-                  "/hrga/lembur/listDataLembur")
-              }
-            >
-              <UnorderedListOutlined />
-              List Data Pegawai
-            </button>
-            <button
-              className="btn bg-second"
-              onClick={() =>
-                (window.location.href =
-                  "/hrga/lembur/calendar")
-              }
-            >
-              <CalendarOutlined />
-              Calendar
+              <ArrowLeftOutlined />
+              Kembali
             </button>
           </div>
+          <h2 className="text-xl font-bold text-black text-center">
+            Verifikasi Pengajuan Lembur
+          </h2>
 
-          <FormPengajuanLembur
-            selectedAbsensi={selectedAbsensi}
-            setSelectedAbsensi={setSelectedAbsensi}
-            periode={periode}
-            setPeriode={setPeriode}
-          />
-
-          <div className="flex w-full justify-center bg-second p-4 rounded-lg">
-            <div className="overflow-x-auto w-full">
-              <Tabelhpl detail={showmodal} />
-              <dialog
-                  id={"modal4"}
+          <div className="flex w-full justify-center">
+            <div className="w-full bg-second p-4 rounded-lg">
+              <div className="overflow-x-auto w-full">
+                <Tabelvpl detail={showmodal} />
+                <dialog
+                  id="modal11"
                   className="modal modal-bottom sm:modal-middle"
                 >
                   {selectedRecord && (
@@ -112,6 +73,26 @@ export default function cuti() {
                         </button>
                       </form>
                       <div className="p-2 flex flex-wrap">
+                        <div className="w-full flex">
+                          <div className="w-1/3 font-semibold">NIK</div>
+                          <div className="w-1/12 text-center">:</div>
+                          <div className="w-7/12">{selectedRecord.nik}</div>
+                        </div>
+                        <div className="w-full flex">
+                          <div className="w-1/3 font-semibold">Nama</div>
+                          <div className="w-1/12 text-center">:</div>
+                          <div className="w-7/12">{selectedRecord.nama}</div>
+                        </div>
+                        <div className="w-full flex">
+                          <div className="w-1/3 font-semibold">Departemen</div>
+                          <div className="w-1/12 text-center">:</div>
+                          <div className="w-7/12">{selectedRecord.departemen}</div>
+                        </div>
+                        <div className="w-full flex">
+                          <div className="w-1/3 font-semibold">Jabatan</div>
+                          <div className="w-1/12 text-center">:</div>
+                          <div className="w-7/12">{selectedRecord.jabatan}</div>
+                        </div>
                         <div className="w-full flex">
                           <div className="w-1/3 font-semibold">
                             Tanggal Pengajuan
@@ -132,7 +113,7 @@ export default function cuti() {
                         </div>
                         <div className="w-full flex">
                           <div className="w-1/3 font-semibold">
-                          End Time
+                            End Time
                           </div>
                           <div className="w-1/12 text-center">:</div>
                           <div className="w-7/12">
@@ -141,7 +122,7 @@ export default function cuti() {
                         </div>
                         <div className="w-full flex">
                           <div className="w-1/3 font-semibold">
-                          Total Hour
+                            Total Hour
                           </div>
                           <div className="w-1/12 text-center">:</div>
                           <div className="w-7/12">
@@ -149,19 +130,32 @@ export default function cuti() {
                           </div>
                         </div>
                       </div>
+                      <div className="w-full mt-10">
+                        <div className="font-semibold mb-2 pl-2">Notes:</div>{" "}
+                        <TextArea rows={2} placeholder="Masukkan notes"/> 
+                      </div>
                       <div className="modal-action">
                         <button
                           className="btn"
                           onClick={() =>
-                            document.getElementById(`modal4`).close()
+                            document.getElementById(`modal11`).close()
                           }
                         >
-                          Close
+                          Decline
+                        </button>
+                        <button
+                          className="btn"
+                          onClick={() =>
+                            document.getElementById(`modal11`).close()
+                          }
+                        >
+                          Approve
                         </button>
                       </div>
                     </Card>
                   )}
-              </dialog>
+                </dialog>
+              </div>
             </div>
           </div>
         </div>

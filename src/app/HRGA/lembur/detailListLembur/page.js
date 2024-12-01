@@ -4,19 +4,12 @@ import Navigation from "@/components/navigation";
 import Image from "next/image";
 import dihi from "@/public/logo-dihi.png";
 import { useState } from "react";
-import {
-  PlusOutlined,
-  UnorderedListOutlined,
-  CheckOutlined,
-  CalendarOutlined
-} from "@ant-design/icons";
+import { ArrowLeftOutlined } from "@ant-design/icons";
 import Tabelhpl from "@/components/tabelhpl";
-import FormPengajuanLembur from "@/components/formPengajuanLembur";
 import { Card } from "antd";
 
-export default function cuti() {
-  const [selectedAbsensi, setSelectedAbsensi] = useState("1");
-  const [periode, setPeriode] = useState("1");
+export default function detailListLembur() {
+  // const [selectedData, setSelectedData] = useState(null);
   const [selectedRecord, setSelectedRecord] = useState(null);
 
   const links = [
@@ -27,10 +20,20 @@ export default function cuti() {
     { href: "/gaji", text: "Gaji" },
   ];
 
+  // const openDetailModal = (row) => {
+  //   setSelectedData(row);
+  //   document.getElementById("detail_modal").showModal();
+  // };
+
   const showmodal = (record) => {
     setSelectedRecord(record);
-    document.getElementById("modal4").showModal();
+    document.getElementById("modal7").showModal();
   };
+
+  // const closeModal = () => {
+  //   document.getElementById("detail_modal").close();
+  //   setSelectedData(null);
+  // };
 
   return (
     <div>
@@ -42,59 +45,79 @@ export default function cuti() {
       />
       <section>
         <div className="flex flex-col w-full h-auto gap-y-8 mt-6 p-8">
-          <div className="flex justify-center space-x-4 mb-4">
+          <div className="w-full flex justify-between items-center">
             <button
               className="btn bg-second"
-              onClick={() => document.getElementById("modal8").showModal()}
+              onClick={() => (window.location.href = "/hrga/lembur/listDataLembur")}
             >
-              <PlusOutlined />
-              Tambah Pengajuan Baru
-            </button>
-
-            <button
-              className="btn bg-second"
-              onClick={() =>
-                (window.location.href =
-                  "/hrga/lembur/verifikasiLembur")
-              }
-            >
-              <CheckOutlined />
-              Verifikasi
-            </button>
-            <button
-              className="btn bg-second"
-              onClick={() =>
-                (window.location.href =
-                  "/hrga/lembur/listDataLembur")
-              }
-            >
-              <UnorderedListOutlined />
-              List Data Pegawai
-            </button>
-            <button
-              className="btn bg-second"
-              onClick={() =>
-                (window.location.href =
-                  "/hrga/lembur/calendar")
-              }
-            >
-              <CalendarOutlined />
-              Calendar
+              <ArrowLeftOutlined />
+              Kembali
             </button>
           </div>
+          <h2 className="text-xl font-bold text-black text-center">
+            Detail List Data Pengajuan Lembur
+          </h2>
 
-          <FormPengajuanLembur
-            selectedAbsensi={selectedAbsensi}
-            setSelectedAbsensi={setSelectedAbsensi}
-            periode={periode}
-            setPeriode={setPeriode}
-          />
+          <div className="w-full bg-second p-4 rounded-lg shadow-md mb-6">
+            <div className="flex justify-between space-x-6 w-full">
+              <div className="w-1/2 flex flex-col gap-y-4">
+                <label className="form-control w-full">
+                  <div className="label">
+                    <span className="label-text">NIK</span>
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="123"
+                    className="input input-bordered w-full"
+                    disabled
+                  />
+                </label>
+                <label className="form-control w-full">
+                  <div className="label">
+                    <span className="label-text">Nama</span>
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="Puti Dhiya"
+                    className="input input-bordered w-full"
+                    disabled
+                  />
+                </label>
+              </div>
 
-          <div className="flex w-full justify-center bg-second p-4 rounded-lg">
-            <div className="overflow-x-auto w-full">
-              <Tabelhpl detail={showmodal} />
-              <dialog
-                  id={"modal4"}
+              <div className="w-1/2 flex flex-col gap-y-4">
+                <label className="form-control w-full">
+                  <div className="label">
+                    <span className="label-text">Departemen</span>
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="Marketing"
+                    className="input input-bordered w-full"
+                    disabled
+                  />
+                </label>
+                <label className="form-control w-full">
+                  <div className="label">
+                    <span className="label-text">Jabatan</span>
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="Manager"
+                    className="input input-bordered w-full"
+                    disabled
+                  />
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex w-full justify-center">
+            <div className="flex w-full bg-second p-4 rounded-lg">
+              <div className="overflow-x-auto w-full">
+                <Tabelhpl detail={showmodal} />
+                <dialog
+                  id="modal7"
                   className="modal modal-bottom sm:modal-middle"
                 >
                   {selectedRecord && (
@@ -123,7 +146,7 @@ export default function cuti() {
                         </div>
                         <div className="w-full flex">
                           <div className="w-1/3 font-semibold">
-                          Start Time
+                            Start Time
                           </div>
                           <div className="w-1/12 text-center">:</div>
                           <div className="w-7/12">
@@ -132,7 +155,7 @@ export default function cuti() {
                         </div>
                         <div className="w-full flex">
                           <div className="w-1/3 font-semibold">
-                          End Time
+                            End Time
                           </div>
                           <div className="w-1/12 text-center">:</div>
                           <div className="w-7/12">
@@ -141,7 +164,7 @@ export default function cuti() {
                         </div>
                         <div className="w-full flex">
                           <div className="w-1/3 font-semibold">
-                          Total Hour
+                            Total Hour
                           </div>
                           <div className="w-1/12 text-center">:</div>
                           <div className="w-7/12">
@@ -153,7 +176,7 @@ export default function cuti() {
                         <button
                           className="btn"
                           onClick={() =>
-                            document.getElementById(`modal4`).close()
+                            document.getElementById(`modal7`).close()
                           }
                         >
                           Close
@@ -161,7 +184,8 @@ export default function cuti() {
                       </div>
                     </Card>
                   )}
-              </dialog>
+                </dialog>
+              </div>
             </div>
           </div>
         </div>

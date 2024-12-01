@@ -1,27 +1,20 @@
 "use client";
 import Navbar from "@/components/navbar";
 import Navigation from "@/components/navigation";
+import { useState, useRef } from "react";
 import Image from "next/image";
 import dihi from "@/public/logo-dihi.png";
-import { useState } from "react";
-import {
-  PlusOutlined,
-  UnorderedListOutlined,
-  CheckOutlined,
-  CalendarOutlined
-} from "@ant-design/icons";
-import Tabelhpc from "@/components/tabelhpc";
-import FormPengajuanCuti from "@/components/formPengajuanCuti";
-import { Card } from "antd";
+import { ArrowLeftOutlined } from "@ant-design/icons";
+import Tabelvpc from "@/components/tabelvpc";
+import { Card, Input } from "antd";
 
-export default function cuti() {
-  const [selectedAbsensi, setSelectedAbsensi] = useState("1");
-  const [periode, setPeriode] = useState("1");
+export default function verifikasiPengajuan() {
   const [selectedRecord, setSelectedRecord] = useState(null);
+  const { TextArea } = Input;
 
   const links = [
     { href: "/home", text: "Home" },
-    { href: "/hrga/cuti", text: "Cuti" },
+    { href: "/Manager/cuti", text: "Cuti" },
     { href: "/lembur", text: "Lembur" },
     { href: "/bookroom", text: "Ruangan" },
     { href: "/gaji", text: "Gaji" },
@@ -29,7 +22,7 @@ export default function cuti() {
 
   const showmodal = (record) => {
     setSelectedRecord(record);
-    document.getElementById("modal4").showModal();
+    document.getElementById("modal6").showModal();
   };
 
   return (
@@ -42,69 +35,27 @@ export default function cuti() {
       />
       <section>
         <div className="flex flex-col w-full h-auto gap-y-8 mt-6 p-8">
-          <div className="flex justify-center space-x-4 mb-4">
+          <div className="w-full flex justify-between items-center">
             <button
               className="btn bg-second"
-              onClick={() => document.getElementById("modal3").showModal()}
+              onClick={() => (window.location.href = "/Manager/cuti")}
             >
-              <PlusOutlined />
-              Tambah Pengajuan Baru
-            </button>
-
-            <button
-              className="btn bg-second"
-              onClick={() =>
-                (window.location.href =
-                  "/hrga/cuti/verifikasiPengajuan")
-              }
-            >
-              <CheckOutlined />
-              Verifikasi
-            </button>
-            <button
-              className="btn bg-second"
-              onClick={() =>
-                (window.location.href =
-                  "/hrga/cuti/listData")
-              }
-            >
-              <UnorderedListOutlined />
-              List Data Pegawai
-            </button>
-            <button
-              className="btn bg-second"
-              onClick={() =>
-                (window.location.href =
-                  "/hrga/cuti/calendar")
-              }
-            >
-              <CalendarOutlined />
-              Calendar
+              <ArrowLeftOutlined />
+              Kembali
             </button>
           </div>
-          <div className="flex justify-end">
-            <button
-              className="btn bg-second"
-              // onClick={() => document.getElementById("modal3").showModal()}
-            >
-              Sisa Cuti Tahunan : 12
-            </button>
-          </div>
+          <h2 className="text-xl font-bold text-black text-center">
+            Verifikasi Pengajuan Ketidakhadiran
+          </h2>
 
-          <FormPengajuanCuti
-            selectedAbsensi={selectedAbsensi}
-            setSelectedAbsensi={setSelectedAbsensi}
-            periode={periode}
-            setPeriode={setPeriode}
-          />
-
-          <div className="flex w-full justify-center bg-second p-4 rounded-lg">
-            <div className="overflow-x-auto w-full">
-              <Tabelhpc detail={showmodal} />
-              <dialog
-                id="modal4"
-                className="modal modal-bottom sm:modal-middle"
-              >
+          <div className="flex w-full justify-center">
+            <div className="w-full bg-second p-4 rounded-lg">
+              <div className="overflow-x-auto w-full">
+                <Tabelvpc detail={showmodal} />
+                <dialog
+                  id="modal6"
+                  className="modal modal-bottom sm:modal-middle"
+                >
                   {selectedRecord && (
                     <Card
                       title="Detail"
@@ -120,6 +71,28 @@ export default function cuti() {
                         </button>
                       </form>
                       <div className="p-2 flex flex-wrap">
+                        <div className="w-full flex">
+                          <div className="w-1/3 font-semibold">NIK</div>
+                          <div className="w-1/12 text-center">:</div>
+                          <div className="w-7/12">{selectedRecord.nik}</div>
+                        </div>
+                        <div className="w-full flex">
+                          <div className="w-1/3 font-semibold">Nama</div>
+                          <div className="w-1/12 text-center">:</div>
+                          <div className="w-7/12">{selectedRecord.nama}</div>
+                        </div>
+                        <div className="w-full flex">
+                          <div className="w-1/3 font-semibold">Departemen</div>
+                          <div className="w-1/12 text-center">:</div>
+                          <div className="w-7/12">
+                            {selectedRecord.departemen}
+                          </div>
+                        </div>
+                        <div className="w-full flex">
+                          <div className="w-1/3 font-semibold">Jabatan</div>
+                          <div className="w-1/12 text-center">:</div>
+                          <div className="w-7/12">{selectedRecord.jabatan}</div>
+                        </div>
                         <div className="w-full flex">
                           <div className="w-1/3 font-semibold">
                             Tanggal Pengajuan
@@ -164,19 +137,32 @@ export default function cuti() {
                           </div>
                         </div>
                       </div>
+                      <div className="w-full mt-10">
+                        <div className="font-semibold mb-2 pl-2">Notes:</div>{" "}
+                        <TextArea rows={2} placeholder="Masukkan notes"/> 
+                      </div>
                       <div className="modal-action">
                         <button
                           className="btn"
                           onClick={() =>
-                            document.getElementById(`modal4`).close()
+                            document.getElementById(`modal6`).close()
                           }
                         >
-                          Close
+                          Decline
+                        </button>
+                        <button
+                          className="btn"
+                          onClick={() =>
+                            document.getElementById(`modal6`).close()
+                          }
+                        >
+                          Approve
                         </button>
                       </div>
                     </Card>
                   )}
-              </dialog>
+                </dialog>
+              </div>
             </div>
           </div>
         </div>

@@ -6,22 +6,49 @@ import Highlighter from "react-highlight-words";
 const data = [
   {
     key: "1",
-    name: "John Brown",
-    age: 32,
-    address: "New York No. 1 Lake Park",
+    nik: "345",
+    nama: "Satria Bintang",
+    departemen: "Accounting",
+    jabatan: "Manager",
+    tanggalPengajuan: "26-09-2024",
+    status: "approved",
+    startTime: "17.00",
+    endTime: "19.00",
+    totalHour: "2 Jam",
   },
-  { key: "2", name: "Joe Black", age: 42, address: "London No. 1 Lake Park" },
-  { key: "3", name: "Jim Green", age: 32, address: "Sydney No. 1 Lake Park" },
-  { key: "4", name: "Jim Red", age: 32, address: "London No. 2 Lake Park" },
+  {
+    key: "2",
+    nik: "345",
+    nama: "Satria Bintang",
+    departemen: "Accounting",
+    jabatan: "Manager",
+    tanggalPengajuan: "01-10-2024",
+    status: "rejected",
+    startTime: "17.00",
+    endTime: "20.00",
+    totalHour: "3 Jam",
+  },
+  {
+    key: "3",
+    nik: "345",
+    nama: "Satria Bintang",
+    departemen: "Accounting",
+    jabatan: "Manager",
+    tanggalPengajuan: "04-10-2024",
+    status: "pending",
+    startTime: "17.00",
+    endTime: "18.00",
+    totalHour: "1 Jam",
+  },
 ];
 
-const Tabel = ({ detail }) => {
+const Tabelhpl = ({ detail }) => {
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef(null);
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
-    confirm();
+    confirm({ closeDropdown: false });
     setSearchText(selectedKeys[0]);
     setSearchedColumn(dataIndex);
   };
@@ -66,13 +93,6 @@ const Tabel = ({ detail }) => {
           >
             Reset
           </Button>
-          <Button
-            type="link"
-            size="small"
-            onClick={() => confirm({ closeDropdown: false })}
-          >
-            Filter
-          </Button>
           <Button type="link" size="small" onClick={() => close()}>
             close
           </Button>
@@ -99,26 +119,68 @@ const Tabel = ({ detail }) => {
 
   const columns = [
     {
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
-      ...getColumnSearchProps("name"),
+      title: "No",
+      dataIndex: "no",
+      align: "center",
+      render: (_, __, index) => index + 1,
     },
     {
-      title: "Age",
-      dataIndex: "age",
-      key: "age",
-      ...getColumnSearchProps("age"),
+      title: "Tanggal Pengajuan",
+      dataIndex: "tanggalPengajuan",
+      align: "center",
+      ...getColumnSearchProps("tanggalPengajuan"),
+      render: (text) => text,
     },
     {
-      title: "Address",
-      dataIndex: "address",
-      key: "address",
-      ...getColumnSearchProps("address"),
+      title: "Total Hour",
+      dataIndex: "totalHour",
+      align: "center",
+      ...getColumnSearchProps("totalHour"),
+      render: (text) => text,
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      align: "center",
+      render: (status) =>
+        status === "approved" ? (
+          <svg className="h-6 w-6 mx-auto" fill="none" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10" fill="#98D8AA" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M9 12l2 2 4-4"
+              stroke="white"
+            />
+          </svg>
+        ) : status === "rejected" ? (
+          <svg className="h-6 w-6 mx-auto" fill="none" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10" fill="#FF6D60" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"
+              stroke="white"
+            />
+          </svg>
+        ) : status === "pending" ? (
+          <svg className="h-6 w-6 mx-auto" fill="none" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10" fill="#F7D060" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M12 8v4m0 4h.01"
+              stroke="white"
+            />
+          </svg>
+        ) : null,
     },
     {
       title: "Action",
-      key: "action",
+      align: "center",
       render: (_, record) => (
         <Space size="middle">
           <button onClick={() => detail(record)} className="text-blue-500">
@@ -134,8 +196,9 @@ const Tabel = ({ detail }) => {
       columns={columns}
       dataSource={data}
       className="w-full bg-white rounded-lg"
+      align="center"
     />
   );
 };
 
-export default Tabel;
+export default Tabelhpl;
