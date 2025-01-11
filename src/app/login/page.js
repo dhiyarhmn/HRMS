@@ -1,7 +1,6 @@
 "use client";
 import React, { useState } from "react";
 import BackBtn from "@/components/LoginPageComponents/backbutton";
-import Input from "@/components/input";
 import Image from "next/image";
 import satria from "@/public/satria.gif";
 import dihi from "@/public/logo-dihi.png";
@@ -11,52 +10,62 @@ import { login } from "@/api/api";
 
 export default function Login() {
   const router = useRouter();
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const [username, setUsername] = useState(""); // State untuk menyimpan email
-  const [password, setPassword] = useState(""); // State untuk menyimpan password
-  const [loading, setLoading] = useState(false); // State untuk mengontrol loading button
+  const handleRedirect = (user, isFirstLogin) => {
+    if (isFirstLogin) {
+      router.push("/NewUser");
+      return;
+    }
 
-  // Mapping role ke halaman
-  const roleRoutes = {
-    admin: "/Admin/home",
-    direktur: "/Direktur/home",
-    hrga: "/Hrga/home",
-    manager: "/Manager/home",
-    staff: "/Staff/home",
+    // Redirect berdasarkan role
+    const role = user.role.toLowerCase();
+    switch (role) {
+      case "Direktur":
+        router.push("/Direktur/home");
+        break;
+      case "Admin":
+        router.push("/Admin/home");
+        break;
+      case "Staff":
+        router.push("/Staff/home");
+        break;
+      case "HRGA":
+        router.push("/HRGA/home");
+        break;
+      case "Manager":
+        router.push("/Manager/home");
+        break;
+      default:
+        router.push("/login");
+    }
   };
 
   const handleLogin = async () => {
+    if (!username || !password) {
+      message.error("Mohon isi semua field");
+      return;
+    }
+
     setLoading(true);
     try {
-      // Panggil API login dengan username dan password
-      const response = await login({ username, password });
+      const response = await login(username, password);
 
-      // Simpan token dan role ke localStorage
-      localStorage.setItem("auth_token", response.data.token);
-      const userRole = response.data.role;
-
-      // Redirect berdasarkan role
-      const redirectRoute = roleRoutes[userRole] || "/default-home";
-      if (redirectRoute) {
-        message.success("Login berhasil!");
-        router.push(redirectRoute);
-      } else {
-        message.error("Role tidak dikenali!");
+      // Tampilkan pesan dari server
+      if (response.message) {
+        message.success(response.message);
       }
+
+      // Handle redirect
+      handleRedirect(response.user, response.first_login);
     } catch (error) {
-      // Error handling berdasarkan status
-      if (error.message.includes("401")) {
-        message.error("Username atau password salah.");
-      } else if (error.message.includes("403")) {
-        message.error("Akses ditolak! Hubungi administrator.");
-      } else {
-        message.error("Terjadi kesalahan. Coba lagi nanti.");
-      }
+      message.error(error.message);
     } finally {
       setLoading(false);
     }
   };
-
 
   return (
     <div>
@@ -83,7 +92,7 @@ export default function Login() {
             <div className="flex flex-col">
               <label className="text-sm font-semibold">Username</label>
               <input
-                type="username"
+                type="text"
                 className="p-2 border rounded text-sm"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
@@ -102,7 +111,12 @@ export default function Login() {
                 disabled={loading}
               />
             </div>
-            <Button type="primary" loading={loading} onClick={handleLogin}>
+            <Button
+              type="primary"
+              loading={loading}
+              onClick={handleLogin}
+              className="w-full"
+            >
               {loading ? "Loading..." : "Login"}
             </Button>
           </div>
