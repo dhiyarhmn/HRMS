@@ -26,7 +26,7 @@ export default function NewUser() {
     <div>
       <div className="flex w-full h-dvh justify-center items-center bg-first">
         <BackBtn
-          onClick={() => router.push("/")}
+          onClick={() => router.push("/login")}
           className={"fixed top-0 left-0 mt-4 ml-4"}
         />
         <div className="flex w-1/2 h-auto">

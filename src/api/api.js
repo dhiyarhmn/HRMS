@@ -1,49 +1,87 @@
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+// api/api.js
+import axios from "axios";
 
-// Helper untuk request API
-const apiRequest = async (endpoint, method = "GET", body = null, headers = {}) => {
-  const options = {
-    method,
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-      ...headers,
-    },
-  };
-  if (body) options.body = JSON.stringify(body);
+const api = axios.create({
+  baseURL: "http://127.0.0.1:8000/api",
+  headers: {
+    "Content-Type": "application/json",
+    Accept: "application/json",
+    "X-Requested-With": "XMLHttpRequest",
+  },
+});
 
-  const response = await fetch(`${BASE_URL}${endpoint}`, options);
-
-  if (!response.ok) {
-    throw new Error(`Error ${response.status}: ${response.statusText}`);
+// Request interceptor
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
   }
+);
 
-  return response.json();
+// Response interceptor
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      window.location.href = "/login";
+    }
+    return Promise.reject(error);
+  }
+);
+
+export const login = async (username, password) => {
+  try {
+    const response = await api.post("/login", {
+      username,
+      password,
+    });
+
+    const { message, data } = response.data;
+
+    if (data.user && data.user.token) {
+      localStorage.setItem("token", data.user.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+    }
+
+    return {
+      message,
+      user: data.user,
+      first_login: data.first_login,
+    };
+  } catch (error) {
+    if (error.response?.data?.message) {
+      throw new Error(error.response.data.message);
+    }
+    throw new Error("Login failed. Please try again.");
+  }
 };
 
-// Fungsi-fungsi API berdasarkan endpoint
-export const login = (data) => apiRequest("/login", "POST", data);
-export const logout = () => {
-  localStorage.removeItem("auth_token");
+export const logout = async () => {
+  try {
+    await api.post("/logout");
+  } catch (error) {
+    console.error("Logout error:", error);
+  } finally {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+  }
 };
 
+export const checkAuthUser = async () => {
+  try {
+    const response = await api.get("/userSession");
+    return response.data.data;
+  } catch (error) {
+    throw error.response?.data || error;
+  }
+};
 
-// Users
-export const getUsers = () => apiRequest("/users");
-export const getUserById = (id) => apiRequest(`/user/${id}`);
-export const createUser = (data) => apiRequest("/user", "POST", data);
-export const updateUser = (id, data) => apiRequest(`/user/${id}`, "PUT", data);
-export const deleteUser = (id) => apiRequest(`/user/${id}`, "DELETE");
-
-// Roles
-export const getRoles = () => apiRequest("/roles");
-export const createRole = (data) => apiRequest("/role", "POST", data);
-export const getRoleById = (id) => apiRequest(`/role/${id}`);
-export const updateRole = (id, data) => apiRequest(`/role/${id}`, "PUT", data);
-export const deleteRole = (id) => apiRequest(`/role/${id}`, "DELETE");
-
-// Absences
-export const createAbsence = (data) => apiRequest("/absence", "POST", data);
-export const getAbsenceById = (id) => apiRequest(`/absence/${id}`);
-export const updateAbsence = (id, data) => apiRequest(`/absence/${id}`, "PUT", data);
-export const deleteAbsence = (id) => apiRequest(`/absence/${id}`, "DELETE");
+export default api;
