@@ -1,18 +1,16 @@
 "use client";
-import Navbar from "@/components/navbar";
+import FormPengajuanLembur from "@/components/formPengajuanLembur";
+import Navbar from "@/components/Navbar/navbar";
 import Navigation from "@/components/navigation";
-import Image from "next/image";
-import dihi from "@/public/logo-dihi.png";
-import { useState } from "react";
+import Tabelhpl from "@/components/tabelhpl";
 import {
+  CalendarOutlined,
+  CheckOutlined,
   PlusOutlined,
   UnorderedListOutlined,
-  CheckOutlined,
-  CalendarOutlined
 } from "@ant-design/icons";
-import Tabelhpl from "@/components/tabelhpl";
-import FormPengajuanLembur from "@/components/formPengajuanLembur";
 import { Card } from "antd";
+import { useState } from "react";
 
 export default function cuti() {
   const [selectedAbsensi, setSelectedAbsensi] = useState("1");
@@ -54,8 +52,7 @@ export default function cuti() {
             <button
               className="btn bg-second"
               onClick={() =>
-                (window.location.href =
-                  "/hrga/lembur/verifikasiLembur")
+                (window.location.href = "/hrga/lembur/verifikasiLembur")
               }
             >
               <CheckOutlined />
@@ -64,8 +61,7 @@ export default function cuti() {
             <button
               className="btn bg-second"
               onClick={() =>
-                (window.location.href =
-                  "/hrga/lembur/listDataLembur")
+                (window.location.href = "/hrga/lembur/listDataLembur")
               }
             >
               <UnorderedListOutlined />
@@ -73,10 +69,7 @@ export default function cuti() {
             </button>
             <button
               className="btn bg-second"
-              onClick={() =>
-                (window.location.href =
-                  "/hrga/lembur/calendar")
-              }
+              onClick={() => (window.location.href = "/hrga/lembur/calendar")}
             >
               <CalendarOutlined />
               Calendar
@@ -94,73 +87,61 @@ export default function cuti() {
             <div className="overflow-x-auto w-full">
               <Tabelhpl detail={showmodal} />
               <dialog
-                  id={"modal4"}
-                  className="modal modal-bottom sm:modal-middle"
-                >
-                  {selectedRecord && (
-                    <Card
-                      title="Detail"
-                      style={{
-                        width: "100%",
-                        maxWidth: 500,
-                      }}
-                      className="w-full md:max-w-md"
-                    >
-                      <form method="dialog">
-                        <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
-                          ✕
-                        </button>
-                      </form>
-                      <div className="p-2 flex flex-wrap">
-                        <div className="w-full flex">
-                          <div className="w-1/3 font-semibold">
-                            Tanggal Pengajuan
-                          </div>
-                          <div className="w-1/12 text-center">:</div>
-                          <div className="w-7/12">
-                            {selectedRecord.tanggalPengajuan}
-                          </div>
+                id={"modal4"}
+                className="modal modal-bottom sm:modal-middle"
+              >
+                {selectedRecord && (
+                  <Card
+                    title="Detail"
+                    style={{
+                      width: "100%",
+                      maxWidth: 500,
+                    }}
+                    className="w-full md:max-w-md"
+                  >
+                    <form method="dialog">
+                      <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+                        ✕
+                      </button>
+                    </form>
+                    <div className="p-2 flex flex-wrap">
+                      <div className="w-full flex">
+                        <div className="w-1/3 font-semibold">
+                          Tanggal Pengajuan
                         </div>
-                        <div className="w-full flex">
-                          <div className="w-1/3 font-semibold">
-                          Start Time
-                          </div>
-                          <div className="w-1/12 text-center">:</div>
-                          <div className="w-7/12">
-                            {selectedRecord.startTime}
-                          </div>
-                        </div>
-                        <div className="w-full flex">
-                          <div className="w-1/3 font-semibold">
-                          End Time
-                          </div>
-                          <div className="w-1/12 text-center">:</div>
-                          <div className="w-7/12">
-                            {selectedRecord.endTime}
-                          </div>
-                        </div>
-                        <div className="w-full flex">
-                          <div className="w-1/3 font-semibold">
-                          Total Hour
-                          </div>
-                          <div className="w-1/12 text-center">:</div>
-                          <div className="w-7/12">
-                            {selectedRecord.totalHour}
-                          </div>
+                        <div className="w-1/12 text-center">:</div>
+                        <div className="w-7/12">
+                          {selectedRecord.tanggalPengajuan}
                         </div>
                       </div>
-                      <div className="modal-action">
-                        <button
-                          className="btn"
-                          onClick={() =>
-                            document.getElementById(`modal4`).close()
-                          }
-                        >
-                          Close
-                        </button>
+                      <div className="w-full flex">
+                        <div className="w-1/3 font-semibold">Start Time</div>
+                        <div className="w-1/12 text-center">:</div>
+                        <div className="w-7/12">{selectedRecord.startTime}</div>
                       </div>
-                    </Card>
-                  )}
+                      <div className="w-full flex">
+                        <div className="w-1/3 font-semibold">End Time</div>
+                        <div className="w-1/12 text-center">:</div>
+                        <div className="w-7/12">{selectedRecord.endTime}</div>
+                      </div>
+                      <div className="w-full flex">
+                        <div className="w-1/3 font-semibold">Total Hour</div>
+                        <div className="w-1/12 text-center">:</div>
+                        <div className="w-7/12">{selectedRecord.totalHour}</div>
+                      </div>
+                    </div>
+                    <div className="modal-action">
+                      <button
+                        className="btn"
+                        onClick={() =>
+                          document.getElementById(`modal4`).close()
+                        }
+                      >
+                        Close
+                      </button>
+                    </div>
+                  </Card>
+                )}
               </dialog>
             </div>
           </div>

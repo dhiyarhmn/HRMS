@@ -1,23 +1,11 @@
 "use client";
-import React, { useState } from "react";
-import Navbar from "@/components/navbar";
-import NavigationHRGA from "@/components/navigationHRGA";
-import RoomForm from "@/components/roomform";
-import room from "@/public/room-1.jpeg";
-import Image from "next/image";
-import TabelApproval from "@/components/tabelApproval";
-import { Modal } from "antd";
+import TabelApproval from "@/components/HRGA/approval/tabelApproval";
+import NavigationHRGA from "@/components/HRGA/navigation/navigationHRGA";
+import Navbar from "@/components/Navbar/navbar";
+import { Button, message, Modal } from "antd";
+import { useState } from "react";
 
-export default function Ruangan() {
-  const links = [
-    { href: "/home", text: "Home" },
-    { href: "/cuti", text: "Cuti" },
-    { href: "/lembur", text: "Lembur" },
-    { href: "/bookroom", text: "Ruangan" },
-    { href: "/gaji", text: "Gaji" },
-    { href: "/HRGA/approval", text: "Approval" },
-  ];
-
+export default function Approval() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null); // State untuk menyimpan data detail
 
@@ -26,18 +14,31 @@ export default function Ruangan() {
     setIsModalOpen(true);
   };
 
-  const handleOk = () => {
-    setIsModalOpen(false);
-  };
-
   const handleCancel = () => {
     setIsModalOpen(false);
   };
+
+  const handleApproval = (isApproved) => {
+    const action = isApproved
+      ? message.success(`Peminjaman ruangan disetujui`)
+      : message.error(`Peminjaman ruangan ditolak`);
+    setIsModalOpen(false);
+
+    // Lakukan aksi tambahan di sini, seperti mengirim data ke API
+    // Contoh:
+    // fetch('/api/approval', {
+    //   method: 'POST',
+    //   body: JSON.stringify({
+    //     id: selectedRecord.id,
+    //     approved: isApproved
+    //   }),
+    // });
+  };
+
   return (
     <div>
-      <Navbar />
+      <Navbar href={"/HRGA/home"} />
       <NavigationHRGA
-        links={links}
         headerBg="flex mt-8 bg-transparent"
         navigationBg="bg-third"
       />
@@ -51,20 +52,42 @@ export default function Ruangan() {
       <Modal
         title="Detail Data"
         open={isModalOpen}
-        onOk={handleOk}
         onCancel={handleCancel}
+        footer={[
+          <Button
+            key="reject"
+            type="primary"
+            danger
+            onClick={() => handleApproval(false)}
+          >
+            Tolak
+          </Button>,
+          <Button
+            key="approve"
+            type="primary"
+            onClick={() => handleApproval(true)}
+          >
+            Setujui
+          </Button>,
+        ]}
         width={600}
       >
         {selectedRecord && (
           <div>
             <p>
-              <strong>Name:</strong> {selectedRecord.name}
+              <strong>Nama:</strong> {selectedRecord.nama}
             </p>
             <p>
-              <strong>Age:</strong> {selectedRecord.age}
+              <strong>Divisi:</strong> {selectedRecord.divisi}
             </p>
             <p>
-              <strong>Address:</strong> {selectedRecord.address}
+              <strong>Ruangan:</strong> {selectedRecord.ruangan}
+            </p>
+            <p>
+              <strong>Hari:</strong> {selectedRecord.hari}
+            </p>
+            <p>
+              <strong>Jam:</strong> {selectedRecord.jam}
             </p>
           </div>
         )}

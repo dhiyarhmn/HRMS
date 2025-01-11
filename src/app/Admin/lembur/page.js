@@ -1,18 +1,10 @@
 "use client";
-import Navbar from "@/components/navbar";
-import Navigation from "@/components/navigation";
-import Image from "next/image";
-import dihi from "@/public/logo-dihi.png";
-import { useState } from "react";
-import {
-  PlusOutlined,
-  UnorderedListOutlined,
-  CheckOutlined,
-  CalendarOutlined,
-} from "@ant-design/icons";
-import Tabelhpl from "@/components/tabelhpl";
-import FormPengajuanLembur from "@/components/formPengajuanLembur";
 import Calendar from "@/components/calendar2";
+import FormPengajuanLembur from "@/components/formPengajuanLembur";
+import Navbar from "@/components/Navbar/navbar";
+import Navigation from "@/components/navigation";
+import { UnorderedListOutlined } from "@ant-design/icons";
+import { useState } from "react";
 
 export default function lembur() {
   const [selectedAbsensi, setSelectedAbsensi] = useState("1");

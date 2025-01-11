@@ -14,13 +14,9 @@ const Profile = () => {
     <Popover
       content={[
         <div className="flex flex-col w-full font-medium divide-y-2 gap-y-2">
-          <a href="/Admin/generate" className="hover:bg-red-300">
-            Generate
-          </a>
           <a href="/profile" className="hover:bg-red-300">
             Edit Profile
           </a>
-          
         </div>,
         <div className="flex justify-center mt-4">
           <a
@@ -45,7 +41,10 @@ const Profile = () => {
       placement="bottomRight"
       className="hover:cursor-pointer"
     >
-      <Button type="none" className="p-5 rounded-full bg-third hover:bg-[#A7DCA5]">
+      <Button
+        type="none"
+        className="p-5 rounded-full bg-third hover:bg-[#A7DCA5]"
+      >
         <div className="flex items-center gap-x-4">
           <Avatar icon={<UserOutlined />} />
           <span>Satria</span>

@@ -1,7 +1,7 @@
 "use client";
-import Navbar from "@/components/navbar";
+import Navbar from "@/components/Navbar/navbar";
 import Navigation from "@/components/navigation";
-import RoomForm from "@/components/roomform";
+import RoomForm from "@/components/Staff/ruangan/roomform";
 import room from "@/public/room-1.jpeg";
 import Image from "next/image";
 

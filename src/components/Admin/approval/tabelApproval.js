@@ -6,13 +6,36 @@ import Highlighter from "react-highlight-words";
 const data = [
   {
     key: "1",
-    name: "John Brown",
-    age: 32,
-    address: "New York No. 1 Lake Park",
+    nama: "John Brown",
+    divisi: 32,
+    ruangan: "E101",
+    hari: "Senin, 1 Januari 2025",
+    jam: "08:00 - 10:00",
   },
-  { key: "2", name: "Joe Black", age: 42, address: "London No. 1 Lake Park" },
-  { key: "3", name: "Jim Green", age: 32, address: "Sydney No. 1 Lake Park" },
-  { key: "4", name: "Jim Red", age: 32, address: "London No. 2 Lake Park" },
+  {
+    key: "2",
+    nama: "Joe Black",
+    divisi: 42,
+    ruangan: "E102",
+    hari: "Senin, 1 Januari 2025",
+    jam: "10:00 - 11:00",
+  },
+  {
+    key: "3",
+    nama: "Jim Green",
+    divisi: 32,
+    ruangan: "E103",
+    hari: "Senin, 1 Januari 2025",
+    jam: "11:00 - 12:00",
+  },
+  {
+    key: "4",
+    nama: "Jim Red",
+    divisi: 32,
+    ruangan: "E104",
+    hari: "Selasa, 2 Januari 2025",
+    jam: "09:00 - 10:00",
+  },
 ];
 
 const TabelApproval = ({ detail }) => {
@@ -92,22 +115,34 @@ const TabelApproval = ({ detail }) => {
 
   const columns = [
     {
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
-      ...getColumnSearchProps("name"),
+      title: "Nama",
+      dataIndex: "nama",
+      key: "nama",
+      ...getColumnSearchProps("nama"),
     },
     {
-      title: "Age",
-      dataIndex: "age",
-      key: "age",
-      ...getColumnSearchProps("age"),
+      title: "Divisi",
+      dataIndex: "divisi",
+      key: "divisi",
+      ...getColumnSearchProps("divisi"),
     },
     {
-      title: "Address",
-      dataIndex: "address",
-      key: "address",
-      ...getColumnSearchProps("address"),
+      title: "Ruangan",
+      dataIndex: "ruangan",
+      key: "ruangan",
+      ...getColumnSearchProps("ruangan"),
+    },
+    {
+      title: "Hari",
+      dataIndex: "hari",
+      key: "hari",
+      ...getColumnSearchProps("hari"),
+    },
+    {
+      title: "Jam",
+      dataIndex: "jam",
+      key: "jam",
+      ...getColumnSearchProps("jam"),
     },
     {
       title: "Action",

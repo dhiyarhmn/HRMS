@@ -1,12 +1,10 @@
 "use client";
-import Navbar from "@/components/navbar";
+import Navbar from "@/components/Navbar/navbar";
 import Navigation from "@/components/navigation";
-import Image from "next/image";
-import dihi from "@/public/logo-dihi.png";
-import { useState } from "react";
-import { ArrowLeftOutlined } from "@ant-design/icons";
 import Tabelhpl from "@/components/tabelhpl";
+import { ArrowLeftOutlined } from "@ant-design/icons";
 import { Card } from "antd";
+import { useState } from "react";
 
 export default function detailListLembur() {
   // const [selectedData, setSelectedData] = useState(null);
@@ -48,7 +46,9 @@ export default function detailListLembur() {
           <div className="w-full flex justify-between items-center">
             <button
               className="btn bg-second"
-              onClick={() => (window.location.href = "/Direktur/lembur/listDataLembur")}
+              onClick={() =>
+                (window.location.href = "/Direktur/lembur/listDataLembur")
+              }
             >
               <ArrowLeftOutlined />
               Kembali
@@ -145,27 +145,19 @@ export default function detailListLembur() {
                           </div>
                         </div>
                         <div className="w-full flex">
-                          <div className="w-1/3 font-semibold">
-                            Start Time
-                          </div>
+                          <div className="w-1/3 font-semibold">Start Time</div>
                           <div className="w-1/12 text-center">:</div>
                           <div className="w-7/12">
                             {selectedRecord.startTime}
                           </div>
                         </div>
                         <div className="w-full flex">
-                          <div className="w-1/3 font-semibold">
-                            End Time
-                          </div>
+                          <div className="w-1/3 font-semibold">End Time</div>
                           <div className="w-1/12 text-center">:</div>
-                          <div className="w-7/12">
-                            {selectedRecord.endTime}
-                          </div>
+                          <div className="w-7/12">{selectedRecord.endTime}</div>
                         </div>
                         <div className="w-full flex">
-                          <div className="w-1/3 font-semibold">
-                            Total Hour
-                          </div>
+                          <div className="w-1/3 font-semibold">Total Hour</div>
                           <div className="w-1/12 text-center">:</div>
                           <div className="w-7/12">
                             {selectedRecord.totalHour}

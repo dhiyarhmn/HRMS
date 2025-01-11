@@ -1,9 +1,9 @@
 "use client";
-import React, { useState } from "react";
-import Navbar from "@/components/navbar";
+import Navbar from "@/components/Navbar/navbar";
 import Navigation from "@/components/navigation";
 import Tabel from "@/components/tabel";
 import { Modal } from "antd";
+import { useState } from "react";
 
 export default function Gaji() {
   const links = [

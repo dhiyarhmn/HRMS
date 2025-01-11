@@ -1,39 +1,18 @@
 "use client";
-import Navigation from "@/components/navigation";
-import Profile from "@/components/profile";
-import dihi from "@/public/logo-dihi.png";
-import Image from "next/image";
-import Carousel from "@/components/carousel";
+import Navbar from "@/components/Navbar/navbar";
+import HomeStaff from "@/components/Staff/home/homeStaff";
+import NavigationStaff from "@/components/Staff/navigation/navigationStaff";
 
 export default function Home() {
-  const links = [
-    { href: "/Staff/home", text: "Home" },
-    { href: "/Staff/cuti", text: "Cuti" },
-    { href: "/Staff/lembur", text: "Lembur" },
-    { href: "/Staff/ruangan", text: "Ruangan" },
-    
-  ];
   return (
     <div>
-      <header>
-        <div className="flex w-full h-20 items-center justify-between px-8 bg-first">
-          <a
-            href="/home"
-            className="flex justify-center items-center w-auto h-12 px-4 rounded-full cursor-pointer"
-          >
-            <Image src={dihi} className="w-12 h-12" />
-            <span className="font-semibold">HR Management System</span>
-          </a>
-          <div className="flex justify-center items-center w-auto h-20 rounded-full">
-            <Profile />
-          </div>
-        </div>
-      </header>
-      <Navigation links={links} />
+      <Navbar href={"/Staff/home"} />
+      <NavigationStaff
+        headerBg="flex mt-8 bg-transparent"
+        navigationBg="bg-third"
+      />
       <section>
-        <div className="flex flex-col w-full h-[70dvh] gap-y-8 mt-6 p-8">
-          <Carousel />
-        </div>
+        <HomeStaff />
       </section>
     </div>
   );

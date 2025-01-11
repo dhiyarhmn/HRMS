@@ -1,15 +1,8 @@
 "use client";
-import Navbar from "@/components/navbar";
-import Navigation from "@/components/navigation";
-import Image from "next/image";
-import dihi from "@/public/logo-dihi.png";
-import {
-  PlusOutlined,
-  UnorderedListOutlined,
-  CheckOutlined,
-  CalendarOutlined,
-} from "@ant-design/icons";
 import Calendar from "@/components/calendar2";
+import Navbar from "@/components/Navbar/navbar";
+import Navigation from "@/components/navigation";
+import { CheckOutlined, UnorderedListOutlined } from "@ant-design/icons";
 
 export default function listData() {
   const links = [

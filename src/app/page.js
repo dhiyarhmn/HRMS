@@ -1,149 +1,110 @@
 "use client";
-import Image from "next/image";
+import React, { useState } from "react";
 import dihi from "@/public/logo-dihi.png";
-import bg1 from "@/public/bg-1.jpg";
-import bg2 from "@/public/bg-2.jpg";
-import bg3 from "@/public/bg-3.jpg";
-import satria from "@/public/satria.gif";
-import { Breadcrumb, Layout, Menu, theme, Button } from "antd";
-import Navigation from "@/components/navigation";
+import Image from "next/image";
+import LoginButton from "@/components/LandingPageComponents/LoginButton/loginbutton";
+import LandingCard from "@/components/LandingPageComponents/LandingCard/landingcard";
+import booking from "@/public/booking.gif";
+import absence from "@/public/absence.gif";
+import salary from "@/public/salary.gif";
+import bg1 from "@/public/bg-2.jpg";
+import { useRouter } from "next/navigation";
 
-export default function Home() {
-  const { Header, Content, Footer } = Layout;
+export default function LandingPage() {
+  const router = useRouter();
+
+  // Simulasi status login
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // Ubah ini menjadi sistem autentikasi Anda
+
+  const handleLogin = () => {
+    router.push("/login");
+  };
+
+  const handleCardClick = (path) => {
+    if (isLoggedIn) {
+      router.push(path);
+    } else {
+      router.push("/login");
+    }
+  };
+
   return (
-    <Layout>
-      <Header
+    <>
+      <div
+        className="flex flex-col w-full h-dvh bg-cover bg-center"
         style={{
-          position: "fixed",
-          top: 20,
-          width: "100%",
-          display: "flex",
-          alignItems: "center",
+          backgroundImage: `url(${bg1.src})`,
         }}
-        className="bg-transparent justify-center z-50"
       >
-        <div className="flex items-center z-10 bg-white h-auto gap-x-8 px-12 rounded-full shadow-2xl border-2 border-black">
-          <div className="demo-logo">
-            <Image
-              src={dihi}
-              alt="logo"
-              style={{
-                marginRight: 16,
-              }}
-              className="h-10 w-10"
-            />
-          </div>
-          <a href="#section1">Section 1</a>
-          <a href="#section2">Section 2</a>
-          <a href="#section3">Section 3</a>
-          <a
-            aria-describedby="get-started"
-            className="flex cursor-pointer items-center justify-center w-auto px-6 py-2.5 text-center text-white duration-200 bg-[#027D01] border-2 border-black rounded-full hover:bg-transparent hover:border-black hover:text-black focus:outline-none focus-visible:outline-black text-sm focus-visible:ring-black"
-            href="/login"
-          >
-            Get Started!
-          </a>
-        </div>
-      </Header>
-      <Content className="flex flex-col h-auto">
-        <div id="section1" className="flex w-full h-dvh relative">
-          <Image src={bg2} className="w-full h-auto" />
-          {/* <div className="pattern w-full h-auto"></div> */}
-          {/* Overlay Hitam di Atas Image */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent"></div>
-          <div className="flex items-center absolute z-10 w-full h-dvh pl-12">
-            <div className="flex flex-col gap-y-8">
-              <p className="font-bold text-9xl text-white">JANGAN</p>
-              <p className="font-bold text-9xl text-white">GIF.</p>
+        <nav className="flex grow-0 top-0 w-full h-auto p-4">
+          <div className="flex bg-third shadow-md w-full h-16 rounded-xl p-4 justify-between items-center">
+            <div className="flex grow-0 w-1/6 justify-start">
+              <a href="/" className="flex items-center">
+                <Image src={dihi} className="w-12 h-12" />
+                <span className="font-semibold">HRMS</span>
+              </a>
+            </div>
+            <div className="flex grow w-4/6 justify-center font-semibold">HR Management System</div>
+            <div className="flex grow-0 w-1/6 justify-end">
+              <LoginButton onClick={handleLogin} />
             </div>
           </div>
-        </div>
-
-        <div id="section2" className="flex w-full h-dvh relative">
-          <Image src={bg3} className="w-full h-auto" />
-          <div className="absolute h-1/2 inset-0 bg-gradient-to-b from-black to-transparent"></div>
-          <div className="absolute h-full inset-0 bg-gradient-to-t from-black to-transparent"></div>
-          {/* <div className="pattern w-full h-auto"></div> */}
-          <div className="flex items-center absolute w-full h-dvh gap-x-12 p-20">
-            <div className="card card-compact bg-base-100 w-1/3 shadow-xl border-2 border-black hover:scale-105 duration-300 cursor-pointer">
-              <figure>
-                <Image src={satria} />
-              </figure>
-              <div className="card-body">
-                <h2 className="card-title">For Sale!</h2>
-                <p>Gocap bonus kandang</p>
-                <div className="card-actions justify-end">
-                  <button className="btn btn-primary">Perbudak Sekarang</button>
-                </div>
-              </div>
+        </nav>
+        <section className="flex flex-col h-full justify-center items-center w-full p-4">
+          <p className="font-bold text-4xl">
+            Fitur yang Tersedia di HRMS
+          </p>
+          <div className="flex justify-around w-full p-12">
+            <div
+              className="flex w-auto h-auto p-12 bg-first shadow-lg border-8 border-white rounded-s-badge rounded-br-badge cursor-pointer"
+              onClick={() => handleCardClick("/cuti")}
+            >
+              <LandingCard
+                title="Absensi & Cuti"
+                description="Lorem ipsum dolor sit amet"
+                imageUrl={absence}
+              />
             </div>
-            <div className="card card-compact bg-base-100 w-1/3 shadow-xl border-2 border-black hover:scale-105 duration-300 cursor-pointer">
-              <figure>
-                <Image src={satria} />
-              </figure>
-              <div className="card-body">
-                <h2 className="card-title">For Sale!</h2>
-                <p>Gocap bonus kandang</p>
-                <div className="card-actions justify-end">
-                  <button className="btn btn-primary">Perbudak Sekarang</button>
-                </div>
-              </div>
+            <div
+              className="flex w-auto h-auto p-12 bg-second shadow-lg border-8 border-white rounded-badge cursor-pointer"
+              onClick={() => handleCardClick("/ruangan")}
+            >
+              <LandingCard
+                title="Booking Ruangan"
+                description="Lorem ipsum dolor sit amet"
+                imageUrl={booking}
+                className={"w-72 h-96"}
+              />
             </div>
-            <div className="card card-compact bg-base-100 w-1/3 shadow-xl border-2 border-black hover:scale-105 duration-300 cursor-pointer">
-              <figure>
-                <Image src={satria} />
-              </figure>
-              <div className="card-body">
-                <h2 className="card-title">For Sale!</h2>
-                <p>Gocap bonus kandang</p>
-                <div className="card-actions justify-end">
-                  <button className="btn btn-primary">Perbudak Sekarang</button>
-                </div>
-              </div>
+            <div
+              className="flex w-auto h-auto p-12 bg-third shadow-lg border-8 border-white rounded-e-badge rounded-tl-badge cursor-pointer"
+              onClick={() => handleCardClick("/gaji")}
+            >
+              <LandingCard
+                title="Slip Gaji"
+                description="Lorem ipsum dolor sit amet"
+                imageUrl={salary}
+              />
             </div>
           </div>
-        </div>
-
-        <div id="section3" className="flex w-full h-dvh relative">
-          <Image src={bg1} className="w-full h-auto" />
-          <div className="absolute inset-0 bg-gradient-to-b from-black to-transparent"></div>
-          {/* <div className="pattern w-full h-auto"></div> */}
-          <div className="flex absolute w-full h-dvh">
-            <div className="flex w-1/2 h-dvh items-center justify-center px-20">
-              <p className="bg-white rounded-full p-8">
-                (Section 3) Lorem ipsum dolor sit amet consectetur adipisicing
-                elit. Deserunt perspiciatis dolore nostrum eaque inventore fuga.
-                Suscipit ipsam minus sit omnis dolorum perspiciatis sed itaque
-                natus corporis quas, aliquam porro officiis?
+        </section>
+        <footer className="flex grow-0 bottom-0 w-full h-auto px-4">
+          <div className="flex flex-col grow-0 bottom-0 w-full h-24 bg-third justify-center items-center rounded-t-xl shadow-md gap-y-4">
+            <nav className="grid grid-flow-col gap-8 font-semibold">
+              <a className="link link-hover">About Us</a>
+              <a className="link link-hover">Contact Us</a>
+              <a className="link link-hover">FAQ</a>
+              <a className="link link-hover">Privacy & Policy</a>
+            </nav>
+            <aside>
+              <p className="font-light">
+                Hak Cipta © {new Date().getFullYear()} - All right reserved by
+                PT Daekyung Indah Heavy Industry
               </p>
-            </div>
-            <div className="flex w-1/2 h-dvh justify-center items-center">
-              <div className="grid grid-cols-2 grid-rows-2 gap-4 w-1/2 h-1/2">
-                <div className="flex justify-center items-center bg-gray-200 rounded-r-[60px] rounded-bl-[60px]">
-                  <Image src={dihi} alt="logo" width={100} height={50} />
-                </div>
-                <div className="flex justify-center items-center bg-gray-200 rounded-l-[60px] rounded-br-[60px]">
-                  <Image src={dihi} alt="logo" width={100} height={50} />
-                </div>
-                <div className="flex row-start-2 justify-center items-center bg-gray-200 rounded-r-[60px] rounded-tl-[60px]">
-                  <Image src={dihi} alt="logo" width={100} height={50} />
-                </div>
-                <div className="flex row-start-2 justify-center items-center bg-gray-200 rounded-l-[60px] rounded-tr-[60px]">
-                  <Image src={dihi} alt="logo" width={100} height={50} />
-                </div>
-              </div>
-            </div>
+            </aside>
           </div>
-        </div>
-      </Content>
-      <Footer
-        style={{
-          textAlign: "center",
-        }}
-        className="bg-transparent"
-      >
-        PT Daekyung Indah Heavy Industry ©{new Date().getFullYear()} Created by Fikri
-      </Footer>
-    </Layout>
+        </footer>
+      </div>
+    </>
   );
 }

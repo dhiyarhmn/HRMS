@@ -11,20 +11,36 @@ const RoomForm = () => {
   };
   const handleOk = () => {
     setIsModalOpen(false);
-    console.log("Checked: ", checked);
+    console.log("Jadwal yang dipilih: ", checked);
   };
 
   const handleCancel = () => {
     setIsModalOpen(false);
     setChecked({});
-    
   };
-  const handleCheckboxChange = (index) => {
+
+  const handleCheckboxChange = (time) => {
     setChecked((prev) => ({
       ...prev,
-      [index]: !prev[index],
+      [time]: !prev[time],
     }));
   };
+
+  // Membuat jadwal dari 08:00 hingga 16:00 dengan rentang 1 jam
+  const generateSchedule = () => {
+    const startHour = 8; // 08:00
+    const endHour = 16; // 16:00
+    const schedule = [];
+    for (let hour = startHour; hour < endHour; hour++) {
+      const startTime = `${String(hour).padStart(2, "0")}:00`;
+      const endTime = `${String(hour + 1).padStart(2, "0")}:00`;
+      schedule.push(`${startTime} - ${endTime}`);
+    }
+    return schedule;
+  };
+
+  const schedule = generateSchedule();
+
   return (
     <>
       <Button type="primary" onClick={showModal} className="rounded-full">
@@ -38,28 +54,31 @@ const RoomForm = () => {
         width={900}
       >
         <div className="flex gap-x-8 py-8">
-          <Image src={room} className="w-80 rounded-lg" />
+          <Image src={room} className="w-80 rounded-lg" alt="Room" />
           <div className="flex flex-col">
             <p>Nama Ruangan: E101</p>
-            <p>Ketersediaan: <span className="font-bold text-green-500">Tersedia</span></p>
+            <p>
+              Ketersediaan:{" "}
+              <span className="font-bold text-green-500">Tersedia</span>
+            </p>
 
-            <div className="grid grid-cols-5 grid-rows-5 gap-4 mt-8">
-              {Array.from({ length: 11 }, (_, index) => (
+            <div className="grid grid-cols-3 gap-4 mt-8">
+              {schedule.map((time, index) => (
                 <label key={index} className="relative">
                   <input
                     type="checkbox"
-                    checked={checked[index] || false}
-                    onChange={() => handleCheckboxChange(index)}
+                    checked={checked[time] || false}
+                    onChange={() => handleCheckboxChange(time)}
                     className="hidden"
                   />
                   <div
-                    className={`w-20 text-center cursor-pointer rounded-lg p-2 ${
-                      checked[index]
+                    className={`w-full text-center cursor-pointer rounded-lg p-2 ${
+                      checked[time]
                         ? "duration-300 bg-blue-600 text-white"
                         : "duration-300 bg-gray-200 text-black"
                     }`}
                   >
-                    {index + 1}
+                    {time}
                   </div>
                 </label>
               ))}
@@ -70,4 +89,5 @@ const RoomForm = () => {
     </>
   );
 };
+
 export default RoomForm;
