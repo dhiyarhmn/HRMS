@@ -47,75 +47,64 @@ export const ManualForm = () => (
     style={{ width: "100%" }}
   >
     <Form.Item
-      label="Input"
-      name="Input"
+      label="NIK"
+      name="NIK"
       rules={[{ required: true, message: "Please input!" }]}
     >
-      <Input />
+      <InputNumber style={{ width: "100%" }} placeholder="****************"/>
     </Form.Item>
 
     <Form.Item
-      label="InputNumber"
-      name="InputNumber"
+      label="Nama"
+      name="Nama"
       rules={[{ required: true, message: "Please input!" }]}
     >
-      <InputNumber style={{ width: "100%" }} />
+      <Input placeholder="John Doe"/>
     </Form.Item>
 
     <Form.Item
-      label="TextArea"
-      name="TextArea"
+      label="Id Role"
+      name="Id Role"
       rules={[{ required: true, message: "Please input!" }]}
     >
-      <Input.TextArea />
+      <InputNumber style={{ width: "100%" }} placeholder="1"/>
     </Form.Item>
 
     <Form.Item
-      label="Mentions"
-      name="Mentions"
+      label="Id Departemen"
+      name="Id Departemen"
       rules={[{ required: true, message: "Please input!" }]}
     >
-      <Mentions />
+      <InputNumber style={{ width: "100%" }} placeholder="1"/>
     </Form.Item>
 
     <Form.Item
-      label="Select"
-      name="Select"
-      rules={[{ required: true, message: "Please input!" }]}
+      label="Posisi"
+      name="Posisi"
+      rules={[
+        {
+          required: true,
+          message: "Please input!",
+        },
+      ]}
     >
-      <Select />
+      <Select placeholder="Staff"/>
     </Form.Item>
 
     <Form.Item
-      label="Cascader"
-      name="Cascader"
+      label="Gaji"
+      name="Gaji"
       rules={[{ required: true, message: "Please input!" }]}
     >
-      <Cascader />
+      <InputNumber style={{ width: "100%" }} placeholder="1,000,000"/>
     </Form.Item>
 
     <Form.Item
-      label="TreeSelect"
-      name="TreeSelect"
-      rules={[{ required: true, message: "Please input!" }]}
-    >
-      <TreeSelect />
-    </Form.Item>
-
-    <Form.Item
-      label="DatePicker"
-      name="DatePicker"
+      label="Tanggal Masuk"
+      name="Tanggal Masuk"
       rules={[{ required: true, message: "Please input!" }]}
     >
       <DatePicker />
-    </Form.Item>
-
-    <Form.Item
-      label="RangePicker"
-      name="RangePicker"
-      rules={[{ required: true, message: "Please input!" }]}
-    >
-      <RangePicker />
     </Form.Item>
 
     <Form.Item wrapperCol={{ offset: 18, span: 18 }}>

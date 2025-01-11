@@ -1,12 +1,10 @@
 "use client";
-import Navbar from "@/components/navbar";
+import Navbar from "@/components/Navbar/navbar";
 import Navigation from "@/components/navigation";
-import { useState, useRef } from "react";
-import Image from "next/image";
-import dihi from "@/public/logo-dihi.png";
-import { ArrowLeftOutlined } from "@ant-design/icons";
 import Tabelvpc from "@/components/tabelvpc";
+import { ArrowLeftOutlined } from "@ant-design/icons";
 import { Card, Input } from "antd";
+import { useState } from "react";
 
 export default function verifikasiPengajuan() {
   const [selectedRecord, setSelectedRecord] = useState(null);
@@ -139,7 +137,7 @@ export default function verifikasiPengajuan() {
                       </div>
                       <div className="w-full mt-10">
                         <div className="font-semibold mb-2 pl-2">Notes:</div>{" "}
-                        <TextArea rows={2} placeholder="Masukkan notes"/> 
+                        <TextArea rows={2} placeholder="Masukkan notes" />
                       </div>
                       <div className="modal-action">
                         <button

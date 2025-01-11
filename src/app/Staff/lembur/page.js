@@ -1,13 +1,11 @@
 "use client";
-import Navbar from "@/components/navbar";
-import Navigation from "@/components/navigation";
-import Image from "next/image";
-import dihi from "@/public/logo-dihi.png";
-import { useState } from "react";
-import { PlusOutlined } from "@ant-design/icons";
-import Tabelhpls from "@/components/tabelhpls";
 import FormPengajuanLembur from "@/components/formPengajuanLembur";
+import Navbar from "@/components/Navbar/navbar";
+import Navigation from "@/components/navigation";
+import Tabelhpls from "@/components/tabelhpls";
+import { PlusOutlined } from "@ant-design/icons";
 import { Card } from "antd";
+import { useState } from "react";
 
 export default function cuti() {
   const [selectedAbsensi, setSelectedAbsensi] = useState("1");
@@ -19,7 +17,6 @@ export default function cuti() {
     { href: "/Staff/cuti", text: "Cuti" },
     { href: "/Staff/lembur", text: "Lembur" },
     { href: "/Staff/ruangan", text: "Ruangan" },
-    
   ];
 
   const showmodal = (record) => {

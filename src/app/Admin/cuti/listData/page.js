@@ -1,10 +1,8 @@
 "use client";
-import Navbar from "@/components/navbar";
+import Navbar from "@/components/Navbar/navbar";
 import Navigation from "@/components/navigation";
-import Image from "next/image";
-import dihi from "@/public/logo-dihi.png";
-import { ArrowLeftOutlined } from "@ant-design/icons";
 import Tabelldpc from "@/components/tabelldpc";
+import { ArrowLeftOutlined } from "@ant-design/icons";
 
 export default function listData() {
   const links = [
@@ -32,9 +30,7 @@ export default function listData() {
           <div className="w-full flex justify-between items-center">
             <button
               className="btn bg-second"
-              onClick={() =>
-                (window.location.href = "/Admin/cuti")
-              }
+              onClick={() => (window.location.href = "/Admin/cuti")}
             >
               <ArrowLeftOutlined />
               Kembali
@@ -47,7 +43,7 @@ export default function listData() {
           <div className="flex w-full justify-center">
             <div className="w-full bg-second p-4 rounded-lg">
               <div className="overflow-x-auto w-full">
-                <Tabelldpc onDetail={goToDetail}/>
+                <Tabelldpc onDetail={goToDetail} />
               </div>
             </div>
           </div>

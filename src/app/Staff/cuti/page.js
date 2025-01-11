@@ -1,15 +1,11 @@
 "use client";
-import Navbar from "@/components/navbar";
-import Navigation from "@/components/navigation";
-import Image from "next/image";
-import dihi from "@/public/logo-dihi.png";
-import { useState } from "react";
-import {
-  PlusOutlined,
-} from "@ant-design/icons";
-import Tabelhpcs from "@/components/tabelhpcs";
 import FormPengajuanCuti from "@/components/formPengajuanCuti";
+import Navbar from "@/components/Navbar/navbar";
+import Navigation from "@/components/navigation";
+import Tabelhpcs from "@/components/tabelhpcs";
+import { PlusOutlined } from "@ant-design/icons";
 import { Card } from "antd";
+import { useState } from "react";
 
 export default function cuti() {
   const [selectedAbsensi, setSelectedAbsensi] = useState("1");
@@ -21,7 +17,6 @@ export default function cuti() {
     { href: "/Staff/cuti", text: "Cuti" },
     { href: "/Staff/lembur", text: "Lembur" },
     { href: "/Staff/ruangan", text: "Ruangan" },
-    
   ];
 
   const showmodal = (record) => {
@@ -67,7 +62,7 @@ export default function cuti() {
           <div className="flex w-full justify-center">
             <div className="w-full bg-second p-4 rounded-lg">
               <div className="overflow-x-auto w-full">
-                <Tabelhpcs detail={showmodal}/>
+                <Tabelhpcs detail={showmodal} />
                 <dialog
                   id={"modal5"}
                   className="modal modal-bottom sm:modal-middle"
@@ -143,7 +138,7 @@ export default function cuti() {
                       </div>
                     </Card>
                   )}
-              </dialog>
+                </dialog>
               </div>
             </div>
           </div>

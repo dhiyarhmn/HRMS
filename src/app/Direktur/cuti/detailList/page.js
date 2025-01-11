@@ -1,16 +1,10 @@
 "use client";
-import Navbar from "@/components/navbar";
+import Navbar from "@/components/Navbar/navbar";
 import Navigation from "@/components/navigation";
-import Image from "next/image";
-import dihi from "@/public/logo-dihi.png";
-import { useState } from "react";
-import {
-  ArrowLeftOutlined,
-  InfoCircleOutlined,
-  ReloadOutlined,
-} from "@ant-design/icons";
 import Tabelhpc from "@/components/tabelhpc";
+import { ArrowLeftOutlined } from "@ant-design/icons";
 import { Card } from "antd";
+import { useState } from "react";
 
 export default function detailList() {
   const [selectedRecord, setSelectedRecord] = useState(null);

@@ -1,18 +1,16 @@
 "use client";
-import Navbar from "@/components/navbar";
+import FormPengajuanCuti from "@/components/formPengajuanCuti";
+import Navbar from "@/components/Navbar/navbar";
 import Navigation from "@/components/navigation";
-import Image from "next/image";
-import dihi from "@/public/logo-dihi.png";
-import { useState } from "react";
+import Tabelhpc from "@/components/tabelhpc";
 import {
+  CalendarOutlined,
+  CheckOutlined,
   PlusOutlined,
   UnorderedListOutlined,
-  CheckOutlined,
-  CalendarOutlined
 } from "@ant-design/icons";
-import Tabelhpc from "@/components/tabelhpc";
-import FormPengajuanCuti from "@/components/formPengajuanCuti";
 import { Card } from "antd";
+import { useState } from "react";
 
 export default function cuti() {
   const [selectedAbsensi, setSelectedAbsensi] = useState("1");
@@ -54,8 +52,7 @@ export default function cuti() {
             <button
               className="btn bg-second"
               onClick={() =>
-                (window.location.href =
-                  "/hrga/cuti/verifikasiPengajuan")
+                (window.location.href = "/hrga/cuti/verifikasiPengajuan")
               }
             >
               <CheckOutlined />
@@ -63,20 +60,14 @@ export default function cuti() {
             </button>
             <button
               className="btn bg-second"
-              onClick={() =>
-                (window.location.href =
-                  "/hrga/cuti/listData")
-              }
+              onClick={() => (window.location.href = "/hrga/cuti/listData")}
             >
               <UnorderedListOutlined />
               List Data Pegawai
             </button>
             <button
               className="btn bg-second"
-              onClick={() =>
-                (window.location.href =
-                  "/hrga/cuti/calendar")
-              }
+              onClick={() => (window.location.href = "/hrga/cuti/calendar")}
             >
               <CalendarOutlined />
               Calendar
@@ -105,77 +96,71 @@ export default function cuti() {
                 id="modal4"
                 className="modal modal-bottom sm:modal-middle"
               >
-                  {selectedRecord && (
-                    <Card
-                      title="Detail"
-                      style={{
-                        width: "100%",
-                        maxWidth: 500,
-                      }}
-                      className="w-full md:max-w-md"
-                    >
-                      <form method="dialog">
-                        <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
-                          ✕
-                        </button>
-                      </form>
-                      <div className="p-2 flex flex-wrap">
-                        <div className="w-full flex">
-                          <div className="w-1/3 font-semibold">
-                            Tanggal Pengajuan
-                          </div>
-                          <div className="w-1/12 text-center">:</div>
-                          <div className="w-7/12">
-                            {selectedRecord.tanggalPengajuan}
-                          </div>
+                {selectedRecord && (
+                  <Card
+                    title="Detail"
+                    style={{
+                      width: "100%",
+                      maxWidth: 500,
+                    }}
+                    className="w-full md:max-w-md"
+                  >
+                    <form method="dialog">
+                      <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+                        ✕
+                      </button>
+                    </form>
+                    <div className="p-2 flex flex-wrap">
+                      <div className="w-full flex">
+                        <div className="w-1/3 font-semibold">
+                          Tanggal Pengajuan
                         </div>
-                        <div className="w-full flex">
-                          <div className="w-1/3 font-semibold">
-                            Jenis Absensi
-                          </div>
-                          <div className="w-1/12 text-center">:</div>
-                          <div className="w-7/12">
-                            {selectedRecord.jenisAbsensi}
-                          </div>
-                        </div>
-                        <div className="w-full flex">
-                          <div className="w-1/3 font-semibold">
-                            Periode Awal
-                          </div>
-                          <div className="w-1/12 text-center">:</div>
-                          <div className="w-7/12">
-                            {selectedRecord.periodeAwal}
-                          </div>
-                        </div>
-                        <div className="w-full flex">
-                          <div className="w-1/3 font-semibold">
-                            Periode Akhir
-                          </div>
-                          <div className="w-1/12 text-center">:</div>
-                          <div className="w-7/12">
-                            {selectedRecord.periodeAkhir}
-                          </div>
-                        </div>
-                        <div className="w-full flex">
-                          <div className="w-1/3 font-semibold">Keterangan</div>
-                          <div className="w-1/12 text-center">:</div>
-                          <div className="w-7/12">
-                            {selectedRecord.keterangan}
-                          </div>
+                        <div className="w-1/12 text-center">:</div>
+                        <div className="w-7/12">
+                          {selectedRecord.tanggalPengajuan}
                         </div>
                       </div>
-                      <div className="modal-action">
-                        <button
-                          className="btn"
-                          onClick={() =>
-                            document.getElementById(`modal4`).close()
-                          }
-                        >
-                          Close
-                        </button>
+                      <div className="w-full flex">
+                        <div className="w-1/3 font-semibold">Jenis Absensi</div>
+                        <div className="w-1/12 text-center">:</div>
+                        <div className="w-7/12">
+                          {selectedRecord.jenisAbsensi}
+                        </div>
                       </div>
-                    </Card>
-                  )}
+                      <div className="w-full flex">
+                        <div className="w-1/3 font-semibold">Periode Awal</div>
+                        <div className="w-1/12 text-center">:</div>
+                        <div className="w-7/12">
+                          {selectedRecord.periodeAwal}
+                        </div>
+                      </div>
+                      <div className="w-full flex">
+                        <div className="w-1/3 font-semibold">Periode Akhir</div>
+                        <div className="w-1/12 text-center">:</div>
+                        <div className="w-7/12">
+                          {selectedRecord.periodeAkhir}
+                        </div>
+                      </div>
+                      <div className="w-full flex">
+                        <div className="w-1/3 font-semibold">Keterangan</div>
+                        <div className="w-1/12 text-center">:</div>
+                        <div className="w-7/12">
+                          {selectedRecord.keterangan}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="modal-action">
+                      <button
+                        className="btn"
+                        onClick={() =>
+                          document.getElementById(`modal4`).close()
+                        }
+                      >
+                        Close
+                      </button>
+                    </div>
+                  </Card>
+                )}
               </dialog>
             </div>
           </div>

@@ -1,14 +1,10 @@
 "use client";
-import Navbar from "@/components/navbar";
-import Navigation from "@/components/navigation";
-import Image from "next/image";
-import dihi from "@/public/logo-dihi.png";
-import { useState } from "react";
-import { ArrowLeftOutlined } from "@ant-design/icons";
 import Calendar from "@/components/calendar2";
+import Navbar from "@/components/Navbar/navbar";
+import Navigation from "@/components/navigation";
+import { ArrowLeftOutlined } from "@ant-design/icons";
 
 export default function calendar() {
-
   const links = [
     { href: "/home", text: "Home" },
     { href: "/Manager/cuti", text: "Cuti" },
@@ -30,18 +26,13 @@ export default function calendar() {
           <div className="w-full flex justify-between items-center">
             <button
               className="btn bg-second"
-              onClick={() =>
-                (window.location.href =
-                  "/Manager/lembur")
-              }
+              onClick={() => (window.location.href = "/Manager/lembur")}
             >
               <ArrowLeftOutlined />
               Kembali
             </button>
           </div>
-          <h2 className="text-xl font-bold text-black text-center">
-            Calendar
-          </h2>
+          <h2 className="text-xl font-bold text-black text-center">Calendar</h2>
 
           <div className="flex w-full justify-center">
             <div className="flex w-full bg-second p-4 rounded-lg">
