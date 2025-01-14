@@ -20,22 +20,21 @@ export default function Login() {
       return;
     }
 
-    // Redirect berdasarkan role
     const role = user.role.toLowerCase();
     switch (role) {
-      case "Direktur":
+      case "director":
         router.push("/Direktur/home");
         break;
-      case "Admin":
+      case "admin":
         router.push("/Admin/home");
         break;
-      case "Staff":
+      case "staff":
         router.push("/Staff/home");
         break;
-      case "HRGA":
+      case "hrga":
         router.push("/HRGA/home");
         break;
-      case "Manager":
+      case "manager":
         router.push("/Manager/home");
         break;
       default:
@@ -52,13 +51,9 @@ export default function Login() {
     setLoading(true);
     try {
       const response = await login(username, password);
-
-      // Tampilkan pesan dari server
       if (response.message) {
         message.success(response.message);
       }
-
-      // Handle redirect
       handleRedirect(response.user, response.first_login);
     } catch (error) {
       message.error(error.message);
@@ -68,57 +63,76 @@ export default function Login() {
   };
 
   return (
-    <div>
-      <div className="flex w-full h-dvh justify-center items-center bg-first">
-        <BackBtn
-          onClick={() => router.push("/")}
-          className={"fixed top-0 left-0 mt-4 ml-4"}
-        />
-        <div className="flex w-1/2 h-1/2">
-          <div className="flex w-1/2 bg-second rounded-l-lg">
+    <div className="min-h-screen bg-first">
+      <BackBtn
+        onClick={() => router.push("/")}
+        className="fixed top-4 left-4 z-10"
+      />
+      <div className="flex items-center justify-center min-h-screen p-4">
+        <div className="w-full max-w-4xl flex flex-col md:flex-row h-auto md:h-[500px] shadow-lg rounded-lg overflow-hidden">
+          {/* Image Section - Hidden on mobile, visible on md and up */}
+          <div className="hidden md:block md:w-1/2 bg-second relative">
             <Image
               src={satria}
-              className="w-full h-full rounded-l-lg"
+              className="object-cover w-full h-full"
               alt="image"
+              priority
+              unoptimized
             />
           </div>
-          <div className="flex flex-col w-1/2 h-auto p-12 gap-y-4 bg-second rounded-r-lg">
-            <div className="flex w-full justify-end">
-              <div className="flex items-center">
-                <Image src={dihi} className="w-12" alt="logo" />
+
+          {/* Login Form Section */}
+          <div className="w-full md:w-1/2 bg-second p-6 sm:p-8 md:p-12">
+            {/* Logo Container */}
+            <div className="flex justify-end mb-6">
+              <Image src={dihi} className="w-10 sm:w-12" alt="logo" priority />
+            </div>
+
+            {/* Login Form */}
+            <div className="space-y-6">
+              <h1 className="text-2xl sm:text-3xl font-bold text-center mb-8">
+                Login
+              </h1>
+
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-semibold block">
+                    Username
+                  </label>
+                  <input
+                    type="text"
+                    className="w-full p-2 border rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    placeholder="user123"
+                    disabled={loading}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-semibold block">
+                    Password
+                  </label>
+                  <input
+                    type="password"
+                    className="w-full p-2 border rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="********"
+                    disabled={loading}
+                  />
+                </div>
+
+                <Button
+                  type="primary"
+                  loading={loading}
+                  onClick={handleLogin}
+                  className="w-full h-10"
+                >
+                  {loading ? "Loading..." : "Login"}
+                </Button>
               </div>
             </div>
-            <span className="text-center font-bold text-3xl">Login</span>
-            <div className="flex flex-col">
-              <label className="text-sm font-semibold">Username</label>
-              <input
-                type="text"
-                className="p-2 border rounded text-sm"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                placeholder="user123"
-                disabled={loading}
-              />
-            </div>
-            <div className="flex flex-col">
-              <label className="text-sm font-semibold">Password</label>
-              <input
-                type="password"
-                className="p-2 border rounded text-sm"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="********"
-                disabled={loading}
-              />
-            </div>
-            <Button
-              type="primary"
-              loading={loading}
-              onClick={handleLogin}
-              className="w-full"
-            >
-              {loading ? "Loading..." : "Login"}
-            </Button>
           </div>
         </div>
       </div>

@@ -1,29 +1,98 @@
 "use client";
-
 import React from "react";
 import { Card } from "antd";
 import Image from "next/image";
+import booking from "@/public/booking.gif";
+import absence from "@/public/absence.gif";
+import approval from "@/public/approval.gif";
+import salary from "@/public/salary.gif";
+import generate from "@/public/generate.gif";
+import { useRouter } from "next/navigation";
 
 const { Meta } = Card;
 
-const LandingCard = ({ title, description, imageUrl, className }) => (
-  <Card
-    hoverable
-    cover={
-      <Image
-        alt="example"
-        src={imageUrl}
-        unoptimized
-        className="object-contain w-40 h-40 p-1"
-      />
-    }
-    className={`w-60 h-auto hover:scale-110 transition-all duration-300 ease-in-out divide-y-2 ${className}`}
-  >
-    <Meta
-      title={title || "Default Title"}
-      description={description || "Default Description"}
-    />
-  </Card>
-);
+export default function LandingCard() {
+  const router = useRouter();
 
-export default LandingCard;
+  const handleCardClick = (path) => {
+    router.push(path);
+  };
+
+  const menuItems = [
+    {
+      title: "Absensi & Cuti",
+      description: "Lorem ipsum dolor sit amet",
+      image: absence,
+      path: "/login",
+      bgColor: "bg-first",
+      rounded: "rounded-s-badge rounded-br-badge",
+    },
+    {
+      title: "Booking Ruangan",
+      description: "Lorem ipsum dolor sit amet",
+      image: booking,
+      path: "/login",
+      bgColor: "bg-second",
+      rounded: "rounded-badge",
+    },
+    {
+      title: "E-Slip Gaji",
+      description: "Lorem ipsum dolor sit amet",
+      image: salary,
+      path: "/login",
+      bgColor: "bg-third",
+      rounded: "rounded-e-badge rounded-tl-badge",
+    },
+    {
+      title: "Approval Booking Ruangan",
+      description: "Lorem ipsum dolor sit amet",
+      image: approval,
+      path: "/login",
+      bgColor: "bg-second",
+      rounded: "rounded-s-badge rounded-br-badge",
+    },
+    {
+      title: "Generate Akun",
+      description: "Lorem ipsum dolor sit amet",
+      image: generate,
+      path: "/login",
+      bgColor: "bg-first",
+      rounded: "rounded-e-badge rounded-tl-badge",
+    },
+  ];
+  return (
+    <>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full max-w-7xl">
+        {menuItems.map((item, index) => (
+          <div
+            key={index}
+            className={`flex justify-center p-4 md:p-6 lg:p-8 ${item.bgColor} shadow-lg border-4 md:border-6 lg:border-8 border-white ${item.rounded} cursor-pointer transition-transform duration-300 hover:scale-105`}
+            onClick={() => handleCardClick(item.path)}
+          >
+            <Card
+              hoverable
+              cover={
+                <Image
+                  alt={item.title}
+                  src={item.image}
+                  unoptimized
+                  className="object-contain w-24 h-24 md:w-32 md:h-32 lg:w-40 lg:h-40 p-1"
+                />
+              }
+              className="w-full max-w-xs transition-all duration-300 ease-in-out divide-y-2"
+            >
+              <Meta
+                title={
+                  <div className="text-center font-semibold">{item.title}</div>
+                }
+                description={
+                  <div className="text-center">{item.description}</div>
+                }
+              />
+            </Card>
+          </div>
+        ))}
+      </div>
+    </>
+  );
+}

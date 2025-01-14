@@ -1,22 +1,112 @@
-import React, { useState } from "react";
-import { Button, Modal } from "antd";
+import React, { useState, useEffect } from "react";
+import { Button, Modal, message, DatePicker } from "antd";
 import Image from "next/image";
-import room from "@/public/room-1.jpeg";
+import roomPic from "@/public/room-1.jpeg";
+import { bookingServices, roomServices } from "@/api/api";
+import dayjs from "dayjs";
 
-const RoomForm = () => {
+const RoomForm = ({ room }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [checked, setChecked] = useState({});
+  const [bookingDate, setBookingDate] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [bookedSlots, setBookedSlots] = useState([]);
+
+  useEffect(() => {
+    const fetchBookings = async () => {
+      if (bookingDate && room.id_room) {
+        try {
+          const response = await roomServices.getListRoomBookings(room.id_room);
+          const bookings = response.data.data;
+
+          const dateBookings = bookings.filter(
+            (booking) =>
+              booking.booking_date === dayjs(bookingDate).format("YYYY-MM-DD")
+          );
+
+          const bookedTimeSlots = dateBookings.flatMap((booking) => {
+            const slots = [];
+            const startHour = parseInt(booking.start_time.split(":")[0]);
+            const endHour = parseInt(booking.end_time.split(":")[0]);
+
+            for (let hour = startHour; hour < endHour; hour++) {
+              const startTime = `${String(hour).padStart(2, "0")}:00`;
+              const endTime = `${String(hour + 1).padStart(2, "0")}:00`;
+              slots.push(`${startTime} - ${endTime}`);
+            }
+            return slots;
+          });
+
+          setBookedSlots(bookedTimeSlots);
+        } catch (error) {
+          console.error("Error fetching bookings:", error);
+          message.error("Gagal mengambil data booking yang ada");
+        }
+      }
+    };
+
+    fetchBookings();
+  }, [bookingDate, room.id_room]);
+
   const showModal = () => {
     setIsModalOpen(true);
   };
-  const handleOk = () => {
-    setIsModalOpen(false);
-    console.log("Jadwal yang dipilih: ", checked);
+
+  const handleOk = async () => {
+    try {
+      setLoading(true);
+
+      const selectedTimes = Object.entries(checked)
+        .filter(([_, isSelected]) => isSelected)
+        .map(([time]) => time);
+
+      if (selectedTimes.length === 0) {
+        message.error("Silakan pilih waktu peminjaman");
+        return;
+      }
+
+      // Validasi slot waktu berurutan
+      const timeSlots = selectedTimes.sort();
+      for (let i = 1; i < timeSlots.length; i++) {
+        const prevEndTime = timeSlots[i - 1].split(" - ")[1];
+        const currentStartTime = timeSlots[i].split(" - ")[0];
+        if (prevEndTime !== currentStartTime) {
+          message.error("Silakan pilih slot waktu yang berurutan");
+          return;
+        }
+      }
+
+      const firstTime = timeSlots[0].split(" - ")[0];
+      const lastTime = timeSlots[timeSlots.length - 1].split(" - ")[1];
+      const startHour = parseInt(firstTime.split(":")[0]);
+      const endHour = parseInt(lastTime.split(":")[0]);
+      const duration = endHour - startHour;
+
+      const bookingData = {
+        id_room: room.id_room,
+        booking_date: dayjs(bookingDate).format("YYYY-MM-DD"),
+        start_time: firstTime,
+        end_time: lastTime,
+        usage_duration: duration.toString(),
+      };
+
+      await bookingServices.createBooking(bookingData);
+
+      message.success("Booking berhasil dibuat!");
+      setIsModalOpen(false);
+      setChecked({});
+      setBookingDate(null);
+    } catch (error) {
+      message.error(error.response?.data?.message || "Gagal melakukan booking");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleCancel = () => {
     setIsModalOpen(false);
     setChecked({});
+    setBookingDate(null);
   };
 
   const handleCheckboxChange = (time) => {
@@ -26,10 +116,14 @@ const RoomForm = () => {
     }));
   };
 
-  // Membuat jadwal dari 08:00 hingga 16:00 dengan rentang 1 jam
+  const handleDateChange = (date) => {
+    setBookingDate(date);
+    setChecked({});
+  };
+
   const generateSchedule = () => {
-    const startHour = 8; // 08:00
-    const endHour = 16; // 16:00
+    const startHour = 8;
+    const endHour = 17;
     const schedule = [];
     for (let hour = startHour; hour < endHour; hour++) {
       const startTime = `${String(hour).padStart(2, "0")}:00`;
@@ -40,10 +134,15 @@ const RoomForm = () => {
   };
 
   const schedule = generateSchedule();
+  const isTimeSlotBooked = (time) => bookedSlots.includes(time);
 
   return (
     <>
-      <Button type="primary" onClick={showModal} className="rounded-full">
+      <Button
+        type="primary"
+        onClick={showModal}
+        className="rounded-full w-full sm:w-auto"
+      >
         Book
       </Button>
       <Modal
@@ -51,38 +150,101 @@ const RoomForm = () => {
         open={isModalOpen}
         onOk={handleOk}
         onCancel={handleCancel}
-        width={900}
+        width="90%"
+        maxWidth={900}
+        className="responsive-modal"
+        confirmLoading={loading}
       >
-        <div className="flex gap-x-8 py-8">
-          <Image src={room} className="w-80 rounded-lg" alt="Room" />
-          <div className="flex flex-col">
-            <p>Nama Ruangan: E101</p>
-            <p>
-              Ketersediaan:{" "}
-              <span className="font-bold text-green-500">Tersedia</span>
-            </p>
+        <div className="flex flex-col md:flex-row gap-6 md:gap-8 py-4 md:py-8">
+          {/* Image Container */}
+          <div className="w-full md:w-80 h-48 md:h-auto relative rounded-lg overflow-hidden">
+            <Image
+              src={roomPic}
+              alt="Room"
+              className="object-cover"
+              fill
+              sizes="(max-width: 768px) 100vw, 384px"
+              priority
+            />
+          </div>
 
-            <div className="grid grid-cols-3 gap-4 mt-8">
-              {schedule.map((time, index) => (
-                <label key={index} className="relative">
-                  <input
-                    type="checkbox"
-                    checked={checked[time] || false}
-                    onChange={() => handleCheckboxChange(time)}
-                    className="hidden"
-                  />
-                  <div
-                    className={`w-full text-center cursor-pointer rounded-lg p-2 ${
-                      checked[time]
-                        ? "duration-300 bg-blue-600 text-white"
-                        : "duration-300 bg-gray-200 text-black"
-                    }`}
-                  >
-                    {time}
-                  </div>
-                </label>
-              ))}
+          {/* Form Container */}
+          <div className="flex flex-col flex-grow">
+            <p className="text-lg font-semibold mb-2">
+              Ruangan {room.room_name}
+            </p>
+            <div className="mb-4 space-y-1">
+              <p className="text-gray-600">Kapasitas: {room.capacity}</p>
+              <p className="text-gray-600">Lokasi: {room.location}</p>
             </div>
+
+            <div className="mb-6">
+              <p className="font-medium mb-2">Pilih Tanggal Peminjaman:</p>
+              <DatePicker
+                onChange={handleDateChange}
+                value={bookingDate}
+                className="w-full"
+                disabledDate={(current) => {
+                  return current && current < dayjs().startOf("day");
+                }}
+              />
+            </div>
+
+            {bookingDate && (
+              <>
+                <div className="mb-4">
+                  <p className="font-medium mb-2">Pilih Jadwal:</p>
+
+                  {/* Legend */}
+                  <div className="flex flex-wrap gap-4 mb-3">
+                    <div className="flex items-center gap-2">
+                      <div className="w-4 h-4 bg-green-100 border border-green-300"></div>
+                      <span className="text-sm">Tersedia</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-4 h-4 bg-red-100 border border-red-300"></div>
+                      <span className="text-sm">Sudah Dibooking</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-4 h-4 bg-blue-500"></div>
+                      <span className="text-sm">Dipilih</span>
+                    </div>
+                  </div>
+
+                  {/* Time Slots Grid */}
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-4">
+                    {schedule.map((time, index) => {
+                      const isBooked = isTimeSlotBooked(time);
+                      return (
+                        <label key={index} className="relative">
+                          <input
+                            type="checkbox"
+                            checked={checked[time] || false}
+                            onChange={() => handleCheckboxChange(time)}
+                            disabled={isBooked}
+                            className="hidden"
+                          />
+                          <div
+                            className={`
+                              w-full text-center p-2 rounded-lg text-sm sm:text-base
+                              ${
+                                isBooked
+                                  ? "bg-red-100 text-red-800 border border-red-300 cursor-not-allowed"
+                                  : checked[time]
+                                  ? "bg-blue-500 text-white border border-blue-600"
+                                  : "bg-green-100 text-green-800 border border-green-300 hover:bg-green-200 cursor-pointer"
+                              }
+                            `}
+                          >
+                            {time}
+                          </div>
+                        </label>
+                      );
+                    })}
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         </div>
       </Modal>

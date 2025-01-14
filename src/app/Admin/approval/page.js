@@ -1,16 +1,33 @@
 "use client";
+import { useEffect, useState } from "react";
 import NavigationAdmin from "@/components/Admin/navigation/navigationAdmin";
-import TabelApproval from "@/components/Admin/approval/tabelApproval";
+import TabelApprovalAdmin from "@/components/Admin/approval/tabelApprovalAdmin";
 import Navbar from "@/components/Navbar/navbar";
 import { Button, message, Modal } from "antd";
-import { useState } from "react";
 
 export default function Approval() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedRecord, setSelectedRecord] = useState(null); // State untuk menyimpan data detail
+  const [selectedRecord, setSelectedRecord] = useState(null);
+  const [modalWidth, setModalWidth] = useState(600);
+
+  // Handle window resize for modal width
+  useEffect(() => {
+    const handleResize = () => {
+      setModalWidth(window.innerWidth < 640 ? "95%" : 600);
+    };
+
+    // Set initial width
+    handleResize();
+
+    // Add event listener
+    window.addEventListener("resize", handleResize);
+
+    // Cleanup
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const showModal = (record) => {
-    setSelectedRecord(record); // Set data dari baris yang dipilih
+    setSelectedRecord(record);
     setIsModalOpen(true);
   };
 
@@ -23,29 +40,20 @@ export default function Approval() {
       ? message.success(`Peminjaman ruangan disetujui`)
       : message.error(`Peminjaman ruangan ditolak`);
     setIsModalOpen(false);
-
-    // Lakukan aksi tambahan di sini, seperti mengirim data ke API
-    // Contoh:
-    // fetch('/api/approval', {
-    //   method: 'POST',
-    //   body: JSON.stringify({
-    //     id: selectedRecord.id,
-    //     approved: isApproved
-    //   }),
-    // });
   };
 
   return (
-    <div>
+    <div className="min-h-screen flex flex-col">
       <Navbar href={"/Admin/home"} p={"Admin"} />
       <NavigationAdmin
-        headerBg="flex mt-8 bg-transparent"
-        navigationBg="bg-third"
       />
-      <section>
-        <div className="flex w-full min-h-[75dvh] justify-center mt-8 p-4 bg-second">
-          <div className="flex w-3/4 justify-center bg-white rounded-lg">
-            <TabelApproval detail={showModal} />
+      {/* Added margin between navigation and content */}
+      <section className="flex-grow mt-4 md:mt-6">
+        <div className="container mx-auto px-4">
+          <div className="bg-second rounded-lg p-4 md:p-6">
+            <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+              <TabelApprovalAdmin detail={showModal} />
+            </div>
           </div>
         </div>
       </section>
@@ -59,6 +67,7 @@ export default function Approval() {
             type="primary"
             danger
             onClick={() => handleApproval(false)}
+            className="mr-2"
           >
             Tolak
           </Button>,
@@ -70,25 +79,33 @@ export default function Approval() {
             Setujui
           </Button>,
         ]}
-        width={600}
+        width={modalWidth}
+        centered
       >
         {selectedRecord && (
-          <div>
-            <p>
-              <strong>Nama:</strong> {selectedRecord.nama}
-            </p>
-            <p>
-              <strong>Divisi:</strong> {selectedRecord.divisi}
-            </p>
-            <p>
-              <strong>Ruangan:</strong> {selectedRecord.ruangan}
-            </p>
-            <p>
-              <strong>Hari:</strong> {selectedRecord.hari}
-            </p>
-            <p>
-              <strong>Jam:</strong> {selectedRecord.jam}
-            </p>
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="bg-gray-50 p-3 rounded">
+                <strong className="text-gray-700 block mb-1">Nama:</strong>
+                <p className="text-gray-900">{selectedRecord.nama}</p>
+              </div>
+              <div className="bg-gray-50 p-3 rounded">
+                <strong className="text-gray-700 block mb-1">Divisi:</strong>
+                <p className="text-gray-900">{selectedRecord.divisi}</p>
+              </div>
+              <div className="bg-gray-50 p-3 rounded">
+                <strong className="text-gray-700 block mb-1">Ruangan:</strong>
+                <p className="text-gray-900">{selectedRecord.ruangan}</p>
+              </div>
+              <div className="bg-gray-50 p-3 rounded">
+                <strong className="text-gray-700 block mb-1">Hari:</strong>
+                <p className="text-gray-900">{selectedRecord.hari}</p>
+              </div>
+              <div className="bg-gray-50 p-3 rounded sm:col-span-2">
+                <strong className="text-gray-700 block mb-1">Jam:</strong>
+                <p className="text-gray-900">{selectedRecord.jam}</p>
+              </div>
+            </div>
           </div>
         )}
       </Modal>

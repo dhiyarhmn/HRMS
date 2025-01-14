@@ -1,17 +1,34 @@
 "use client";
-import FormGaji from "@/components/HRGA/gaji/formgaji";
+import TabelGajiHRGA from "@/components/HRGA/gaji/tabelGajiHRGA";
+import FormGajiHRGA from "@/components/HRGA/gaji/formGajiHRGA";
 import NavigationHRGA from "@/components/HRGA/navigation/navigationHRGA";
 import Navbar from "@/components/Navbar/navbar";
-import Tabel from "@/components/tabel";
 import { Modal } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Gaji() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedRecord, setSelectedRecord] = useState(null); // State untuk menyimpan data detail
+  const [selectedRecord, setSelectedRecord] = useState(null);
+  const [modalWidth, setModalWidth] = useState(600);
+
+  // Handle window resize for modal width
+  useEffect(() => {
+    const handleResize = () => {
+      setModalWidth(window.innerWidth < 640 ? "95%" : 600);
+    };
+
+    // Set initial width
+    handleResize();
+
+    // Add event listener
+    window.addEventListener("resize", handleResize);
+
+    // Cleanup
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const showModal = (record) => {
-    setSelectedRecord(record); // Set data dari baris yang dipilih
+    setSelectedRecord(record);
     setIsModalOpen(true);
   };
 
@@ -20,13 +37,16 @@ export default function Gaji() {
   };
 
   return (
-    <div>
-      <Navbar href={"/HRGA/home"} />
+    <div className="min-h-screen flex flex-col">
+      <Navbar href={"/HRGA/home"} p={"HRGA"} />
       <NavigationHRGA />
-      <section>
-        <div className="flex w-full min-h-[75dvh] justify-center mt-8 p-4 bg-second">
-          <div className="flex w-3/4 justify-center bg-white rounded-lg">
-            <Tabel detail={showModal} />
+
+      <section className="flex-grow mt-4 md:mt-6">
+        <div className="container mx-auto px-4">
+          <div className="bg-second rounded-lg p-4 md:p-6">
+            <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+              <TabelGajiHRGA detail={showModal} />
+            </div>
           </div>
         </div>
       </section>
@@ -34,11 +54,12 @@ export default function Gaji() {
       <Modal
         title="Detail Data"
         open={isModalOpen}
-        width={600}
-        footer={null}
         onCancel={handleCancel}
+        footer={null}
+        width={modalWidth}
+        centered
       >
-        <FormGaji />
+        {selectedRecord && <FormGajiHRGA selectedRecord={selectedRecord} />}
       </Modal>
     </div>
   );

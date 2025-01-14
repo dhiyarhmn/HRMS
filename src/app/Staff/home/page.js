@@ -5,15 +5,12 @@ import NavigationStaff from "@/components/Staff/navigation/navigationStaff";
 
 export default function Home() {
   return (
-    <div>
-      <Navbar href={"/Staff/home"} />
-      <NavigationStaff
-        headerBg="flex mt-8 bg-transparent"
-        navigationBg="bg-third"
-      />
-      <section>
+    <div className="min-h-screen">
+      <Navbar href={"/Staff/home"} p={"Staff"} />
+      <NavigationStaff />
+      <main className="w-full">
         <HomeStaff />
-      </section>
+      </main>
     </div>
   );
 }

@@ -1,7 +1,7 @@
 "use client";
+import Tabel from "@/components/Admin/gaji/tabelGajiAdmin";
 import Navbar from "@/components/Navbar/navbar";
 import Navigation from "@/components/navigation";
-import Tabel from "@/components/tabel";
 import { Modal } from "antd";
 import { useState } from "react";
 
