@@ -1,26 +1,65 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import BackBtn from "@/components/LoginPageComponents/backbutton";
 import Image from "next/image";
 import dihi from "@/public/logo-dihi.png";
 import { useRouter } from "next/navigation";
-import {
-  Form,
-  Input,
-  InputNumber,
-  Mentions,
-  Select,
-  Cascader,
-  TreeSelect,
-  DatePicker,
-  Button,
-  Upload,
-  message,
-} from "antd";
-import { InboxOutlined } from "@ant-design/icons";
+import { Form, Input, Select, DatePicker, Button, message } from "antd";
+import { employeeServices } from "@/api/api";
 
 export default function NewUser() {
   const router = useRouter();
+  const [form] = Form.useForm();
+  const [loading, setLoading] = useState(false);
+  const [isProfileCompleted, setIsProfileCompleted] = useState(false);
+
+  useEffect(() => {
+    // Fetch current user data to check if profile is already completed
+    const currentUser = JSON.parse(localStorage.getItem("user"));
+    if (currentUser?.isProfileCompleted) {
+      setIsProfileCompleted(true);
+      form.setFieldsValue({
+        name: currentUser.name,
+        phone: currentUser.phone,
+        gender: currentUser.gender,
+        date_of_birth: currentUser.date_of_birth,
+      });
+    }
+  }, [form]);
+
+  const onFinish = async (values) => {
+    try {
+      setLoading(true);
+      const currentUser = JSON.parse(localStorage.getItem("user"));
+
+      const userData = {
+        ...values,
+        position: currentUser.role, // Automatically set position based on role
+        date_of_birth: values.date_of_birth.format("YYYY-MM-DD"),
+      };
+
+      const response = await employeeServices.completeNewUserProfile(userData);
+
+      if (response.success) {
+        message.success("Profile updated successfully");
+        localStorage.setItem(
+          "user",
+          JSON.stringify({ ...currentUser, isProfileCompleted: true })
+        );
+
+        // Wait for the message to disappear before redirecting
+        setTimeout(() => {
+          const homeRoute = employeeServices.getHomeRoute(currentUser.role);
+          router.push(homeRoute);
+        }, 2000); // Delay for 2 seconds
+      }
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      message.error(error.message || "Failed to update profile");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div>
@@ -37,84 +76,81 @@ export default function NewUser() {
               </div>
             </div>
             <span className="text-center font-bold text-3xl">
-              New User Registration
+              Complete Your Profile
             </span>
             <Form
+              form={form}
               labelCol={{ xs: { span: 24 }, sm: { span: 6 } }}
               wrapperCol={{ xs: { span: 24 }, sm: { span: 14 } }}
               style={{ width: "100%" }}
               className="mt-4 border-2 border-white p-4 rounded-lg"
+              onFinish={onFinish}
             >
               <Form.Item
-                label="NIK"
-                name="NIK"
-                rules={[{ required: true, message: "Please input!" }]}
+                label="Nama Lengkap"
+                name="name"
+                rules={[{ required: true, message: "Please input your name!" }]}
               >
-                <InputNumber
-                  style={{ width: "100%" }}
-                  placeholder="****************"
-                />
+                <Input placeholder="John Doe" disabled={isProfileCompleted} />
               </Form.Item>
 
               <Form.Item
-                label="Nama"
-                name="Nama"
-                rules={[{ required: true, message: "Please input!" }]}
-              >
-                <Input placeholder="John Doe" />
-              </Form.Item>
-
-              <Form.Item
-                label="Id Role"
-                name="Id Role"
-                rules={[{ required: true, message: "Please input!" }]}
-              >
-                <InputNumber style={{ width: "100%" }} placeholder="1" />
-              </Form.Item>
-
-              <Form.Item
-                label="Id Departemen"
-                name="Id Departemen"
-                rules={[{ required: true, message: "Please input!" }]}
-              >
-                <InputNumber style={{ width: "100%" }} placeholder="1" />
-              </Form.Item>
-
-              <Form.Item
-                label="Posisi"
-                name="Posisi"
+                label="No HP"
+                name="phone"
                 rules={[
                   {
                     required: true,
-                    message: "Please input!",
+                    message: "Please input your phone number!",
                   },
                 ]}
               >
-                <Select placeholder="Staff" />
-              </Form.Item>
-
-              <Form.Item
-                label="Gaji"
-                name="Gaji"
-                rules={[{ required: true, message: "Please input!" }]}
-              >
-                <InputNumber
-                  style={{ width: "100%" }}
-                  placeholder="1,000,000"
+                <Input
+                  placeholder="081234567890"
+                  disabled={isProfileCompleted}
                 />
               </Form.Item>
 
               <Form.Item
-                label="Tanggal Masuk"
-                name="Tanggal Masuk"
-                rules={[{ required: true, message: "Please input!" }]}
+                label="Jenis Kelamin"
+                name="gender"
+                rules={[
+                  { required: true, message: "Please select your gender!" },
+                ]}
               >
-                <DatePicker />
+                <Select
+                  placeholder="Select gender"
+                  disabled={isProfileCompleted}
+                >
+                  <Select.Option value="male">Male</Select.Option>
+                  <Select.Option value="female">Female</Select.Option>
+                </Select>
+              </Form.Item>
+
+              <Form.Item
+                label="Tanggal Lahir"
+                name="date_of_birth"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please select your date of birth!",
+                  },
+                ]}
+              >
+                <DatePicker
+                  style={{ width: "100%" }}
+                  format="YYYY-MM-DD"
+                  disabled={isProfileCompleted}
+                />
               </Form.Item>
 
               <Form.Item wrapperCol={{ offset: 18, span: 18 }}>
-                <Button type="primary" htmlType="submit">
-                  Register
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  loading={loading}
+                  disabled={isProfileCompleted}
+                >
+                  {isProfileCompleted ? "Profile Completed" : "Submit"}
                 </Button>
               </Form.Item>
             </Form>

@@ -6,22 +6,45 @@ import Highlighter from "react-highlight-words";
 const data = [
   {
     key: "1",
-    name: "John Brown",
-    age: 32,
-    address: "New York No. 1 Lake Park",
+    nama: "John Brown",
+    divisi: 32,
+    bulan: "25 Januari 2025",
+    jumlah: 10.5,
+    status: "Sudah dibayar",
   },
-  { key: "2", name: "Joe Black", age: 42, address: "London No. 1 Lake Park" },
-  { key: "3", name: "Jim Green", age: 32, address: "Sydney No. 1 Lake Park" },
-  { key: "4", name: "Jim Red", age: 32, address: "London No. 2 Lake Park" },
+  {
+    key: "2",
+    nama: "Joe Black",
+    divisi: 42,
+    bulan: "25 Februari 2025",
+    jumlah: 11,
+    status: "Sudah dibayar",
+  },
+  {
+    key: "3",
+    nama: "Jim Green",
+    divisi: 32,
+    bulan: "25 Maret 2025",
+    jumlah: 10,
+    status: "Sudah dibayar",
+  },
+  {
+    key: "4",
+    nama: "Jim Red",
+    divisi: 32,
+    bulan: "25 April 2025",
+    jumlah: 9,
+    status: "Belum dibayar",
+  },
 ];
 
-const Tabel = ({ detail }) => {
+const TabelRiwayatGajiStaff = ({ detail }) => {
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef(null);
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
-    confirm();
+    confirm({ closeDropdown: false });
     setSearchText(selectedKeys[0]);
     setSearchedColumn(dataIndex);
   };
@@ -39,7 +62,7 @@ const Tabel = ({ detail }) => {
       clearFilters,
       close,
     }) => (
-      <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
+      <div className="p-4" onKeyDown={(e) => e.stopPropagation()}>
         <Input
           ref={searchInput}
           placeholder={`Search ${dataIndex}`}
@@ -48,33 +71,32 @@ const Tabel = ({ detail }) => {
             setSelectedKeys(e.target.value ? [e.target.value] : [])
           }
           onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
-          style={{ marginBottom: 8, display: "block" }}
+          className="mb-3 block w-full"
         />
-        <Space>
+        <Space className="flex flex-wrap gap-2">
           <Button
             type="primary"
             onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
             size="small"
-            style={{ width: 90 }}
+            className="min-w-[90px]"
           >
             Search
           </Button>
           <Button
             onClick={() => clearFilters && handleReset(clearFilters)}
             size="small"
-            style={{ width: 90 }}
+            className="min-w-[90px]"
           >
             Reset
           </Button>
           <Button
             type="link"
             size="small"
-            onClick={() => confirm({ closeDropdown: false })}
+            onClick={() => {
+              close();
+            }}
           >
-            Filter
-          </Button>
-          <Button type="link" size="small" onClick={() => close()}>
-            close
+            Close
           </Button>
         </Space>
       </div>
@@ -99,43 +121,72 @@ const Tabel = ({ detail }) => {
 
   const columns = [
     {
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
-      ...getColumnSearchProps("name"),
+      title: "Nama",
+      dataIndex: "nama",
+      key: "nama",
+      ...getColumnSearchProps("nama"),
     },
     {
-      title: "Age",
-      dataIndex: "age",
-      key: "age",
-      ...getColumnSearchProps("age"),
+      title: "Divisi",
+      dataIndex: "divisi",
+      key: "divisi",
+      ...getColumnSearchProps("divisi"),
     },
     {
-      title: "Address",
-      dataIndex: "address",
-      key: "address",
-      ...getColumnSearchProps("address"),
+      title: "Jumlah (RP)",
+      dataIndex: "jumlah",
+      key: "jumlah",
+      ...getColumnSearchProps("jumlah"),
+      responsive: ["md"],
+    },
+    {
+      title: "Bulan",
+      dataIndex: "bulan",
+      key: "bulan",
+      ...getColumnSearchProps("bulan"),
+      responsive: ["md"],
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      ...getColumnSearchProps("status"),
+      responsive: ["md"],
     },
     {
       title: "Action",
       key: "action",
+      fixed: "right",
+      width: 100,
       render: (_, record) => (
-        <Space size="middle">
-          <button onClick={() => detail(record)} className="text-blue-500">
-            Detail
-          </button>
-        </Space>
+        <Button
+          type="link"
+          onClick={() => detail(record)}
+          className="text-blue-500 p-0"
+        >
+          Detail
+        </Button>
       ),
     },
   ];
 
   return (
-    <Table
-      columns={columns}
-      dataSource={data}
-      className="w-full bg-white rounded-lg"
-    />
+    <div className="w-full overflow-x-auto">
+      <Table
+        columns={columns}
+        dataSource={data}
+        className="min-w-full"
+        scroll={{ x: "max-content" }}
+        pagination={{
+          responsive: true,
+          position: ["bottomCenter"],
+          pageSize: 5,
+          showTotal: (total, range) =>
+            `${range[0]}-${range[1]} of ${total} items`,
+        }}
+      />
+    </div>
   );
 };
 
-export default Tabel;
+export default TabelRiwayatGajiStaff;

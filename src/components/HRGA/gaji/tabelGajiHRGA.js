@@ -6,22 +6,73 @@ import Highlighter from "react-highlight-words";
 const data = [
   {
     key: "1",
-    bulan: "25 Januari 2025",
-    jumlah: 10.5,
-    status: "Sudah dibayar",
+    nama: "John Brown",
+    divisi: 32,
   },
-  { key: "2", bulan: "25 Februari 2025", jumlah: 11, status: "Sudah dibayar" },
-  { key: "3", bulan: "25 Maret 2025", jumlah: 10, status: "Sudah dibayar" },
-  { key: "4", bulan: "25 April 2025", jumlah: 9, status: "Belum dibayar" },
+  {
+    key: "2",
+    nama: "Joe Black",
+    divisi: 42,
+  },
+  {
+    key: "3",
+    nama: "Jim Green",
+    divisi: 32,
+  },
+  {
+    key: "4",
+    nama: "Jim Red",
+    divisi: 32,
+  },
+  {
+    key: "5",
+    nama: "John Brown",
+    divisi: 32,
+  },
+  {
+    key: "6",
+    nama: "Joe Black",
+    divisi: 42,
+  },
+  {
+    key: "7",
+    nama: "Jim Green",
+    divisi: 32,
+  },
+  {
+    key: "8",
+    nama: "Jim Red",
+    divisi: 32,
+  },
+  {
+    key: "9",
+    nama: "John Brown",
+    divisi: 32,
+  },
+  {
+    key: "10",
+    nama: "Joe Black",
+    divisi: 42,
+  },
+  {
+    key: "11",
+    nama: "Jim Green",
+    divisi: 32,
+  },
+  {
+    key: "12",
+    nama: "Jim Red",
+    divisi: 32,
+  },
 ];
 
-const TabelRiwayatGaji = ({ detail }) => {
+const TabelGajiHRGA = ({ detail }) => {
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef(null);
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
-    confirm({ closeDropdown: false }); // Dropdown tetap terbuka
+    confirm({ closeDropdown: false });
     setSearchText(selectedKeys[0]);
     setSearchedColumn(dataIndex);
   };
@@ -39,7 +90,7 @@ const TabelRiwayatGaji = ({ detail }) => {
       clearFilters,
       close,
     }) => (
-      <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
+      <div className="p-4" onKeyDown={(e) => e.stopPropagation()}>
         <Input
           ref={searchInput}
           placeholder={`Search ${dataIndex}`}
@@ -48,25 +99,31 @@ const TabelRiwayatGaji = ({ detail }) => {
             setSelectedKeys(e.target.value ? [e.target.value] : [])
           }
           onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
-          style={{ marginBottom: 8, display: "block" }}
+          className="mb-3 block w-full"
         />
-        <Space>
+        <Space className="flex flex-wrap gap-2">
           <Button
             type="primary"
             onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
             size="small"
-            style={{ width: 90 }}
+            className="min-w-[90px]"
           >
             Search
           </Button>
           <Button
             onClick={() => clearFilters && handleReset(clearFilters)}
             size="small"
-            style={{ width: 90 }}
+            className="min-w-[90px]"
           >
             Reset
           </Button>
-          <Button type="link" size="small" onClick={() => close()}>
+          <Button
+            type="link"
+            size="small"
+            onClick={() => {
+              close();
+            }}
+          >
             Close
           </Button>
         </Space>
@@ -92,33 +149,52 @@ const TabelRiwayatGaji = ({ detail }) => {
 
   const columns = [
     {
-      title: "Bulan",
-      dataIndex: "bulan",
-      key: "bulan",
-      ...getColumnSearchProps("bulan"),
+      title: "Nama",
+      dataIndex: "nama",
+      key: "nama",
+      ...getColumnSearchProps("nama"),
     },
     {
-      title: "Jumlah (juta)",
-      dataIndex: "jumlah",
-      key: "jumlah",
-      ...getColumnSearchProps("jumlah"),
+      title: "Divisi",
+      dataIndex: "divisi",
+      key: "divisi",
+      ...getColumnSearchProps("divisi"),
+      responsive: ["md"],
     },
     {
-      title: "Status",
-      dataIndex: "status",
-      key: "status",
-      ...getColumnSearchProps("status"),
+      title: "Action",
+      key: "action",
+      fixed: "right",
+      width: 100,
+      render: (_, record) => (
+        <Button
+          type="link"
+          onClick={() => detail(record)}
+          className="text-blue-500 p-0"
+        >
+          Detail
+        </Button>
+      ),
     },
-    
   ];
 
   return (
-    <Table
-      columns={columns}
-      dataSource={data}
-      className="w-full bg-white rounded-lg"
-    />
+    <div className="w-full overflow-x-auto">
+      <Table
+        columns={columns}
+        dataSource={data}
+        className="min-w-full"
+        scroll={{ x: "max-content" }}
+        pagination={{
+          responsive: true,
+          position: ["bottomCenter"],
+          pageSize: 5,
+          showTotal: (total, range) =>
+            `${range[0]}-${range[1]} of ${total} items`,
+        }}
+      />
+    </div>
   );
 };
 
-export default TabelRiwayatGaji;
+export default TabelGajiHRGA;

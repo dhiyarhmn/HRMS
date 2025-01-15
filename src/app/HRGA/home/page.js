@@ -5,15 +5,12 @@ import Navbar from "@/components/Navbar/navbar";
 
 export default function Home() {
   return (
-    <div>
-      <Navbar href={"/HRGA/home"} />
-      <NavigationHRGA
-        headerBg="flex mt-8 bg-transparent"
-        navigationBg="bg-third"
-      />
-      <section>
+    <div className="min-h-screen">
+      <Navbar href={"/HRGA/home"} p={"HRGA"} />
+      <NavigationHRGA />
+      <main className="w-full">
         <HomeHRGA />
-      </section>
+      </main>
     </div>
   );
 }
