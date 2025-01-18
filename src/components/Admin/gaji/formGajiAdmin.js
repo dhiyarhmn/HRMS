@@ -1,185 +1,127 @@
-import React, { useState } from "react";
-import { Button, Form, Input, InputNumber, message } from "antd";
-import jsPDF from "jspdf";
-import "jspdf-autotable";
+import React, { useState, useEffect } from "react";
+import { Tabs, message } from "antd";
+import AllowanceForm from "./AllowanceForm";
+import BonusForm from "./BonusForm";
+import DeductionForm from "./DeductionForm";
+import OtherDeductionForm from "./OtherDeductionForm";
+import PayrollCalculator from "./PayrollCalculator";
+
+const { TabPane } = Tabs;
 
 const FormGajiAdmin = ({ selectedRecord }) => {
-  const [form] = Form.useForm();
-  const [loading, setLoading] = useState(false);
+  const [payrollResult, setPayrollResult] = useState(null);
+  const [employeeId, setEmployeeId] = useState(null);
 
-  const formatCurrency = (value) => {
-    return new Intl.NumberFormat("id-ID", {
-      style: "currency",
-      currency: "IDR",
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(value);
-  };
-
-  const generatePDF = async () => {
-    try {
-      const values = await form.validateFields();
-      setLoading(true);
-
-      // Create new PDF document
-      const doc = new jsPDF();
-
-      // Add company logo or header
-      doc.setFontSize(16);
-      doc.setFont("helvetica", "bold");
-      doc.text("SLIP GAJI KARYAWAN", 105, 20, { align: "center" });
-
-      // Add current date
-      doc.setFontSize(10);
-      doc.setFont("helvetica", "normal");
-      const currentDate = new Date().toLocaleDateString("id-ID", {
-        day: "numeric",
-        month: "long",
-        year: "numeric",
-      });
-      doc.text(currentDate, 105, 30, { align: "center" });
-
-      // Add employee information
-      doc.setFontSize(12);
-      doc.text(`Nama Karyawan: ${values.nama}`, 14, 50);
-
-      // Create salary details table
-      const totalGaji = values.gajiPokok + values.tunjangan - values.potongan;
-
-      const tableData = [
-        ["Gaji Pokok", formatCurrency(values.gajiPokok)],
-        ["Tunjangan", formatCurrency(values.tunjangan)],
-        ["Potongan", formatCurrency(values.potongan)],
-        ["Total Gaji", formatCurrency(totalGaji)],
-      ];
-
-      doc.autoTable({
-        startY: 60,
-        head: [["Keterangan", "Jumlah"]],
-        body: tableData,
-        theme: "striped",
-        headStyles: {
-          fillColor: [66, 66, 66],
-          textColor: 255,
-          fontStyle: "bold",
-        },
-        styles: {
-          fontSize: 12,
-          cellPadding: 5,
-        },
-        columnStyles: {
-          0: { cellWidth: 100 },
-          1: { cellWidth: 70, halign: "left" },
-        },
-      });
-
-      // Add footer
-      const finalY = doc.lastAutoTable.finalY || 150;
-      doc.setFontSize(10);
-      doc.text(
-        "*Slip gaji ini diterbitkan secara elektronik dan sah tanpa tanda tangan.",
-        20,
-        finalY + 20
-      );
-
-      // Save PDF
-      doc.save(
-        `slip-gaji-${values.nama.replace(/\s+/g, "-").toLowerCase()}.pdf`
-      );
-      message.success("PDF berhasil di-generate");
-    } catch (error) {
-      console.error("Error generating PDF:", error);
-      message.error("Gagal generate PDF. Pastikan semua field terisi!");
-    } finally {
-      setLoading(false);
+  useEffect(() => {
+    // selectedRecord sekarang langsung berupa ID
+    if (selectedRecord) {
+      setEmployeeId(selectedRecord);
     }
+  }, [selectedRecord]);
+
+  const handlePayrollCalculated = (result) => {
+    setPayrollResult(result);
   };
 
-  const onFinish = (values) => {
-    console.log("Success:", values);
-    message.success("Data berhasil disimpan");
-  };
+  if (!employeeId) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-1 gap-4">
-        <Form
-          form={form}
-          layout="vertical"
-          onFinish={onFinish}
-          initialValues={selectedRecord}
-        >
-          <div className="bg-gray-50 p-3 rounded">
-            <Form.Item
-              label="Nama Karyawan"
-              name="nama"
-              
-            >
-              <Input disabled />
-            </Form.Item>
-          </div>
-
-          <div className="bg-gray-50 p-3 rounded mt-4">
-            <Form.Item
-              label="Gaji Pokok"
-              name="gajiPokok"
-              rules={[{ required: true, message: "Please input gaji pokok!" }]}
-            >
-              <InputNumber
-                className="w-full"
-                formatter={(value) =>
-                  `Rp ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".")
-                }
-                parser={(value) => value.replace(/Rp\s?|(\.*)/g, "")}
-              />
-            </Form.Item>
-          </div>
-
-          <div className="bg-gray-50 p-3 rounded mt-4">
-            <Form.Item
-              label="Tunjangan"
-              name="tunjangan"
-              rules={[{ required: true, message: "Please input tunjangan!" }]}
-            >
-              <InputNumber
-                className="w-full"
-                formatter={(value) =>
-                  `Rp ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".")
-                }
-                parser={(value) => value.replace(/Rp\s?|(\.*)/g, "")}
-              />
-            </Form.Item>
-          </div>
-
-          <div className="bg-gray-50 p-3 rounded mt-4">
-            <Form.Item
-              label="Potongan"
-              name="potongan"
-              rules={[{ required: true, message: "Please input potongan!" }]}
-            >
-              <InputNumber
-                className="w-full"
-                formatter={(value) =>
-                  `Rp ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".")
-                }
-                parser={(value) => value.replace(/Rp\s?|(\.*)/g, "")}
-              />
-            </Form.Item>
-          </div>
-
-          <Form.Item className="flex justify-end gap-2 mt-6">
-            <Button className="mr-2" onClick={() => form.resetFields()}>
-              Reset
-            </Button>
-            <Button onClick={generatePDF} loading={loading} className="mr-2">
-              Generate PDF
-            </Button>
-            <Button type="primary" htmlType="submit" loading={loading}>
-              Submit
-            </Button>
-          </Form.Item>
-        </Form>
-      </div>
+      <Tabs defaultActiveKey="1">
+        <TabPane tab="Allowances" key="1">
+          <AllowanceForm
+            employeeId={employeeId}
+            onSubmitSuccess={() => message.success("Allowance saved")}
+          />
+        </TabPane>
+        <TabPane tab="Bonuses" key="2">
+          <BonusForm
+            employeeId={employeeId}
+            onSubmitSuccess={() => message.success("Bonus saved")}
+          />
+        </TabPane>
+        <TabPane tab="Deductions" key="3">
+          <DeductionForm
+            employeeId={employeeId}
+            onSubmitSuccess={() => message.success("Deduction saved")}
+          />
+        </TabPane>
+        <TabPane tab="Other Deductions" key="4">
+          <OtherDeductionForm
+            employeeId={employeeId}
+            onSubmitSuccess={() => message.success("Other deduction saved")}
+          />
+        </TabPane>
+        <TabPane tab="Calculate Payroll" key="5">
+          <PayrollCalculator
+            employeeId={employeeId}
+            onCalculateSuccess={handlePayrollCalculated}
+          />
+          {payrollResult && (
+            <div className="mt-4 p-4 bg-white rounded shadow">
+              <h3 className="text-lg font-semibold mb-3">Payroll Summary</h3>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="font-medium">Basic Salary:</p>
+                  <p>
+                    {new Intl.NumberFormat("id-ID", {
+                      style: "currency",
+                      currency: "IDR",
+                    }).format(payrollResult.basic_salary)}
+                  </p>
+                </div>
+                <div>
+                  <p className="font-medium">Total Allowances:</p>
+                  <p>
+                    {new Intl.NumberFormat("id-ID", {
+                      style: "currency",
+                      currency: "IDR",
+                    }).format(payrollResult.total_allowance)}
+                  </p>
+                </div>
+                <div>
+                  <p className="font-medium">Total Bonuses:</p>
+                  <p>
+                    {new Intl.NumberFormat("id-ID", {
+                      style: "currency",
+                      currency: "IDR",
+                    }).format(payrollResult.total_bonus)}
+                  </p>
+                </div>
+                <div>
+                  <p className="font-medium">Total Deductions:</p>
+                  <p>
+                    {new Intl.NumberFormat("id-ID", {
+                      style: "currency",
+                      currency: "IDR",
+                    }).format(payrollResult.total_deduction)}
+                  </p>
+                </div>
+                <div>
+                  <p className="font-medium">Total Other Deductions:</p>
+                  <p>
+                    {new Intl.NumberFormat("id-ID", {
+                      style: "currency",
+                      currency: "IDR",
+                    }).format(payrollResult.total_other_deduction)}
+                  </p>
+                </div>
+                <div>
+                  <p className="font-medium">Net Salary:</p>
+                  <p className="text-xl font-bold text-green-600">
+                    {new Intl.NumberFormat("id-ID", {
+                      style: "currency",
+                      currency: "IDR",
+                    }).format(payrollResult.total_salary)}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+        </TabPane>
+      </Tabs>
     </div>
   );
 };

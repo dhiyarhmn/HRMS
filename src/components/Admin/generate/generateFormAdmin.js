@@ -28,7 +28,6 @@ export const ManualForm = () => {
           departmentServices.getDepartments(),
         ]);
 
-        // Mengambil data dari nested response sesuai struktur API
         const rolesData = rolesResponse.data?.data || [];
         const deptsData = deptsResponse.data?.data || [];
 
@@ -46,13 +45,13 @@ export const ManualForm = () => {
     setLoading(true);
     try {
       const formData = new FormData();
-      formData.append("nik", values.nik);
-      formData.append("name", values.name);
-      formData.append("id_role", values.id_role); // Menggunakan id_role sesuai response API
-      formData.append("id_department", values.id_department); // Menggunakan id_department sesuai response API
-      formData.append("position", values.position);
-      formData.append("basic_salary", values.basic_salary);
-      formData.append("start_work", values.start_work.format("YYYY-MM-DD"));
+      Object.entries(values).forEach(([key, value]) => {
+        if (key === "start_work") {
+          formData.append(key, value.format("YYYY-MM-DD"));
+        } else {
+          formData.append(key, value);
+        }
+      });
 
       await userServices.createUser(formData);
       message.success("Account generated successfully!");
@@ -65,20 +64,25 @@ export const ManualForm = () => {
       setLoading(false);
     }
   };
+
   return (
     <Form
       form={form}
       layout="vertical"
-      className="w-full max-w-2xl mx-auto"
+      className="w-full max-w-2xl mx-auto space-y-4"
       onFinish={onFinish}
     >
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <Form.Item
           label="NIK"
           name="nik"
           rules={[{ required: true, message: "Please input NIK!" }]}
         >
-          <InputNumber className="w-full" placeholder="****************" />
+          <InputNumber
+            className="w-full"
+            placeholder="Input NIK"
+            controls={false}
+          />
         </Form.Item>
 
         <Form.Item
@@ -86,7 +90,7 @@ export const ManualForm = () => {
           name="name"
           rules={[{ required: true, message: "Please input name!" }]}
         >
-          <Input placeholder="John Doe" />
+          <Input placeholder="Input nama lengkap" />
         </Form.Item>
 
         <Form.Item
@@ -94,7 +98,7 @@ export const ManualForm = () => {
           name="id_role"
           rules={[{ required: true, message: "Please select role!" }]}
         >
-          <Select placeholder="Select role">
+          <Select placeholder="Pilih role">
             {roles?.map((role) => (
               <Select.Option key={role.id_role} value={role.id_role}>
                 {role.role_name}
@@ -108,7 +112,7 @@ export const ManualForm = () => {
           name="id_department"
           rules={[{ required: true, message: "Please select department!" }]}
         >
-          <Select placeholder="Select department">
+          <Select placeholder="Pilih departemen">
             {departments?.map((dept) => (
               <Select.Option
                 key={dept.id_department}
@@ -125,7 +129,7 @@ export const ManualForm = () => {
           name="position"
           rules={[{ required: true, message: "Please input position!" }]}
         >
-          <Input placeholder="Staff" />
+          <Input placeholder="Input posisi" />
         </Form.Item>
 
         <Form.Item
@@ -135,7 +139,7 @@ export const ManualForm = () => {
         >
           <InputNumber
             className="w-full"
-            placeholder="1,000,000"
+            placeholder="Input gaji dasar"
             formatter={(value) =>
               `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
             }
@@ -153,9 +157,9 @@ export const ManualForm = () => {
         </Form.Item>
       </div>
 
-      <Form.Item className="flex justify-end mt-6">
+      <Form.Item className="flex justify-end mb-0">
         <Button type="primary" htmlType="submit" loading={loading}>
-          Submit
+          Generate Account
         </Button>
       </Form.Item>
     </Form>
@@ -171,12 +175,12 @@ export const UploadCSV = () => {
     multiple: false,
     accept: ".csv,.txt",
     beforeUpload: (file) => {
-      setUploadedFile(file); // Simpan file ke state untuk diproses nanti
+      setUploadedFile(file);
       message.success(`${file.name} berhasil diunggah`);
-      return false; // Blokir unggahan otomatis
+      return false;
     },
     onRemove: () => {
-      setUploadedFile(null); // Hapus file yang diunggah
+      setUploadedFile(null);
       message.info("File unggahan telah dihapus");
     },
   };
@@ -187,14 +191,13 @@ export const UploadCSV = () => {
       return;
     }
 
-    const formData = new FormData();
-    formData.append("file", uploadedFile);
-
     setLoading(true);
     try {
+      const formData = new FormData();
+      formData.append("file", uploadedFile);
       await userServices.importUsers(formData);
       message.success("Akun berhasil dibuat dari file CSV");
-      setUploadedFile(null); // Reset file setelah berhasil diproses
+      setUploadedFile(null);
     } catch (error) {
       console.error("Error importing users:", error);
       message.error(
@@ -206,36 +209,32 @@ export const UploadCSV = () => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto w-full">
-      <Form className="space-y-6">
-        <div className="w-full p-4 sm:p-6 border-2 border-dashed border-gray-300 rounded-lg">
-          <Dragger {...uploadProps}>
-            <p className="ant-upload-drag-icon">
-              <InboxOutlined />
-            </p>
-            <p className="ant-upload-text text-base sm:text-lg">
-              Klik atau seret file CSV/TXT ke area ini untuk mengunggah
-            </p>
-            <p className="ant-upload-hint text-sm px-4 text-center">
-              Hanya mendukung file CSV atau TXT. Pastikan file Anda memiliki
-              kolom yang diperlukan.
-            </p>
-          </Dragger>
-        </div>
+    <div className="max-w-2xl mx-auto w-full space-y-6">
+      <div className="p-6 border-2 border-dashed border-gray-300 rounded-lg bg-gray-50">
+        <Dragger {...uploadProps}>
+          <p className="ant-upload-drag-icon">
+            <InboxOutlined className="text-3xl text-blue-500" />
+          </p>
+          <p className="ant-upload-text text-base sm:text-lg font-medium">
+            Klik atau seret file CSV/TXT ke area ini
+          </p>
+          <p className="ant-upload-hint text-sm text-gray-500 px-4 text-center">
+            Hanya mendukung file CSV atau TXT. Pastikan file memiliki format
+            yang sesuai.
+          </p>
+        </Dragger>
+      </div>
 
-        <div className="flex justify-end">
-          <Button
-            type="primary"
-            onClick={handleSubmit}
-            loading={loading}
-            disabled={!uploadedFile}
-          >
-            Submit
-          </Button>
-        </div>
-      </Form>
+      <div className="flex justify-end">
+        <Button
+          type="primary"
+          onClick={handleSubmit}
+          loading={loading}
+          disabled={!uploadedFile}
+        >
+          Submit
+        </Button>
+      </div>
     </div>
   );
 };
-
-export default UploadCSV;

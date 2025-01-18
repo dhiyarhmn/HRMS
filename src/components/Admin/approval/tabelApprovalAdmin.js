@@ -1,111 +1,69 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { SearchOutlined } from "@ant-design/icons";
-import { Button, Input, Space, Table } from "antd";
+import { Button, Input, Space, Table, message, Spin, Tag } from "antd";
 import Highlighter from "react-highlight-words";
+import { bookingServices } from "@/api/api";
+import dayjs from "dayjs";
 
-const data = [
-  {
-    key: "1",
-    nama: "John Brown",
-    divisi: 32,
-    ruangan: "E101",
-    hari: "Senin, 1 Januari 2025",
-    jam: "08:00 - 10:00",
-  },
-  {
-    key: "2",
-    nama: "Joe Black",
-    divisi: 42,
-    ruangan: "E102",
-    hari: "Senin, 1 Januari 2025",
-    jam: "10:00 - 11:00",
-  },
-  {
-    key: "3",
-    nama: "Jim Green",
-    divisi: 32,
-    ruangan: "E103",
-    hari: "Senin, 1 Januari 2025",
-    jam: "11:00 - 12:00",
-  },
-  {
-    key: "4",
-    nama: "Jim Red",
-    divisi: 32,
-    ruangan: "E104",
-    hari: "Selasa, 2 Januari 2025",
-    jam: "09:00 - 10:00",
-  },
-  {
-    key: "5",
-    nama: "John Brown",
-    divisi: 32,
-    ruangan: "E101",
-    hari: "Senin, 1 Januari 2025",
-    jam: "08:00 - 10:00",
-  },
-  {
-    key: "6",
-    nama: "Joe Black",
-    divisi: 42,
-    ruangan: "E102",
-    hari: "Senin, 1 Januari 2025",
-    jam: "10:00 - 11:00",
-  },
-  {
-    key: "7",
-    nama: "Jim Green",
-    divisi: 32,
-    ruangan: "E103",
-    hari: "Senin, 1 Januari 2025",
-    jam: "11:00 - 12:00",
-  },
-  {
-    key: "8",
-    nama: "Jim Red",
-    divisi: 32,
-    ruangan: "E104",
-    hari: "Selasa, 2 Januari 2025",
-    jam: "09:00 - 10:00",
-  },
-  {
-    key: "9",
-    nama: "John Brown",
-    divisi: 32,
-    ruangan: "E101",
-    hari: "Senin, 1 Januari 2025",
-    jam: "08:00 - 10:00",
-  },
-  {
-    key: "10",
-    nama: "Joe Black",
-    divisi: 42,
-    ruangan: "E102",
-    hari: "Senin, 1 Januari 2025",
-    jam: "10:00 - 11:00",
-  },
-  {
-    key: "11",
-    nama: "Jim Green",
-    divisi: 32,
-    ruangan: "E103",
-    hari: "Senin, 1 Januari 2025",
-    jam: "11:00 - 12:00",
-  },
-  {
-    key: "12",
-    nama: "Jim Red",
-    divisi: 32,
-    ruangan: "E104",
-    hari: "Selasa, 2 Januari 2025",
-    jam: "09:00 - 10:00",
-  },
-];
-
-const TabelApprovalAdmin = ({ detail }) => {
+const TabelApprovalAdmin = ({ detail, refreshTrigger, statusFilter }) => {
+  const [bookings, setBookings] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef(null);
+
+  useEffect(() => {
+    fetchBookings();
+  }, [refreshTrigger, statusFilter]);
+
+  const fetchBookings = async () => {
+    try {
+      setLoading(true);
+      const response = await bookingServices.getBookings();
+      if (response.data && response.data.data) {
+        let filteredData = response.data.data;
+
+        if (statusFilter && statusFilter !== "all") {
+          filteredData = filteredData.filter(
+            (booking) =>
+              booking.booking_status.toLowerCase() ===
+              statusFilter.toLowerCase()
+          );
+        }
+
+        const transformedData = filteredData.map((booking) => ({
+          key: booking.id_booking,
+          employee_id: booking.id_employee,
+          room_id: booking.id_room,
+          booking_date: dayjs(booking.booking_date).format("DD MMMM YYYY"),
+          status: booking.booking_status,
+          time: booking.times
+            .map((time) => `${time.start} - ${time.end}`)
+            .join(", "),
+          raw_data: booking,
+        }));
+        setBookings(transformedData);
+      }
+    } catch (error) {
+      console.error("Error fetching bookings:", error);
+      message.error("Gagal mengambil data booking");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getStatusColor = (status) => {
+    switch (status.toLowerCase()) {
+      case "pending":
+        return "orange";
+      case "accept":
+        return "green";
+      case "reject":
+        return "red";
+      default:
+        return "default";
+    }
+  };
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm({ closeDropdown: false });
@@ -185,49 +143,50 @@ const TabelApprovalAdmin = ({ detail }) => {
 
   const columns = [
     {
-      title: "Nama",
-      dataIndex: "nama",
-      key: "nama",
-      ...getColumnSearchProps("nama"),
-      responsive: ["sm"],
+      title: "Nama Ruangan",
+      dataIndex: "room_id",
+      key: "room_id",
+      ...getColumnSearchProps("room_id"),
+      className: "min-w-[150px]",
     },
     {
-      title: "Divisi",
-      dataIndex: "divisi",
-      key: "divisi",
-      ...getColumnSearchProps("divisi"),
-      responsive: ["md"],
+      title: "Tanggal Booking",
+      dataIndex: "booking_date",
+      key: "booking_date",
+      sorter: (a, b) =>
+        dayjs(a.booking_date).unix() - dayjs(b.booking_date).unix(),
+      className: "min-w-[150px]",
     },
     {
-      title: "Ruangan",
-      dataIndex: "ruangan",
-      key: "ruangan",
-      ...getColumnSearchProps("ruangan"),
+      title: "Jadwal",
+      dataIndex: "time",
+      key: "time",
+      className: "min-w-[200px]",
+      render: (text) => (
+        <div className="whitespace-normal break-words">{text}</div>
+      ),
     },
     {
-      title: "Hari",
-      dataIndex: "hari",
-      key: "hari",
-      ...getColumnSearchProps("hari"),
-      responsive: ["lg"],
-    },
-    {
-      title: "Jam",
-      dataIndex: "jam",
-      key: "jam",
-      ...getColumnSearchProps("jam"),
-      responsive: ["xl"],
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      className: "min-w-[100px]",
+      render: (status) => (
+        <Tag color={getStatusColor(status)} className="text-sm">
+          {status.toUpperCase()}
+        </Tag>
+      ),
     },
     {
       title: "Action",
       key: "action",
-      fixed: "right",
-      width: 100,
+      className: "min-w-[100px]",
       render: (_, record) => (
         <Button
-          type="link"
-          onClick={() => detail(record)}
-          className="text-blue-500 p-0"
+          type="primary"
+          size="small"
+          onClick={() => detail(record.raw_data)}
+          className="px-4"
         >
           Detail
         </Button>
@@ -235,20 +194,31 @@ const TabelApprovalAdmin = ({ detail }) => {
     },
   ];
 
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-[300px]">
+        <Spin size="large" />
+      </div>
+    );
+  }
+
   return (
-    <div className="w-full overflow-x-auto">
+    <div className="w-full">
       <Table
         columns={columns}
-        dataSource={data}
-        className="min-w-full"
-        scroll={{ x: "max-content" }}
+        dataSource={bookings}
         pagination={{
           responsive: true,
-          position: ["bottomCenter"],
           pageSize: 5,
           showTotal: (total, range) =>
-            `${range[0]}-${range[1]} of ${total} items`,
+            `${range[0]}-${range[1]} dari ${total} item`,
+          
         }}
+        scroll={{
+          x: "max-content",
+          scrollToFirstRowOnChange: true,
+        }}
+        
       />
     </div>
   );

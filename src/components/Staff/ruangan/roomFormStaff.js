@@ -5,7 +5,7 @@ import roomPic from "@/public/room-1.jpeg";
 import { bookingServices, roomServices } from "@/api/api";
 import dayjs from "dayjs";
 
-const RoomForm = ({ room }) => {
+const RoomFormStaff = ({ room }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [checked, setChecked] = useState({});
   const [bookingDate, setBookingDate] = useState(null);
@@ -252,4 +252,4 @@ const RoomForm = ({ room }) => {
   );
 };
 
-export default RoomForm;
+export default RoomFormStaff;

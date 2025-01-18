@@ -1,10 +1,10 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import RoomForm from "@/components/Staff/ruangan/roomform";
+import { roomServices } from "@/api/api";
+import RoomForm from "@/components/Staff/ruangan/roomFormStaff";
+import roomPic from "@/public/room-1.jpeg";
 import { Card, Empty, Spin } from "antd";
 import Image from "next/image";
-import roomPic from "@/public/room-1.jpeg";
-import { roomServices } from "@/api/api";
+import { useEffect, useState } from "react";
 const { Meta } = Card;
 
 const DaftarRuanganStaff = () => {

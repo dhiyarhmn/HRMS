@@ -3,26 +3,25 @@ import { useEffect, useState } from "react";
 import NavigationAdmin from "@/components/Admin/navigation/navigationAdmin";
 import TabelApprovalAdmin from "@/components/Admin/approval/tabelApprovalAdmin";
 import Navbar from "@/components/Navbar/navbar";
-import { Button, message, Modal } from "antd";
+import { Button, message, Modal, Tag, Select } from "antd";
+import { bookingServices } from "@/api/api";
+import dayjs from "dayjs";
+
+const { Option } = Select;
 
 export default function Approval() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null);
   const [modalWidth, setModalWidth] = useState(600);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
+  const [statusFilter, setStatusFilter] = useState("all");
 
-  // Handle window resize for modal width
   useEffect(() => {
     const handleResize = () => {
       setModalWidth(window.innerWidth < 640 ? "95%" : 600);
     };
-
-    // Set initial width
     handleResize();
-
-    // Add event listener
     window.addEventListener("resize", handleResize);
-
-    // Cleanup
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
@@ -35,75 +34,146 @@ export default function Approval() {
     setIsModalOpen(false);
   };
 
-  const handleApproval = (isApproved) => {
-    const action = isApproved
-      ? message.success(`Peminjaman ruangan disetujui`)
-      : message.error(`Peminjaman ruangan ditolak`);
-    setIsModalOpen(false);
+  const handleApproval = async (isApproved) => {
+    try {
+      if (!selectedRecord) return;
+
+      if (isApproved) {
+        await bookingServices.approveBooking(selectedRecord.id_booking);
+        setSelectedRecord((prev) => ({
+          ...prev,
+          booking_status: "Accept",
+        }));
+        setRefreshTrigger((prev) => prev + 1);
+        message.success("Booking ruangan berhasil disetujui");
+      } else {
+        message.error("Booking ruangan ditolak");
+      }
+      setIsModalOpen(false);
+    } catch (error) {
+      console.error("Error handling approval:", error);
+      message.error("Gagal memproses approval");
+    }
+  };
+
+  const getStatusColor = (status) => {
+    switch (status.toLowerCase()) {
+      case "pending":
+        return "orange";
+      case "accept":
+        return "green";
+      default:
+        return "default";
+    }
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-gray-50">
       <Navbar href={"/Admin/home"} p={"Admin"} />
-      <NavigationAdmin
-      />
-      {/* Added margin between navigation and content */}
-      <section className="flex-grow mt-4 md:mt-6">
-        <div className="container mx-auto px-4">
-          <div className="bg-second rounded-lg p-4 md:p-6">
-            <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-              <TabelApprovalAdmin detail={showModal} />
+      <NavigationAdmin />
+
+      {/* Main Content */}
+      <main className="flex-grow px-4 py-6 md:px-6 lg:px-8">
+        {/* Filter Section */}
+        <div className="max-w-7xl mx-auto mb-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <h1 className="text-2xl font-semibold text-gray-900">
+              Approval Booking
+            </h1>
+            <Select
+              defaultValue="all"
+              className="w-full sm:w-48"
+              onChange={(value) => setStatusFilter(value)}
+            >
+              <Option value="all">Semua Status</Option>
+              <Option value="pending">Pending</Option>
+              <Option value="accept">Accept</Option>
+            </Select>
+          </div>
+        </div>
+
+        {/* Table Section */}
+        <div className="max-w-7xl mx-auto">
+          <div className="bg-third rounded-xl shadow-sm overflow-hidden">
+            <div className="p-4 sm:p-6">
+              <TabelApprovalAdmin
+                detail={showModal}
+                refreshTrigger={refreshTrigger}
+                statusFilter={statusFilter}
+              />
             </div>
           </div>
         </div>
-      </section>
+      </main>
+
+      {/* Detail Modal */}
       <Modal
-        title="Detail Data"
+        title={
+          <h3 className="text-lg font-semibold text-gray-900">
+            Detail Booking Ruangan
+          </h3>
+        }
         open={isModalOpen}
         onCancel={handleCancel}
         footer={[
-          <Button
-            key="reject"
-            type="primary"
-            danger
-            onClick={() => handleApproval(false)}
-            className="mr-2"
-          >
-            Tolak
-          </Button>,
-          <Button
-            key="approve"
-            type="primary"
-            onClick={() => handleApproval(true)}
-          >
-            Setujui
-          </Button>,
+          selectedRecord?.booking_status === "Pending" && (
+            <div key="footer" className="flex justify-end gap-3">
+              <Button
+                key="approve"
+                type="primary"
+                onClick={() => handleApproval(true)}
+                className="px-6"
+              >
+                Setujui
+              </Button>
+            </div>
+          ),
         ]}
         width={modalWidth}
         centered
+        className="custom-modal"
       >
         {selectedRecord && (
-          <div className="space-y-4">
+          <div className="space-y-6">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="bg-gray-50 p-3 rounded">
-                <strong className="text-gray-700 block mb-1">Nama:</strong>
-                <p className="text-gray-900">{selectedRecord.nama}</p>
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <strong className="text-sm font-medium text-gray-700 block mb-1">
+                  ID Booking
+                </strong>
+                <p className="text-base text-gray-900">
+                  {selectedRecord.id_booking}
+                </p>
               </div>
-              <div className="bg-gray-50 p-3 rounded">
-                <strong className="text-gray-700 block mb-1">Divisi:</strong>
-                <p className="text-gray-900">{selectedRecord.divisi}</p>
+
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <strong className="text-sm font-medium text-gray-700 block mb-1">
+                  Tanggal Booking
+                </strong>
+                <p className="text-base text-gray-900">
+                  {dayjs(selectedRecord.booking_date).format("DD MMMM YYYY")}
+                </p>
               </div>
-              <div className="bg-gray-50 p-3 rounded">
-                <strong className="text-gray-700 block mb-1">Ruangan:</strong>
-                <p className="text-gray-900">{selectedRecord.ruangan}</p>
+
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <strong className="text-sm font-medium text-gray-700 block mb-1">
+                  Status
+                </strong>
+                <Tag color={getStatusColor(selectedRecord.booking_status)}>
+                  {selectedRecord.booking_status.toUpperCase()}
+                </Tag>
               </div>
-              <div className="bg-gray-50 p-3 rounded">
-                <strong className="text-gray-700 block mb-1">Hari:</strong>
-                <p className="text-gray-900">{selectedRecord.hari}</p>
-              </div>
-              <div className="bg-gray-50 p-3 rounded sm:col-span-2">
-                <strong className="text-gray-700 block mb-1">Jam:</strong>
-                <p className="text-gray-900">{selectedRecord.jam}</p>
+
+              <div className="bg-gray-50 p-4 rounded-lg sm:col-span-2">
+                <strong className="text-sm font-medium text-gray-700 block mb-2">
+                  Jadwal
+                </strong>
+                <div className="space-y-1">
+                  {selectedRecord.times.map((time, index) => (
+                    <p key={index} className="text-base text-gray-900">
+                      {time.start} - {time.end}
+                    </p>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
