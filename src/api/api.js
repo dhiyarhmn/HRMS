@@ -30,7 +30,9 @@ api.interceptors.response.use(
     if (error.response?.status === 401) {
       localStorage.removeItem("token");
       localStorage.removeItem("user");
-      window.location.href = "/login";
+      // Hapus window.location.href untuk mencegah reload
+      // Gunakan router.push sebagai gantinya di komponen
+      return Promise.reject(error);
     }
     return Promise.reject(error);
   }
@@ -49,9 +51,11 @@ export const login = async (username, password) => {
 
     return { message, user: data.user, first_login: data.first_login };
   } catch (error) {
-    throw new Error(
-      error.response?.data?.message || "Login failed. Please try again."
-    );
+    // Tangkap pesan error dari backend
+    const errorMessage =
+      error.response?.data?.message ||
+      "Login gagal, cek kembali username dan password";
+    throw new Error(errorMessage);
   }
 };
 
@@ -127,19 +131,13 @@ export const bookingServices = {
   getBookings: () => api.get("/books"),
   createBooking: async (bookingData) => {
     try {
-      const response = await api.post("/book", {
-        id_room: bookingData.id_room,
-        booking_date: bookingData.booking_date,
-        start_time: bookingData.start_time,
-        end_time: bookingData.end_time,
-        usage_duration: String(bookingData.usage_duration), // Pastikan dalam format string
-      });
+      const response = await api.post("/book", bookingData); // Langsung kirim bookingData tanpa modifikasi
       return response.data;
     } catch (error) {
       throw error;
     }
   },
-  getBookingById: (id) => api.get(`/book/${id_booking}`),
+  getBookingById: (id_booking) => api.get(`/book/${id_booking}`),
   approveBooking: (id) => api.post(`/approve/book/${id}`),
   deleteBooking: (id) => api.delete(`/book/${id}`),
 };
@@ -210,64 +208,130 @@ export const employeeServices = {
       const response = await api.put(`/employee/${userData.id}`, userData);
       return response.data;
     } catch (error) {
-      throw new Error(error.response?.data?.message || "Failed to update profile");
+      throw new Error(
+        error.response?.data?.message || "Failed to update profile"
+      );
     }
   },
-  
-  // Get employee details
-  getEmployeeDetails: async (id) => {
+
+  getHomeRoute: (role) => {
+    const routes = {
+      staff: "/Staff/home",
+      manager: "/Manager/home",
+      hrga: "/HRGA/home",
+      director: "/Direktur/home",
+      admin: "/Admin/home",
+    };
+    const normalizedRole = role?.toLowerCase();
+    return routes[normalizedRole] || "/login";
+  },
+
+  completeNewUserProfile: async (userData) => {
     try {
-      const response = await api.get(`/employee/${id}`);
-      return response.data;
+      const currentUser = JSON.parse(localStorage.getItem("user"));
+
+      if (!currentUser?.id_employee) {
+        throw new Error("User ID not found");
+      }
+
+      // Hapus position dari userData jika tidak diperlukan
+      const requestData = {
+        name: userData.name,
+        phone: userData.phone,
+        gender: userData.gender,
+        date_of_birth: userData.date_of_birth,
+      };
+
+      // Hanya tambahkan position jika ada
+      if (userData.position) {
+        requestData.position = userData.position;
+      }
+
+      const response = await api.put(`/employee/update`, requestData);
+
+      // Periksa status response
+      if (response.status === 200 && response.data.employee) {
+        // Update local storage dengan data baru
+        const updatedUserData = {
+          ...currentUser,
+          ...response.data.employee,
+          isProfileCompleted: true,
+        };
+        localStorage.setItem("user", JSON.stringify(updatedUserData));
+
+        return {
+          success: true,
+          message: response.data.message,
+          data: response.data.employee,
+        };
+      }
+
+      return {
+        success: false,
+        message: response.data.message || "Failed to update profile",
+      };
     } catch (error) {
-      throw new Error(error.response?.data?.message || "Failed to fetch employee details");
+      console.error("API Error:", error);
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Failed to update profile";
+      throw new Error(errorMessage);
     }
   },
 
   completeNewUserProfile: async (userData) => {
     try {
-      const response = await api.put("/employee/update", {
+      // Ambil user data dari localStorage
+      const currentUser = JSON.parse(localStorage.getItem("user"));
+
+      if (!currentUser?.id_employee) {
+        throw new Error("User ID not found");
+      }
+
+      const response = await api.put(`/employee/${currentUser.id_employee}`, {
         name: userData.name,
         phone: userData.phone,
         gender: userData.gender,
         position: userData.position,
-        date_of_birth: userData.date_of_birth
+        date_of_birth: userData.date_of_birth,
       });
 
-      if (response.data.success) {
+      if (response.data.employee) {
         // Update user data in localStorage
-        const currentUser = JSON.parse(localStorage.getItem("user"));
         const updatedUserData = {
           ...currentUser,
+          ...response.data.employee,
           first_login: false,
-          ...userData
+          isProfileCompleted: true,
         };
         localStorage.setItem("user", JSON.stringify(updatedUserData));
+        return {
+          success: true,
+          message: response.data.message,
+          data: response.data.employee,
+        };
       }
 
-      return response.data;
+      return {
+        success: false,
+        message: response.data.message,
+      };
     } catch (error) {
-      throw new Error(error.response?.data?.message || "Failed to update profile");
+      console.error("API Error:", error);
+      throw new Error(
+        error.response?.data?.message || "Failed to update profile"
+      );
     }
   },
-
-  // Helper function untuk redirect berdasarkan role
-  getHomeRoute: (role) => {
-    const roleRoutes = {
-      "director": "/Direktur/home",
-      "admin": "/Admin/home",
-      "hrga": "/HRGA/home",
-      "manager": "/Manager/home",
-      "staff": "/Staff/home"
-    };
-    return roleRoutes[role] || "/login";
-  }
 };
 
 // Allowance Services
 export const allowanceServices = {
   getAllowances: () => api.get("/allowances"),
-  createAllowance: (allowanceData) => api.post("/allowance", allowanceData),
+  createAllowance: (allowanceData) => {
+    return api.post("/allowance", allowanceData);
+  },
   getAllowanceById: (id) => api.get(`/allowance/${id}`),
   updateAllowance: (id, allowanceData) =>
     api.put(`/allowance/${id}`, allowanceData),
@@ -277,7 +341,9 @@ export const allowanceServices = {
 // Deduction Services
 export const deductionServices = {
   getDeductions: () => api.get("/deductions"),
-  createDeduction: (deductionData) => api.post("/deduction", deductionData),
+  createDeduction: (deductionData) => {
+    return api.post("/deduction", deductionData);
+  },
   getDeductionById: (id) => api.get(`/deduction/${id}`),
   updateDeduction: (id, deductionData) =>
     api.put(`/deduction/${id}`, deductionData),
@@ -287,8 +353,9 @@ export const deductionServices = {
 // Other Deduction Services
 export const otherDeductionServices = {
   getOtherDeductions: () => api.get("/other_deductions"),
-  createOtherDeduction: (deductionData) =>
-    api.post("/other_deduction", deductionData),
+  createOtherDeduction: (deductionData) => {
+    return api.post("/other_deduction", deductionData);
+  },
   getOtherDeductionById: (id) => api.get(`/other_deduction/${id}`),
   updateOtherDeduction: (id, deductionData) =>
     api.put(`/other_deduction/${id}`, deductionData),
@@ -298,10 +365,42 @@ export const otherDeductionServices = {
 // Bonus Services
 export const bonusServices = {
   getBonuses: () => api.get("/bonuses"),
-  createBonus: (bonusData) => api.post("/bonus", bonusData),
+  createBonus: (bonusData) => {
+    return api.post("/bonus", bonusData);
+  },
   getBonusById: (id) => api.get(`/bonus/${id}`),
   updateBonus: (id, bonusData) => api.put(`/bonus/${id}`, bonusData),
   deleteBonus: (id) => api.delete(`/bonus/${id}`),
+};
+
+// Payroll Services
+export const payrollServices = {
+  // Menghitung payroll untuk karyawan tertentu
+  calculatePayroll: (payrollData) =>
+    api.post("/payroll/calculate", payrollData),
+
+  // Mendapatkan semua data payroll
+  getAllPayroll: () => api.get("/payrolls"),
+
+  // Mendapatkan payroll berdasarkan bulan
+  getPayrollByMonth: (monthData) =>
+    api.get("/payrolls/month", { params: monthData }),
+
+  // Mendapatkan payroll berdasarkan karyawan
+  getPayrollByEmployee: (employeeData) =>
+    api.get("/payrolls/employee", {
+      params: { id_employee: employeeData.id_employee },
+    }),
+
+  // Update payroll karyawan
+  updatePayrollByEmployee: (payrollData) =>
+    api.put("/payroll/update", payrollData),
+
+  // Menghapus payroll tertentu
+  deletePayroll: (id) => api.delete(`/payroll/${id}`),
+
+  // Menghapus semua data payroll
+  deleteAllPayroll: () => api.delete("/payrolls/delete"),
 };
 
 export default api;

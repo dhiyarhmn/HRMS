@@ -1,75 +1,41 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { SearchOutlined } from "@ant-design/icons";
 import { Button, Input, Space, Table } from "antd";
 import Highlighter from "react-highlight-words";
-
-const data = [
-  {
-    key: "1",
-    nama: "John Brown",
-    divisi: 32,
-  },
-  {
-    key: "2",
-    nama: "Joe Black",
-    divisi: 42,
-  },
-  {
-    key: "3",
-    nama: "Jim Green",
-    divisi: 32,
-  },
-  {
-    key: "4",
-    nama: "Jim Red",
-    divisi: 32,
-  },
-  {
-    key: "5",
-    nama: "John Brown",
-    divisi: 32,
-  },
-  {
-    key: "6",
-    nama: "Joe Black",
-    divisi: 42,
-  },
-  {
-    key: "7",
-    nama: "Jim Green",
-    divisi: 32,
-  },
-  {
-    key: "8",
-    nama: "Jim Red",
-    divisi: 32,
-  },
-  {
-    key: "9",
-    nama: "John Brown",
-    divisi: 32,
-  },
-  {
-    key: "10",
-    nama: "Joe Black",
-    divisi: 42,
-  },
-  {
-    key: "11",
-    nama: "Jim Green",
-    divisi: 32,
-  },
-  {
-    key: "12",
-    nama: "Jim Red",
-    divisi: 32,
-  },
-];
+import { userServices } from "@/api/api";
 
 const TabelGajiAdmin = ({ detail }) => {
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef(null);
+
+  useEffect(() => {
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      const response = await userServices.getUsers(); // Ambil data karyawan
+
+      // Pastikan mengakses response.data.data
+      const formattedData = response.data.data.map((item) => ({
+        key: item.id_employee, // Pastikan ID unik digunakan sebagai key
+        nama: item.username, // Ambil username sebagai nama
+        divisi: item.role_name, // Ambil role_name sebagai divisi
+      }));
+
+      setData(formattedData || []);
+    } catch (err) {
+      setError(err.message || "Failed to fetch employee data");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchData();
+}, []);
+
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm({ closeDropdown: false });
@@ -168,9 +134,10 @@ const TabelGajiAdmin = ({ detail }) => {
       width: 100,
       render: (_, record) => (
         <Button
-          type="link"
-          onClick={() => detail(record)}
-          className="text-blue-500 p-0"
+          type="primary"
+          size="small"
+          onClick={() => detail(record.key)} // Pastikan record.key adalah ID karyawan
+          className="px-4"
         >
           Detail
         </Button>
@@ -178,16 +145,20 @@ const TabelGajiAdmin = ({ detail }) => {
     },
   ];
 
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+
   return (
-    <div className="w-full overflow-x-auto">
+    <div className="w-full">
       <Table
         columns={columns}
         dataSource={data}
-        className="min-w-full"
-        scroll={{ x: "max-content" }}
+        scroll={{
+          x: "max-content",
+          scrollToFirstRowOnChange: true,
+        }}
         pagination={{
           responsive: true,
-          position: ["bottomCenter"],
           pageSize: 5,
           showTotal: (total, range) =>
             `${range[0]}-${range[1]} of ${total} items`,

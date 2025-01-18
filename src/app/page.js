@@ -32,11 +32,11 @@ export default function LandingPage() {
                 className="w-8 h-8 sm:w-12 sm:h-12"
                 alt="DIHI Logo"
               />
-              <span className="font-semibold text-sm sm:text-base">HRMS</span>
+              <span className="font-semibold text-sm sm:text-base">DIHI</span>
             </a>
           </div>
           <div className="hidden sm:flex grow justify-center font-semibold">
-            HR Management System
+            Selamat Datang di Aplikasi HRMS!
           </div>
           <div className="flex w-auto sm:w-1/6 justify-end">
             <LoginButton onClick={handleLogin} />
