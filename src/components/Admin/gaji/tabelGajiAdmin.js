@@ -13,29 +13,45 @@ const TabelGajiAdmin = ({ detail }) => {
   const searchInput = useRef(null);
 
   useEffect(() => {
-  const fetchData = async () => {
-    try {
-      setLoading(true);
-      const response = await userServices.getUsers(); // Ambil data karyawan
+    const fetchUserData = async (userId) => {
+      try {
+        const response = await userServices.getUserById(userId);
+        return {
+          key: response.data.data.id_employee,
+          nama: response.data.data.employee_data.name,
+          divisi: response.data.data.role_name,
+        };
+      } catch (err) {
+        console.error(`Error fetching user ${userId}:`, err);
+        return null;
+      }
+    };
 
-      // Pastikan mengakses response.data.data
-      const formattedData = response.data.data.map((item) => ({
-        key: item.id_employee, // Pastikan ID unik digunakan sebagai key
-        nama: item.username, // Ambil username sebagai nama
-        divisi: item.role_name, // Ambil role_name sebagai divisi
-      }));
+    const fetchAllUserData = async () => {
+      try {
+        setLoading(true);
+        // First, get the list of user IDs or basic user data
+        const userListResponse = await userServices.getUsers();
+        const userIds = userListResponse.data.data.map(
+          (user) => user.id_employee
+        );
 
-      setData(formattedData || []);
-    } catch (err) {
-      setError(err.message || "Failed to fetch employee data");
-    } finally {
-      setLoading(false);
-    }
-  };
+        // Fetch detailed data for each user
+        const userDataPromises = userIds.map((userId) => fetchUserData(userId));
+        const userData = await Promise.all(userDataPromises);
 
-  fetchData();
-}, []);
+        // Filter out any null values from failed requests
+        const validUserData = userData.filter((user) => user !== null);
+        setData(validUserData);
+      } catch (err) {
+        setError(err.message || "Failed to fetch employee data");
+      } finally {
+        setLoading(false);
+      }
+    };
 
+    fetchAllUserData();
+  }, []);
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm({ closeDropdown: false });
@@ -136,7 +152,7 @@ const TabelGajiAdmin = ({ detail }) => {
         <Button
           type="primary"
           size="small"
-          onClick={() => detail(record.key)} // Pastikan record.key adalah ID karyawan
+          onClick={() => detail(record.key)}
           className="px-4"
         >
           Detail
