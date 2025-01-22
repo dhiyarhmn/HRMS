@@ -379,6 +379,9 @@ export const payrollServices = {
   calculatePayroll: (payrollData) =>
     api.post("/payroll/calculate", payrollData),
 
+  // Mendapatkan summary payroll berdasarkan bulan dan tahun
+  getPayrollSummary: (params) => api.get("/payrolls/summary", params),
+
   // Mendapatkan semua data payroll
   getAllPayroll: () => api.get("/payrolls"),
 

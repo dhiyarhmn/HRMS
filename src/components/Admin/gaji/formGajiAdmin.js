@@ -5,6 +5,7 @@ import BonusForm from "./BonusForm";
 import DeductionForm from "./DeductionForm";
 import OtherDeductionForm from "./OtherDeductionForm";
 import PayrollCalculator from "./PayrollCalculator";
+import PaySlip from "./PaySlip";
 
 const { TabPane } = Tabs;
 
@@ -120,6 +121,9 @@ const FormGajiAdmin = ({ selectedRecord }) => {
               </div>
             </div>
           )}
+        </TabPane>
+        <TabPane tab="Print Payslip" key="6">
+          <PaySlip selectedRecord={employeeId} />
         </TabPane>
       </Tabs>
     </div>
