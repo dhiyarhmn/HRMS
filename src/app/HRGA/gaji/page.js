@@ -37,27 +37,44 @@ export default function Gaji() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-gray-50">
       <Navbar href={"/HRGA/home"} p={"HRGA"} />
       <NavigationHRGA />
 
-      <section className="flex-grow mt-4 md:mt-6">
-        <div className="container mx-auto px-4">
-          <div className="bg-second rounded-lg p-4 md:p-6">
-            <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+      {/* Main Content */}
+      <main className="flex-grow px-4 py-6 md:px-6 lg:px-8">
+        {/* Header Section */}
+        <div className="max-w-7xl mx-auto mb-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <h1 className="text-2xl font-semibold text-gray-900">
+              Data Gaji Karyawan
+            </h1>
+          </div>
+        </div>
+
+        {/* Table Section */}
+        <div className="max-w-7xl mx-auto">
+          <div className="bg-third rounded-xl shadow-sm overflow-hidden">
+            <div className="p-4 sm:p-6">
               <TabelGajiHRGA detail={showModal} />
             </div>
           </div>
         </div>
-      </section>
+      </main>
 
+      {/* Detail Modal */}
       <Modal
-        title="Detail Data"
+        title={
+          <h3 className="text-lg font-semibold text-gray-900">
+            Detail Data Gaji
+          </h3>
+        }
         open={isModalOpen}
         onCancel={handleCancel}
         footer={null}
         width={modalWidth}
         centered
+        className="custom-modal"
       >
         {selectedRecord && <FormGajiHRGA selectedRecord={selectedRecord} />}
       </Modal>

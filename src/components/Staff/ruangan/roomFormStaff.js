@@ -17,30 +17,30 @@ const RoomFormStaff = ({ room }) => {
       if (bookingDate && room.id_room) {
         try {
           const response = await roomServices.getListRoomBookings(room.id_room);
-          const bookings = response.data.data;
+          if (response.data && response.data.bookings) {
+            const selectedDate = dayjs(bookingDate).format("YYYY-MM-DD");
 
-          const dateBookings = bookings.filter(
-            (booking) =>
-              booking.booking_date === dayjs(bookingDate).format("YYYY-MM-DD")
-          );
+            // Filter bookings for selected date
+            const dateBookings = response.data.bookings.filter(
+              (booking) => booking.booking_date === selectedDate
+            );
 
-          const bookedTimeSlots = dateBookings.flatMap((booking) => {
-            const slots = [];
-            const startHour = parseInt(booking.start_time.split(":")[0]);
-            const endHour = parseInt(booking.end_time.split(":")[0]);
+            // Extract all booked time slots for the selected date
+            const bookedTimeSlots = dateBookings.flatMap((booking) =>
+              booking.times.map((time) => ({
+                start: time.start,
+                end: time.end,
+              }))
+            );
 
-            for (let hour = startHour; hour < endHour; hour++) {
-              const startTime = `${String(hour).padStart(2, "0")}:00`;
-              const endTime = `${String(hour + 1).padStart(2, "0")}:00`;
-              slots.push(`${startTime} - ${endTime}`);
-            }
-            return slots;
-          });
-
-          setBookedSlots(bookedTimeSlots);
+            setBookedSlots(bookedTimeSlots);
+          }
         } catch (error) {
           console.error("Error fetching bookings:", error);
-          message.error("Gagal mengambil data booking yang ada");
+          // Only show error message if it's not a 404 (no bookings found)
+          if (error.response?.status !== 404) {
+            message.error("Gagal mengambil data booking yang ada");
+          }
         }
       }
     };
@@ -76,21 +76,23 @@ const RoomFormStaff = ({ room }) => {
         }
       }
 
-      const firstTime = timeSlots[0].split(" - ")[0];
-      const lastTime = timeSlots[timeSlots.length - 1].split(" - ")[1];
-      const startHour = parseInt(firstTime.split(":")[0]);
-      const endHour = parseInt(lastTime.split(":")[0]);
-      const duration = endHour - startHour;
+      // Format data sesuai yang diharapkan backend
+      const times = [];
+      const firstTimeSlot = timeSlots[0].split(" - ");
+      const lastTimeSlot = timeSlots[timeSlots.length - 1].split(" - ");
+
+      times.push({
+        start: firstTimeSlot[0],
+        end: lastTimeSlot[1],
+      });
 
       const bookingData = {
         id_room: room.id_room,
         booking_date: dayjs(bookingDate).format("YYYY-MM-DD"),
-        start_time: firstTime,
-        end_time: lastTime,
-        usage_duration: duration.toString(),
+        times: times,
       };
 
-      await bookingServices.createBooking(bookingData);
+      const response = await bookingServices.createBooking(bookingData);
 
       message.success("Booking berhasil dibuat!");
       setIsModalOpen(false);
@@ -134,7 +136,33 @@ const RoomFormStaff = ({ room }) => {
   };
 
   const schedule = generateSchedule();
-  const isTimeSlotBooked = (time) => bookedSlots.includes(time);
+
+  const convertTimeToMinutes = (time) => {
+    const [hours, minutes] = time.split(":");
+    return parseInt(hours) * 60 + parseInt(minutes);
+  };
+
+  const isTimeSlotBooked = (timeSlot) => {
+    const [slotStart, slotEnd] = timeSlot.split(" - ");
+
+    return bookedSlots.some((bookedSlot) => {
+      // Convert times to minutes for easier comparison
+      const bookedStartMinutes = convertTimeToMinutes(bookedSlot.start);
+      const bookedEndMinutes = convertTimeToMinutes(bookedSlot.end);
+      const slotStartMinutes = convertTimeToMinutes(slotStart);
+      const slotEndMinutes = convertTimeToMinutes(slotEnd);
+
+      // Check for any overlap
+      return (
+        (slotStartMinutes >= bookedStartMinutes &&
+          slotStartMinutes < bookedEndMinutes) ||
+        (slotEndMinutes > bookedStartMinutes &&
+          slotEndMinutes <= bookedEndMinutes) ||
+        (slotStartMinutes <= bookedStartMinutes &&
+          slotEndMinutes >= bookedEndMinutes)
+      );
+    });
+  };
 
   return (
     <>
@@ -226,15 +254,15 @@ const RoomFormStaff = ({ room }) => {
                           />
                           <div
                             className={`
-                              w-full text-center p-2 rounded-lg text-sm sm:text-base
-                              ${
-                                isBooked
-                                  ? "bg-red-100 text-red-800 border border-red-300 cursor-not-allowed"
-                                  : checked[time]
-                                  ? "bg-blue-500 text-white border border-blue-600"
-                                  : "bg-green-100 text-green-800 border border-green-300 hover:bg-green-200 cursor-pointer"
-                              }
-                            `}
+                  w-full text-center p-2 rounded-lg text-sm sm:text-base
+                  ${
+                    isBooked
+                      ? "bg-red-100 text-red-800 border border-red-300 cursor-not-allowed"
+                      : checked[time]
+                      ? "bg-blue-500 text-white border border-blue-600"
+                      : "bg-green-100 text-green-800 border border-green-300 hover:bg-green-200 cursor-pointer"
+                  }
+                `}
                           >
                             {time}
                           </div>
