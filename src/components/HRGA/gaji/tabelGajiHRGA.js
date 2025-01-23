@@ -1,75 +1,57 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { SearchOutlined } from "@ant-design/icons";
 import { Button, Input, Space, Table } from "antd";
 import Highlighter from "react-highlight-words";
-
-const data = [
-  {
-    key: "1",
-    nama: "John Brown",
-    divisi: 32,
-  },
-  {
-    key: "2",
-    nama: "Joe Black",
-    divisi: 42,
-  },
-  {
-    key: "3",
-    nama: "Jim Green",
-    divisi: 32,
-  },
-  {
-    key: "4",
-    nama: "Jim Red",
-    divisi: 32,
-  },
-  {
-    key: "5",
-    nama: "John Brown",
-    divisi: 32,
-  },
-  {
-    key: "6",
-    nama: "Joe Black",
-    divisi: 42,
-  },
-  {
-    key: "7",
-    nama: "Jim Green",
-    divisi: 32,
-  },
-  {
-    key: "8",
-    nama: "Jim Red",
-    divisi: 32,
-  },
-  {
-    key: "9",
-    nama: "John Brown",
-    divisi: 32,
-  },
-  {
-    key: "10",
-    nama: "Joe Black",
-    divisi: 42,
-  },
-  {
-    key: "11",
-    nama: "Jim Green",
-    divisi: 32,
-  },
-  {
-    key: "12",
-    nama: "Jim Red",
-    divisi: 32,
-  },
-];
+import { userServices } from "@/api/api";
 
 const TabelGajiHRGA = ({ detail }) => {
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef(null);
+
+  useEffect(() => {
+    const fetchUserData = async (userId) => {
+      try {
+        const response = await userServices.getUserById(userId);
+        return {
+          key: response.data.data.id_employee,
+          nama: response.data.data.employee_data.name,
+          divisi: response.data.data.role_name,
+        };
+      } catch (err) {
+        console.error(`Error fetching user ${userId}:`, err);
+        return null;
+      }
+    };
+
+    const fetchAllUserData = async () => {
+      try {
+        setLoading(true);
+        // First, get the list of user IDs or basic user data
+        const userListResponse = await userServices.getUsers();
+        const userIds = userListResponse.data.data.map(
+          (user) => user.id_employee
+        );
+
+        // Fetch detailed data for each user
+        const userDataPromises = userIds.map((userId) => fetchUserData(userId));
+        const userData = await Promise.all(userDataPromises);
+
+        // Filter out any null values from failed requests
+        const validUserData = userData.filter((user) => user !== null);
+        setData(validUserData);
+      } catch (err) {
+        setError(err.message || "Failed to fetch employee data");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAllUserData();
+  }, []);
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm({ closeDropdown: false });
@@ -168,9 +150,10 @@ const TabelGajiHRGA = ({ detail }) => {
       width: 100,
       render: (_, record) => (
         <Button
-          type="link"
-          onClick={() => detail(record)}
-          className="text-blue-500 p-0"
+          type="primary"
+          size="small"
+          onClick={() => detail(record.key)}
+          className="px-4"
         >
           Detail
         </Button>
@@ -178,16 +161,20 @@ const TabelGajiHRGA = ({ detail }) => {
     },
   ];
 
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+
   return (
-    <div className="w-full overflow-x-auto">
+    <div className="w-full">
       <Table
         columns={columns}
         dataSource={data}
-        className="min-w-full"
-        scroll={{ x: "max-content" }}
+        scroll={{
+          x: "max-content",
+          scrollToFirstRowOnChange: true,
+        }}
         pagination={{
           responsive: true,
-          position: ["bottomCenter"],
           pageSize: 5,
           showTotal: (total, range) =>
             `${range[0]}-${range[1]} of ${total} items`,

@@ -17,7 +17,7 @@ export default function NavigationStaff() {
     { href: "/Staff/cuti", icon: cuti, label: "Cuti" },
     { href: "/Staff/lembur", icon: lembur, label: "Lembur" },
     { href: "/Staff/gaji", icon: gaji, label: "Gaji" },
-    { href: "/Staff/booking", icon: booking, label: "Booking" },
+    { href: "/Staff/ruangan", icon: booking, label: "Ruangan" },
   ];
 
   return (

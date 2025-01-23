@@ -30,8 +30,6 @@ api.interceptors.response.use(
     if (error.response?.status === 401) {
       localStorage.removeItem("token");
       localStorage.removeItem("user");
-      // Hapus window.location.href untuk mencegah reload
-      // Gunakan router.push sebagai gantinya di komponen
       return Promise.reject(error);
     }
     return Promise.reject(error);
@@ -390,10 +388,20 @@ export const payrollServices = {
     api.get("/payrolls/month", { params: monthData }),
 
   // Mendapatkan payroll berdasarkan karyawan
-  getPayrollByEmployee: (employeeData) =>
-    api.get("/payrolls/employee", {
-      params: { id_employee: employeeData.id_employee },
-    }),
+  getEmployeePayroll: async () => {
+    try {
+      const response = await api.get("/payrolls/employee");
+      return {
+        data: response.data.data || [],
+        message: response.data.message,
+      };
+    } catch (error) {
+      if (error.response?.status === 404) {
+        return { data: [], message: error.response.data.message };
+      }
+      throw error;
+    }
+  },
 
   // Update payroll karyawan
   updatePayrollByEmployee: (payrollData) =>

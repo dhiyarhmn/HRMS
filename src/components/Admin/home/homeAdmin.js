@@ -6,6 +6,7 @@ import absence from "@/public/absence.gif";
 import approval from "@/public/approval.gif";
 import salary from "@/public/salary.gif";
 import generate from "@/public/generate.gif";
+import booking from "@/public/booking.gif";
 import { useRouter } from "next/navigation";
 
 const { Meta } = Card;
@@ -40,6 +41,14 @@ export default function HomeAdmin() {
       path: "/Admin/approval",
       bgColor: "bg-third",
       rounded: "rounded-s-badge rounded-br-badge",
+    },
+    {
+      title: "Booking Ruangan",
+      description: "Lorem ipsum dolor sit amet",
+      image: booking,
+      path: "/Admin/ruangan",
+      bgColor: "bg-second",
+      rounded: "rounded-badge",
     },
     {
       title: "Generate",

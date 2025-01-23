@@ -1,50 +1,87 @@
-import React, { useRef, useState } from "react";
+import { payrollServices } from "@/api/api";
 import { SearchOutlined } from "@ant-design/icons";
-import { Button, Input, Space, Table } from "antd";
+import { Button, Empty, Input, message, Table } from "antd";
+import { useEffect, useRef, useState } from "react";
 import Highlighter from "react-highlight-words";
 
-const data = [
-  {
-    key: "1",
-    nama: "John Brown",
-    divisi: 32,
-    bulan: "25 Januari 2025",
-    jumlah: 10.5,
-    status: "Sudah dibayar",
-  },
-  {
-    key: "2",
-    nama: "Joe Black",
-    divisi: 42,
-    bulan: "25 Februari 2025",
-    jumlah: 11,
-    status: "Sudah dibayar",
-  },
-  {
-    key: "3",
-    nama: "Jim Green",
-    divisi: 32,
-    bulan: "25 Maret 2025",
-    jumlah: 10,
-    status: "Sudah dibayar",
-  },
-  {
-    key: "4",
-    nama: "Jim Red",
-    divisi: 32,
-    bulan: "25 April 2025",
-    jumlah: 9,
-    status: "Belum dibayar",
-  },
-];
-
 const TabelRiwayatGajiStaff = ({ detail }) => {
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef(null);
 
+  useEffect(() => {
+    fetchPayrollData();
+  }, []);
+
+  const fetchPayrollData = async () => {
+    try {
+      setLoading(true);
+      const response = await payrollServices.getEmployeePayroll();
+
+      // Debugging: log the response
+      console.log("Payroll Response:", response);
+
+      // Ensure data is an array and map it
+      const transformedData = (
+        Array.isArray(response.data) ? response.data : []
+      ).map((payroll) => ({
+        key: payroll.id || payroll.id_payroll || payroll.key, // Multiple fallback options
+        date: payroll.date,
+        month: payroll.month,
+        year: payroll.year,
+        basic_salary: payroll.basic_salary,
+        total_allowance: payroll.total_allowance,
+        total_bonus: payroll.total_bonus,
+        total_deduction: payroll.total_deduction,
+        total_other_deduction: payroll.total_other_deduction,
+        total_salary: payroll.total_salary,
+        formattedDate: new Date(payroll.date).toLocaleDateString("id-ID", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        }),
+        formattedPeriod: new Date(payroll.date).toLocaleDateString("id-ID", {
+          year: "numeric",
+          month: "long",
+        }),
+        formattedSalary: new Intl.NumberFormat("id-ID", {
+          style: "currency",
+          currency: "IDR",
+        }).format(payroll.total_salary || 0),
+      }));
+
+      setData(transformedData);
+
+      // If no data, show a message
+      if (transformedData.length === 0) {
+        message.info("Tidak ada data gaji yang ditemukan");
+      }
+    } catch (err) {
+      console.error("Error fetching payroll data:", err);
+
+      // More detailed error handling
+      if (err.response) {
+        message.error(
+          `Gagal mengambil data gaji: ${
+            err.response.data.message || err.message
+          }`
+        );
+      } else {
+        message.error(
+          "Gagal mengambil data gaji: Terjadi kesalahan tidak dikenal"
+        );
+      }
+
+      setData([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
-    confirm({ closeDropdown: false });
+    confirm();
     setSearchText(selectedKeys[0]);
     setSearchedColumn(dataIndex);
   };
@@ -62,57 +99,50 @@ const TabelRiwayatGajiStaff = ({ detail }) => {
       clearFilters,
       close,
     }) => (
-      <div className="p-4" onKeyDown={(e) => e.stopPropagation()}>
+      <div className="p-4">
         <Input
           ref={searchInput}
-          placeholder={`Search ${dataIndex}`}
+          placeholder={`Cari ${dataIndex}`}
           value={selectedKeys[0]}
           onChange={(e) =>
             setSelectedKeys(e.target.value ? [e.target.value] : [])
           }
           onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
-          className="mb-3 block w-full"
+          className="mb-2 block w-full"
         />
-        <Space className="flex flex-wrap gap-2">
+        <div className="flex justify-between">
           <Button
             type="primary"
             onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
             size="small"
-            className="min-w-[90px]"
+            className="w-24 mr-2"
           >
-            Search
+            Cari
           </Button>
           <Button
             onClick={() => clearFilters && handleReset(clearFilters)}
             size="small"
-            className="min-w-[90px]"
+            className="w-24"
           >
             Reset
           </Button>
-          <Button
-            type="link"
-            size="small"
-            onClick={() => {
-              close();
-            }}
-          >
-            Close
-          </Button>
-        </Space>
+        </div>
       </div>
     ),
     filterIcon: (filtered) => (
-      <SearchOutlined style={{ color: filtered ? "#1677ff" : undefined }} />
+      <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
     ),
-    onFilter: (value, record) =>
-      record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
+    onFilter: (value, record) => {
+      const targetValue = record[dataIndex] ? record[dataIndex].toString() : "";
+      return targetValue.toLowerCase().includes(value.toLowerCase());
+    },
     render: (text) =>
       searchedColumn === dataIndex ? (
         <Highlighter
           highlightStyle={{ backgroundColor: "#ffc069", padding: 0 }}
           searchWords={[searchText]}
           autoEscape
-          textToHighlight={text ? text.toString() : ""}
+          textToHighlight={text?.toString() || ""}
         />
       ) : (
         text
@@ -121,48 +151,31 @@ const TabelRiwayatGajiStaff = ({ detail }) => {
 
   const columns = [
     {
-      title: "Nama",
-      dataIndex: "nama",
-      key: "nama",
-      ...getColumnSearchProps("nama"),
+      title: "Periode",
+      dataIndex: "formattedPeriod",
+      key: "month",
+      ...getColumnSearchProps("formattedPeriod"),
     },
     {
-      title: "Divisi",
-      dataIndex: "divisi",
-      key: "divisi",
-      ...getColumnSearchProps("divisi"),
+      title: "Tanggal",
+      dataIndex: "formattedDate",
+      key: "date",
+      ...getColumnSearchProps("formattedDate"),
     },
     {
-      title: "Jumlah (RP)",
-      dataIndex: "jumlah",
-      key: "jumlah",
-      ...getColumnSearchProps("jumlah"),
-      responsive: ["md"],
+      title: "Total Gaji",
+      dataIndex: "formattedSalary",
+      key: "salary",
+      ...getColumnSearchProps("formattedSalary"),
     },
     {
-      title: "Bulan",
-      dataIndex: "bulan",
-      key: "bulan",
-      ...getColumnSearchProps("bulan"),
-      responsive: ["md"],
-    },
-    {
-      title: "Status",
-      dataIndex: "status",
-      key: "status",
-      ...getColumnSearchProps("status"),
-      responsive: ["md"],
-    },
-    {
-      title: "Action",
+      title: "Aksi",
       key: "action",
-      fixed: "right",
-      width: 100,
       render: (_, record) => (
         <Button
-          type="link"
+          type="primary"
           onClick={() => detail(record)}
-          className="text-blue-500 p-0"
+          className="bg-blue-500 hover:bg-blue-600"
         >
           Detail
         </Button>
@@ -175,15 +188,23 @@ const TabelRiwayatGajiStaff = ({ detail }) => {
       <Table
         columns={columns}
         dataSource={data}
-        className="min-w-full"
-        scroll={{ x: "max-content" }}
-        pagination={{
-          responsive: true,
-          position: ["bottomCenter"],
-          pageSize: 5,
-          showTotal: (total, range) =>
-            `${range[0]}-${range[1]} of ${total} items`,
+        loading={loading}
+        locale={{
+          emptyText: (
+            <Empty
+              image={Empty.PRESENTED_IMAGE_SIMPLE}
+              description="Belum ada data gaji"
+            />
+          ),
         }}
+        pagination={{
+          pageSize: 10,
+          showSizeChanger: true,
+          showTotal: (total, range) =>
+            `${range[0]}-${range[1]} dari ${total} data`,
+        }}
+        className="shadow-sm"
+        scroll={{ x: true }}
       />
     </div>
   );
