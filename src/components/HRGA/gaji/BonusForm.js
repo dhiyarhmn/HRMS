@@ -1,4 +1,3 @@
-// components/Admin/gaji/BonusForm.js
 import React from "react";
 import { Form, InputNumber, DatePicker, Button, message } from "antd";
 import { bonusServices } from "@/api/api";
@@ -19,12 +18,14 @@ const BonusForm = ({ employeeId, onSubmitSuccess }) => {
 
       console.log("Sending bonus data:", bonusData); // Debug
       await bonusServices.createBonus(bonusData);
-      
+
       form.resetFields();
       if (onSubmitSuccess) onSubmitSuccess();
     } catch (error) {
       console.error("Error details:", error.response?.data); // Debug
-      message.error("Failed to save bonus data");
+      message.error(
+        error.response?.data?.message || "Failed to save bonus data"
+      );
     }
   };
 
@@ -34,7 +35,14 @@ const BonusForm = ({ employeeId, onSubmitSuccess }) => {
         <Form.Item
           label="Overtime"
           name="overtime"
-          rules={[{ required: true }]}
+          rules={[
+            { required: true, message: "Overtime is required!" },
+            {
+              type: "number",
+              min: 0,
+              message: "Overtime must be a positive number!",
+            },
+          ]}
         >
           <InputNumber
             className="w-full"
@@ -45,7 +53,18 @@ const BonusForm = ({ employeeId, onSubmitSuccess }) => {
           />
         </Form.Item>
 
-        <Form.Item label="Meal" name="meal" rules={[{ required: true }]}>
+        <Form.Item
+          label="Meal"
+          name="meal"
+          rules={[
+            { required: true, message: "Meal is required!" },
+            {
+              type: "number",
+              min: 0,
+              message: "Meal must be a positive number!",
+            },
+          ]}
+        >
           <InputNumber
             className="w-full"
             formatter={(value) =>
@@ -58,7 +77,14 @@ const BonusForm = ({ employeeId, onSubmitSuccess }) => {
         <Form.Item
           label="Transport"
           name="transport"
-          rules={[{ required: true }]}
+          rules={[
+            { required: true, message: "Transport is required!" },
+            {
+              type: "number",
+              min: 0,
+              message: "Transport must be a positive number!",
+            },
+          ]}
         >
           <InputNumber
             className="w-full"
@@ -69,7 +95,18 @@ const BonusForm = ({ employeeId, onSubmitSuccess }) => {
           />
         </Form.Item>
 
-        <Form.Item label="Extra" name="extra" rules={[{ required: true }]}>
+        <Form.Item
+          label="Extra"
+          name="extra"
+          rules={[
+            { required: true, message: "Extra is required!" },
+            {
+              type: "number",
+              min: 0,
+              message: "Extra must be a positive number!",
+            },
+          ]}
+        >
           <InputNumber
             className="w-full"
             formatter={(value) =>
@@ -79,7 +116,11 @@ const BonusForm = ({ employeeId, onSubmitSuccess }) => {
           />
         </Form.Item>
 
-        <Form.Item label="Date" name="date" rules={[{ required: true }]}>
+        <Form.Item
+          label="Date"
+          name="date"
+          rules={[{ required: true, message: "Please select date!" }]}
+        >
           <DatePicker className="w-full" />
         </Form.Item>
       </div>

@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 
 const { Meta } = Card;
 
-const DaftarRuanganStaff = () => {
+const DaftarRuanganStaff = ({ onBookingSuccess }) => {
   const [rooms, setRooms] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
@@ -50,7 +50,7 @@ const DaftarRuanganStaff = () => {
     <Card
       key={room.id_room}
       hoverable
-      className="w-full h-full bg-white rounded-xl shadow-sm transition-all duration-200 hover:shadow-md border-0"
+      className="w-[300px] flex-shrink-0 bg-third rounded-xl shadow-sm transition-all duration-200 hover:shadow-md"
       cover={
         <div className="relative h-48 rounded-t-xl overflow-hidden">
           <Image
@@ -82,7 +82,6 @@ const DaftarRuanganStaff = () => {
                   Jam Operasional
                 </p>
                 <p className="text-sm text-gray-900">
-                  {" "}
                   {room.available_from} - {room.available_to}
                 </p>
               </div>
@@ -91,29 +90,31 @@ const DaftarRuanganStaff = () => {
         }
       />
       <div className="mt-4 pt-4 border-t border-gray-100">
-        <RoomFormStaff room={room} onBookingSuccess={refreshRooms} />
+        <RoomFormStaff room={room} onBookingSuccess={onBookingSuccess} />
       </div>
     </Card>
   );
 
   return (
-    <div>
-      {Array.isArray(rooms) && rooms.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6">
-          {rooms.map((room) => (
-            <RoomCard key={room.id_room} room={room} />
-          ))}
+    <div className="relative">
+      <div className="overflow-x-auto pb-4">
+        <div className="flex gap-6">
+          {Array.isArray(rooms) && rooms.length > 0 ? (
+            rooms.map((room) => <RoomCard key={room.id_room} room={room} />)
+          ) : (
+            <div className="w-full bg-white rounded-xl p-8 text-center">
+              <Empty
+                description={
+                  <span className="text-gray-600">
+                    Tidak ada ruangan tersedia
+                  </span>
+                }
+                className="my-8"
+              />
+            </div>
+          )}
         </div>
-      ) : (
-        <div className="bg-white rounded-xl p-8 text-center">
-          <Empty
-            description={
-              <span className="text-gray-600">Tidak ada ruangan tersedia</span>
-            }
-            className="my-8"
-          />
-        </div>
-      )}
+      </div>
     </div>
   );
 };

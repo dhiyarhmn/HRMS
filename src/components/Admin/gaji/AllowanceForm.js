@@ -1,4 +1,3 @@
-// components/Admin/gaji/AllowanceForm.js
 import React from "react";
 import { Form, InputNumber, DatePicker, Button, message } from "antd";
 import { allowanceServices } from "@/api/api";
@@ -11,10 +10,10 @@ const AllowanceForm = ({ employeeId, onSubmitSuccess }) => {
       // Memastikan semua nilai adalah number
       const allowanceData = {
         id_employee: employeeId, // employeeId sudah berupa number
-        position_allowance: Number(values.position_allowance),
-        health_allowance: Number(values.health_allowance),
-        pension: Number(values.pension),
-        communication: Number(values.communication),
+        position_allowance: values.position_allowance ? Number(values.position_allowance) : 0,
+        health_allowance: values.health_allowance ? Number(values.health_allowance) : 0,
+        pension: values.pension ? Number(values.pension) : 0,
+        communication: values.communication ? Number(values.communication) : 0,
         date: values.date.format("YYYY-MM-DD"),
       };
 
@@ -41,7 +40,12 @@ const AllowanceForm = ({ employeeId, onSubmitSuccess }) => {
           label="Position Allowance"
           name="position_allowance"
           rules={[
-            { required: true, message: "Please input position allowance!" },
+            { required: true, message: "Position Allowance is required!" },
+            {
+              type: "number",
+              min: 0,
+              message: "Position Allowance must be a positive number!",
+            },
           ]}
         >
           <InputNumber
@@ -58,7 +62,12 @@ const AllowanceForm = ({ employeeId, onSubmitSuccess }) => {
           label="Health Allowance"
           name="health_allowance"
           rules={[
-            { required: true, message: "Please input health allowance!" },
+            { required: true, message: "Health Allowance is required!" },
+            {
+              type: "number",
+              min: 0,
+              message: "Health Allowance must be a positive number!",
+            },
           ]}
         >
           <InputNumber
@@ -74,7 +83,14 @@ const AllowanceForm = ({ employeeId, onSubmitSuccess }) => {
         <Form.Item
           label="Pension"
           name="pension"
-          rules={[{ required: true, message: "Please input pension!" }]}
+          rules={[
+            { required: true, message: "Pension is required!" },
+            {
+              type: "number",
+              min: 0,
+              message: "Pension must be a positive number!",
+            },
+          ]}
         >
           <InputNumber
             className="w-full"
@@ -90,9 +106,11 @@ const AllowanceForm = ({ employeeId, onSubmitSuccess }) => {
           label="Communication"
           name="communication"
           rules={[
+            { required: true, message: "Communication is required!" },
             {
-              required: true,
-              message: "Please input communication allowance!",
+              type: "number",
+              min: 0,
+              message: "Communication must be a positive number!",
             },
           ]}
         >

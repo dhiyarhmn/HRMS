@@ -125,7 +125,7 @@ const SlipGajiStaff = ({ selectedRecord }) => {
       );
 
       startY = addSection(
-        "F. POTONGAN",
+        "D. POTONGAN",
         {
           BPJS: data.details.deductions[0]?.bpjs_deduction || 0,
           Pinjaman: data.details.deductions[0]?.borrow_deduction || 0,
@@ -141,7 +141,7 @@ const SlipGajiStaff = ({ selectedRecord }) => {
       );
 
       startY = addSection(
-        "G. POTONGAN KOPERASI",
+        "E. POTONGAN KOPERASI",
         {
           "Simpanan Wajib":
             data.details.other_deductions[0]?.simpanan_wajib || 0,

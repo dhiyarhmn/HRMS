@@ -34,7 +34,8 @@ const TabelApprovalAdmin = ({ detail, refreshTrigger, statusFilter }) => {
         const transformedData = filteredData.map((booking) => ({
           key: booking.id_booking,
           employee_id: booking.id_employee,
-          room_id: booking.id_room,
+          room_name: booking.room_name,
+          department_name: booking.department_name,
           booking_date: dayjs(booking.booking_date).format("DD MMMM YYYY"),
           status: booking.booking_status,
           time: booking.times
@@ -144,9 +145,16 @@ const TabelApprovalAdmin = ({ detail, refreshTrigger, statusFilter }) => {
   const columns = [
     {
       title: "Nama Ruangan",
-      dataIndex: "room_id",
-      key: "room_id",
-      ...getColumnSearchProps("room_id"),
+      dataIndex: "room_name",
+      key: "room_name",
+      ...getColumnSearchProps("room_name"),
+      className: "min-w-[150px]",
+    },
+    {
+      title: "Departemen",
+      dataIndex: "department_name",
+      key: "department_name",
+      ...getColumnSearchProps("department_name"),
       className: "min-w-[150px]",
     },
     {

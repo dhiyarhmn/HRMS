@@ -10,24 +10,25 @@ export default function Ruangan() {
       <NavigationAdmin />
 
       {/* Main Content */}
-      <main className="flex-grow px-4 py-6 md:px-6 lg:px-8">
+      <main className="flex-grow p-6 space-y-8">
         {/* Header Section */}
-        <div className="max-w-7xl mx-auto mb-6">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <h1 className="text-2xl font-semibold text-gray-900">
-              Daftar Ruangan
-            </h1>
-          </div>
-        </div>
+        <section className="max-w-7xl mx-auto w-full">
+          <div className="bg-white rounded-xl shadow-md overflow-hidden">
+            <div className="p-6">
+              {/* Header */}
+              <div className="mb-6">
+                <h1 className="text-2xl font-bold text-gray-900">
+                  Daftar Ruangan
+                </h1>
+              </div>
 
-        {/* Content Section */}
-        <div className="max-w-7xl mx-auto">
-          <div className="bg-third rounded-xl shadow-sm overflow-hidden">
-            <div className="p-4 sm:p-6">
-              <DaftarRuanganAdmin />
+              {/* Content */}
+              <div className="mt-4">
+                <DaftarRuanganAdmin />
+              </div>
             </div>
           </div>
-        </div>
+        </section>
       </main>
     </div>
   );

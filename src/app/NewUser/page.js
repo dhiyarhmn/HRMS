@@ -18,7 +18,6 @@ export default function NewUser() {
     const currentUser = JSON.parse(localStorage.getItem("user"));
     if (currentUser?.isProfileCompleted) {
       setIsProfileCompleted(true);
-      // Set form values from existing data
       form.setFieldsValue({
         name: currentUser.name,
         phone: currentUser.phone,
@@ -41,27 +40,40 @@ export default function NewUser() {
         return;
       }
 
+      // Validate passwords match
+      if (values.new_password !== values.confirm_password) {
+        message.error("Passwords do not match!");
+        return;
+      }
+
       const userData = {
         name: values.name,
         phone: values.phone,
         gender: values.gender,
         date_of_birth: values.date_of_birth.format("YYYY-MM-DD"),
+        old_password: "dihi12345", // Default password
+        new_password: values.new_password,
+        marital_status: values.marital_status, // Add this line
+        dependents: 0, // Add this with default value 0
       };
-
-      console.log("Submitting data:", userData);
 
       const response = await employeeServices.completeNewUserProfile(userData);
 
       if (response.success) {
         message.success({
-          content: "Profile updated successfully!",
-          duration: 2,
+          content:
+            "Profile updated successfully! Please login with your new password.",
+          duration: 1,
         });
 
-        // Redirect sesuai role
-        const homeRoute = employeeServices.getHomeRoute(currentUser.role);
-        console.log("Redirecting to:", homeRoute);
-        router.push(homeRoute);
+        // Clear local storage
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+
+        // Redirect to login page after short delay
+        setTimeout(() => {
+          router.push("/login");
+        }, 1000);
       } else {
         throw new Error(response.message);
       }
@@ -158,6 +170,26 @@ export default function NewUser() {
                 </Form.Item>
 
                 <Form.Item
+                  label="Status Pernikahan"
+                  name="marital_status"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please select your marital status!",
+                    },
+                  ]}
+                >
+                  <Select
+                    placeholder="Select marital status"
+                    disabled={isProfileCompleted}
+                    className="w-full"
+                  >
+                    <Select.Option value="TK">Belum Menikah</Select.Option>
+                    <Select.Option value="K">Sudah Menikah</Select.Option>
+                  </Select>
+                </Form.Item>
+
+                <Form.Item
                   label="Tanggal Lahir"
                   name="date_of_birth"
                   rules={[
@@ -174,6 +206,64 @@ export default function NewUser() {
                     className="w-full"
                   />
                 </Form.Item>
+
+                <div className="border-t pt-4 mt-4">
+                  <h2 className="text-lg font-semibold mb-4">
+                    Change Password
+                  </h2>
+
+                  <Form.Item
+                    label="Password Baru"
+                    name="new_password"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please input your new password!",
+                      },
+                      {
+                        min: 8,
+                        message: "Password must be at least 8 characters!",
+                      },
+                    ]}
+                  >
+                    <Input.Password
+                      placeholder="Enter new password"
+                      disabled={isProfileCompleted}
+                      className="w-full"
+                    />
+                  </Form.Item>
+
+                  <Form.Item
+                    label="Konfirmasi Password"
+                    name="confirm_password"
+                    dependencies={["new_password"]}
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please confirm your password!",
+                      },
+                      ({ getFieldValue }) => ({
+                        validator(_, value) {
+                          if (
+                            !value ||
+                            getFieldValue("new_password") === value
+                          ) {
+                            return Promise.resolve();
+                          }
+                          return Promise.reject(
+                            new Error("Passwords do not match!")
+                          );
+                        },
+                      }),
+                    ]}
+                  >
+                    <Input.Password
+                      placeholder="Confirm new password"
+                      disabled={isProfileCompleted}
+                      className="w-full"
+                    />
+                  </Form.Item>
+                </div>
 
                 <Form.Item className="flex justify-end mt-6">
                   <Button
