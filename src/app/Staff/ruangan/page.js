@@ -1,35 +1,82 @@
 "use client";
+import { useEffect, useState } from "react";
 import Navbar from "@/components/Navbar/navbar";
 import NavigationStaff from "@/components/Staff/navigation/navigationStaff";
+import TabelBookingStaff from "@/components/Staff/ruangan/tabelBookingStaff";
 import DaftarRuanganStaff from "@/components/Staff/ruangan/daftarRuanganStaff";
+import { Select } from "antd";
 
 export default function Ruangan() {
+  const [bookingRefreshTrigger, setBookingRefreshTrigger] = useState(0);
+  const [statusFilter, setStatusFilter] = useState("all");
+
+  const handleBookingSuccess = () => {
+    setBookingRefreshTrigger((prev) => prev + 1);
+  };
+
+  // Data options untuk Select
+  const statusOptions = [
+    { value: "all", label: "Semua Status" },
+    { value: "pending", label: "Pending" },
+    { value: "accept", label: "Accept" },
+  ];
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
+    <div className="min-h-screen flex flex-col bg-gray-100">
       <Navbar href={"/Staff/home"} p={"Staff"} />
       <NavigationStaff />
 
-      {/* Main Content */}
-      <main className="flex-grow px-4 py-6 md:px-6 lg:px-8">
-        {/* Header Section */}
-        <div className="max-w-7xl mx-auto mb-6">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <h1 className="text-2xl font-semibold text-gray-900">
-              Daftar Ruangan
-            </h1>
-          </div>
-        </div>
+      <main className="flex-grow p-6 space-y-8">
+        {/* Section: Daftar Booking */}
+        <section className="max-w-7xl mx-auto w-full">
+          <div className="bg-white rounded-xl shadow-md overflow-hidden">
+            <div className="p-6">
+              {/* Header dan Filter */}
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+                <h1 className="text-2xl font-bold text-gray-900">
+                  Daftar Booking
+                </h1>
+                <Select
+                  defaultValue="all"
+                  style={{
+                    width: "100%",
+                    maxWidth: "200px",
+                  }}
+                  className="!min-w-[200px]"
+                  onChange={(value) => setStatusFilter(value)}
+                  options={statusOptions}
+                />
+              </div>
 
-        {/* Content Section */}
-        <div className="max-w-7xl mx-auto">
-          <div className="bg-third rounded-xl shadow-sm overflow-hidden">
-            <div className="p-4 sm:p-6">
-              <DaftarRuanganStaff />
+              {/* Tabel */}
+              <div className="mt-4">
+                <TabelBookingStaff
+                  refreshTrigger={bookingRefreshTrigger}
+                  statusFilter={statusFilter}
+                />
+              </div>
             </div>
           </div>
-        </div>
+        </section>
+
+        {/* Section: Daftar Ruangan */}
+        <section className="max-w-7xl mx-auto w-full">
+          <div className="bg-white rounded-xl shadow-md overflow-hidden">
+            <div className="p-6">
+              {/* Header */}
+              <div className="mb-6">
+                <h1 className="text-2xl font-bold text-gray-900">
+                  Daftar Ruangan
+                </h1>
+              </div>
+
+              {/* Content */}
+              <div className="mt-4">
+                <DaftarRuanganStaff onBookingSuccess={handleBookingSuccess} />
+              </div>
+            </div>
+          </div>
+        </section>
       </main>
-      
     </div>
   );
 }

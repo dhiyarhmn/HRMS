@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import BackBtn from "@/components/LoginPageComponents/backbutton";
 import Image from "next/image";
-import hrms from "@/public/hrms.gif"
+import hrms from "@/public/hrms.gif";
 import dihi from "@/public/logo-dihi.png";
 import { Button, message } from "antd";
 import { useRouter } from "next/navigation";
@@ -10,11 +10,10 @@ import { login } from "@/api/api";
 
 export default function Login() {
   const router = useRouter();
-  const [username, setUsername] = useState("");
+  const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // Konfigurasi durasi message
   const [messageApi, contextHolder] = message.useMessage({
     duration: 1,
     maxCount: 1,
@@ -49,7 +48,7 @@ export default function Login() {
   };
 
   const handleLogin = async () => {
-    if (!username || !password) {
+    if (!identifier || !password) {
       messageApi.error({
         content: "Mohon isi semua field",
         duration: 1,
@@ -59,12 +58,11 @@ export default function Login() {
 
     setLoading(true);
     try {
-      const response = await login(username, password);
+      const response = await login(identifier, password);
       messageApi.success({
         content: response.message,
         duration: 1,
       });
-      // Tambahkan delay sebelum redirect
       setTimeout(() => {
         handleRedirect(response.user, response.first_login);
       }, 1000);
@@ -78,7 +76,6 @@ export default function Login() {
     }
   };
 
-  // Handle keypress untuk tombol Enter
   const handleKeyPress = (e) => {
     if (e.key === "Enter" && !loading) {
       handleLogin();
@@ -94,7 +91,6 @@ export default function Login() {
       />
       <div className="flex items-center justify-center min-h-screen p-4">
         <div className="w-full max-w-4xl flex flex-col md:flex-row h-auto md:h-[500px] shadow-lg rounded-lg overflow-hidden">
-          {/* Image Section */}
           <div className="hidden md:flex md:w-1/2 md:h-full items-center justify-center bg-white relative">
             <Image
               src={hrms}
@@ -105,7 +101,6 @@ export default function Login() {
             />
           </div>
 
-          {/* Login Form Section */}
           <div className="w-full md:w-1/2 bg-second p-6 sm:p-8 md:p-12">
             <div className="flex justify-end mb-6">
               <Image src={dihi} className="w-10 sm:w-12" alt="logo" priority />
@@ -119,15 +114,15 @@ export default function Login() {
               <div className="space-y-4">
                 <div className="space-y-2">
                   <label className="text-sm font-semibold block">
-                    Username
+                    Username / Email
                   </label>
                   <input
                     type="text"
                     className="w-full p-2 border rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
+                    value={identifier}
+                    onChange={(e) => setIdentifier(e.target.value)}
                     onKeyPress={handleKeyPress}
-                    placeholder="user123"
+                    placeholder="user123 / user@example.com"
                     disabled={loading}
                   />
                 </div>

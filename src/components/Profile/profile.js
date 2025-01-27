@@ -1,11 +1,25 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button, Popover } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import { Avatar } from "antd";
-import { logout } from "@/api/api";
+import { logout, getProfile } from "@/api/api";
 
 const Profile = () => {
   const [open, setOpen] = useState(false);
+  const [employeeData, setEmployeeData] = useState(null);
+
+  useEffect(() => {
+    const fetchEmployeeData = async () => {
+      try {
+        const data = await getProfile();
+        setEmployeeData(data);
+      } catch (error) {
+        console.error("Error fetching profile:", error);
+      }
+    };
+
+    fetchEmployeeData();
+  }, []);
 
   const handleOpenChange = (newOpen) => {
     setOpen(newOpen);
@@ -17,26 +31,16 @@ const Profile = () => {
 
     logout()
       .then(() => {
-        // Force redirect to login page after logout
         window.location.href = "/login";
       })
       .catch((error) => {
         console.error("Error during logout:", error);
-        // Still redirect even if there's an error
         window.location.href = "/login";
       });
   };
 
   const content = (
     <>
-      <div className="flex flex-col w-full font-medium divide-y-2 gap-y-2">
-        <a
-          href="/profile"
-          className="p-2 rounded-2xl border-2 hover:bg-slate-300 hover:text-black"
-        >
-          Edit Profile
-        </a>
-      </div>
       <div className="flex justify-center mt-4">
         <div
           onClick={handleLogout}
@@ -58,7 +62,7 @@ const Profile = () => {
   return (
     <Popover
       content={content}
-      title="Profile"
+      title="Logout"
       trigger="click"
       open={open}
       onOpenChange={handleOpenChange}
@@ -68,7 +72,7 @@ const Profile = () => {
       <Button type="none" className="p-5 rounded-full bg-white hover:bg-second">
         <div className="flex items-center gap-x-4">
           <Avatar icon={<UserOutlined />} />
-          <span>Satria</span>
+          <span>{employeeData?.name || "User"}</span>
         </div>
       </Button>
     </Popover>

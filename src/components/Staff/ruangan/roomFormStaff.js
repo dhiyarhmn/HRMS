@@ -5,7 +5,7 @@ import roomPic from "@/public/room-1.jpeg";
 import { bookingServices, roomServices } from "@/api/api";
 import dayjs from "dayjs";
 
-const RoomFormStaff = ({ room }) => {
+const RoomFormStaff = ({ room, onBookingSuccess }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [checked, setChecked] = useState({});
   const [bookingDate, setBookingDate] = useState(null);
@@ -76,7 +76,6 @@ const RoomFormStaff = ({ room }) => {
         }
       }
 
-      // Format data sesuai yang diharapkan backend
       const times = [];
       const firstTimeSlot = timeSlots[0].split(" - ");
       const lastTimeSlot = timeSlots[timeSlots.length - 1].split(" - ");
@@ -92,12 +91,17 @@ const RoomFormStaff = ({ room }) => {
         times: times,
       };
 
-      const response = await bookingServices.createBooking(bookingData);
+      await bookingServices.createBooking(bookingData);
 
       message.success("Booking berhasil dibuat!");
       setIsModalOpen(false);
       setChecked({});
       setBookingDate(null);
+
+      // Trigger refresh of booking table
+      if (onBookingSuccess) {
+        onBookingSuccess();
+      }
     } catch (error) {
       message.error(error.response?.data?.message || "Gagal melakukan booking");
     } finally {

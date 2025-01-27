@@ -1,4 +1,3 @@
-// components/Admin/gaji/OtherDeductionForm.js
 import React from "react";
 import { Form, InputNumber, DatePicker, Button, message } from "antd";
 import { otherDeductionServices } from "@/api/api";
@@ -10,13 +9,19 @@ const OtherDeductionForm = ({ employeeId, onSubmitSuccess }) => {
     try {
       const otherDeductionData = {
         id_employee: employeeId,
-        simpanan_wajib: Number(values.simpanan_wajib),
-        simpanan_sukarela: Number(values.simpanan_sukarela),
-        pinjaman_uang_barang: Number(values.pinjaman_uang_barang),
-        ruko: Number(values.ruko),
-        makan: Number(values.makan),
-        iuran_spmi: Number(values.iuran_spmi),
-        soft_loan: Number(values.soft_loan),
+        simpanan_wajib: values.simpanan_wajib
+          ? Number(values.simpanan_wajib)
+          : 0,
+        simpanan_sukarela: values.simpanan_sukarela
+          ? Number(values.simpanan_sukarela)
+          : 0,
+        pinjaman_uang_barang: values.pinjaman_uang_barang
+          ? Number(values.pinjaman_uang_barang)
+          : 0,
+        ruko: values.ruko ? Number(values.ruko) : 0,
+        makan: values.makan ? Number(values.makan) : 0,
+        iuran_spmi: values.iuran_spmi ? Number(values.iuran_spmi) : 0,
+        soft_loan: values.soft_loan ? Number(values.soft_loan) : 0,
         date: values.date.format("YYYY-MM-DD"),
       };
 
@@ -25,12 +30,14 @@ const OtherDeductionForm = ({ employeeId, onSubmitSuccess }) => {
         otherDeductionData
       );
       console.log("Response:", response);
-      
+
       form.resetFields();
       if (onSubmitSuccess) onSubmitSuccess();
     } catch (error) {
       console.error("Error details:", error.response?.data); // Debug
-      message.error("Failed to save other deduction data");
+      message.error(
+        error.response?.data?.message || "Failed to save other deduction data"
+      );
     }
   };
 
@@ -40,7 +47,13 @@ const OtherDeductionForm = ({ employeeId, onSubmitSuccess }) => {
         <Form.Item
           label="Simpanan Wajib"
           name="simpanan_wajib"
-          rules={[{ required: true }]}
+          rules={[
+            {
+              type: "number",
+              min: 0,
+              message: "Simpanan Wajib must be a positive number!",
+            },
+          ]}
         >
           <InputNumber
             className="w-full"
@@ -54,7 +67,13 @@ const OtherDeductionForm = ({ employeeId, onSubmitSuccess }) => {
         <Form.Item
           label="Simpanan Sukarela"
           name="simpanan_sukarela"
-          rules={[{ required: true }]}
+          rules={[
+            {
+              type: "number",
+              min: 0,
+              message: "Simpanan Sukarela must be a positive number!",
+            },
+          ]}
         >
           <InputNumber
             className="w-full"
@@ -68,7 +87,13 @@ const OtherDeductionForm = ({ employeeId, onSubmitSuccess }) => {
         <Form.Item
           label="Pinjaman Uang/Barang"
           name="pinjaman_uang_barang"
-          rules={[{ required: true }]}
+          rules={[
+            {
+              type: "number",
+              min: 0,
+              message: "Pinjaman Uang/Barang must be a positive number!",
+            },
+          ]}
         >
           <InputNumber
             className="w-full"
@@ -79,7 +104,17 @@ const OtherDeductionForm = ({ employeeId, onSubmitSuccess }) => {
           />
         </Form.Item>
 
-        <Form.Item label="Ruko" name="ruko" rules={[{ required: true }]}>
+        <Form.Item
+          label="Ruko"
+          name="ruko"
+          rules={[
+            {
+              type: "number",
+              min: 0,
+              message: "Ruko must be a positive number!",
+            },
+          ]}
+        >
           <InputNumber
             className="w-full"
             formatter={(value) =>
@@ -89,7 +124,17 @@ const OtherDeductionForm = ({ employeeId, onSubmitSuccess }) => {
           />
         </Form.Item>
 
-        <Form.Item label="Makan" name="makan" rules={[{ required: true }]}>
+        <Form.Item
+          label="Makan"
+          name="makan"
+          rules={[
+            {
+              type: "number",
+              min: 0,
+              message: "Makan must be a positive number!",
+            },
+          ]}
+        >
           <InputNumber
             className="w-full"
             formatter={(value) =>
@@ -102,7 +147,13 @@ const OtherDeductionForm = ({ employeeId, onSubmitSuccess }) => {
         <Form.Item
           label="Iuran SPMI"
           name="iuran_spmi"
-          rules={[{ required: true }]}
+          rules={[
+            {
+              type: "number",
+              min: 0,
+              message: "Iuran SPMI must be a positive number!",
+            },
+          ]}
         >
           <InputNumber
             className="w-full"
@@ -116,7 +167,13 @@ const OtherDeductionForm = ({ employeeId, onSubmitSuccess }) => {
         <Form.Item
           label="Soft Loan"
           name="soft_loan"
-          rules={[{ required: true }]}
+          rules={[
+            {
+              type: "number",
+              min: 0,
+              message: "Soft Loan must be a positive number!",
+            },
+          ]}
         >
           <InputNumber
             className="w-full"
@@ -127,7 +184,11 @@ const OtherDeductionForm = ({ employeeId, onSubmitSuccess }) => {
           />
         </Form.Item>
 
-        <Form.Item label="Date" name="date" rules={[{ required: true }]}>
+        <Form.Item
+          label="Date"
+          name="date"
+          rules={[{ required: true, message: "Please select date!" }]}
+        >
           <DatePicker className="w-full" />
         </Form.Item>
       </div>

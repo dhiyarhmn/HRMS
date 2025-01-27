@@ -1,57 +1,72 @@
-import React, { useEffect, useRef, useState } from "react";
+"use client";
+import { bookingServices } from "@/api/api";
 import { SearchOutlined } from "@ant-design/icons";
-import { Button, Input, Space, Table, Spin } from "antd";
+import { Button, Input, Space, Table, message, Spin, Tag } from "antd";
+import React, { useRef, useState, useEffect } from "react";
 import Highlighter from "react-highlight-words";
-import { userServices } from "@/api/api";
+import dayjs from "dayjs";
 
-const TabelGajiHRGA = ({ detail }) => {
-  const [data, setData] = useState([]);
+const TabelBookingStaff = ({ refreshTrigger, statusFilter }) => {
+  const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef(null);
 
   useEffect(() => {
-    const fetchUserData = async (userId) => {
-      try {
-        const response = await userServices.getUserById(userId);
-        return {
-          key: response.data.data.id_employee,
-          nama: response.data.data.employee_data.name,
-          department_name: response.data.data.employee_data.department_name,
-        };
-      } catch (err) {
-        console.error(`Error fetching user ${userId}:`, err);
-        return null;
+    fetchBookings();
+  }, [refreshTrigger, statusFilter]); // Add statusFilter to dependencies
+
+  const fetchBookings = async () => {
+    try {
+      setLoading(true);
+      const response = await bookingServices.getUserBookings();
+
+      if (response.data) {
+        let filteredData = response.data;
+
+        // Apply status filter
+        if (statusFilter && statusFilter !== "all") {
+          filteredData = filteredData.filter(
+            (booking) =>
+              booking.booking_status.toLowerCase() ===
+              statusFilter.toLowerCase()
+          );
+        }
+
+        const transformedData = filteredData.map((booking) => ({
+          key: booking.id_booking,
+          date: booking.booking_date,
+          booking_date: dayjs(booking.booking_date).format("DD MMMM YYYY"),
+          room: booking.room.room_name,
+          status: booking.booking_status,
+          time: booking.times
+            .map((time) => `${time.start} - ${time.end}`)
+            .join(", "),
+          raw_data: booking,
+        }));
+        setBookings(transformedData);
       }
-    };
+    } catch (error) {
+      console.error("Error fetching bookings:", error);
+      message.error("Gagal mengambil data booking");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    const fetchAllUserData = async () => {
-      try {
-        setLoading(true);
-        // First, get the list of user IDs or basic user data
-        const userListResponse = await userServices.getUsers();
-        const userIds = userListResponse.data.data.map(
-          (user) => user.id_employee
-        );
-
-        // Fetch detailed data for each user
-        const userDataPromises = userIds.map((userId) => fetchUserData(userId));
-        const userData = await Promise.all(userDataPromises);
-
-        // Filter out any null values from failed requests
-        const validUserData = userData.filter((user) => user !== null);
-        setData(validUserData);
-      } catch (err) {
-        setError(err.message || "Failed to fetch employee data");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchAllUserData();
-  }, []);
+  const getStatusColor = (status) => {
+    switch (status.toLowerCase()) {
+      case "pending":
+        return "orange";
+      case "accept":
+        return "green";
+      case "reject":
+        return "red";
+      default:
+        return "default";
+    }
+  };
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm({ closeDropdown: false });
@@ -131,32 +146,37 @@ const TabelGajiHRGA = ({ detail }) => {
 
   const columns = [
     {
-      title: "Nama",
-      dataIndex: "nama",
-      key: "nama",
-      ...getColumnSearchProps("nama"),
+      title: "Ruangan",
+      dataIndex: "room",
+      key: "room",
+      ...getColumnSearchProps("room"),
+      className: "min-w-[150px]",
     },
     {
-      title: "Departemen",
-      dataIndex: "department_name",
-      key: "department_name",
-      ...getColumnSearchProps("department_name"),
-      responsive: ["md"],
+      title: "Tanggal",
+      dataIndex: "booking_date",
+      key: "date",
+      sorter: (a, b) => dayjs(a.date).unix() - dayjs(b.date).unix(),
+      className: "min-w-[150px]",
     },
     {
-      title: "Action",
-      key: "action",
-      fixed: "right",
-      width: 100,
-      render: (_, record) => (
-        <Button
-          type="primary"
-          size="small"
-          onClick={() => detail(record.key)}
-          className="px-4"
-        >
-          Detail
-        </Button>
+      title: "Jadwal",
+      dataIndex: "time",
+      key: "time",
+      className: "min-w-[200px]",
+      render: (text) => (
+        <div className="whitespace-normal break-words">{text}</div>
+      ),
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      className: "min-w-[100px]",
+      render: (status) => (
+        <Tag color={getStatusColor(status)} className="text-sm">
+          {status.toUpperCase()}
+        </Tag>
       ),
     },
   ];
@@ -173,20 +193,19 @@ const TabelGajiHRGA = ({ detail }) => {
     <div className="w-full">
       <Table
         columns={columns}
-        dataSource={data}
+        dataSource={bookings}
+        pagination={{
+          pageSize: 5,
+          showTotal: (total, range) =>
+            `${range[0]}-${range[1]} dari ${total} data`,
+        }}
         scroll={{
           x: "max-content",
           scrollToFirstRowOnChange: true,
-        }}
-        pagination={{
-          responsive: true,
-          pageSize: 5,
-          showTotal: (total, range) =>
-            `${range[0]}-${range[1]} of ${total} items`,
         }}
       />
     </div>
   );
 };
 
-export default TabelGajiHRGA;
+export default TabelBookingStaff;

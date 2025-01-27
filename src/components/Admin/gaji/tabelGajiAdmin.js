@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { SearchOutlined } from "@ant-design/icons";
-import { Button, Input, Space, Table } from "antd";
+import { Button, Input, Space, Table, Spin } from "antd";
 import Highlighter from "react-highlight-words";
 import { userServices } from "@/api/api";
 
@@ -19,7 +19,7 @@ const TabelGajiAdmin = ({ detail }) => {
         return {
           key: response.data.data.id_employee,
           nama: response.data.data.employee_data.name,
-          divisi: response.data.data.role_name,
+          department_name: response.data.data.employee_data.department_name,
         };
       } catch (err) {
         console.error(`Error fetching user ${userId}:`, err);
@@ -137,10 +137,10 @@ const TabelGajiAdmin = ({ detail }) => {
       ...getColumnSearchProps("nama"),
     },
     {
-      title: "Divisi",
-      dataIndex: "divisi",
-      key: "divisi",
-      ...getColumnSearchProps("divisi"),
+      title: "Departemen",
+      dataIndex: "department_name",
+      key: "department_name",
+      ...getColumnSearchProps("department_name"),
       responsive: ["md"],
     },
     {
@@ -161,8 +161,13 @@ const TabelGajiAdmin = ({ detail }) => {
     },
   ];
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-[300px]">
+        <Spin size="large" />
+      </div>
+    );
+  }
 
   return (
     <div className="w-full">

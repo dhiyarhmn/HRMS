@@ -21,6 +21,7 @@ const PaySlip = ({ selectedRecord }) => {
     try {
       const doc = new jsPDF();
       const pageWidth = doc.internal.pageSize.getWidth();
+      const pageHeight = doc.internal.pageSize.getHeight();
 
       // Header
       doc.setFontSize(16);
@@ -122,7 +123,7 @@ const PaySlip = ({ selectedRecord }) => {
       );
 
       startY = addSection(
-        "F. POTONGAN",
+        "D. POTONGAN",
         {
           BPJS: data.details.deductions[0]?.bpjs_deduction || 0,
           Pinjaman: data.details.deductions[0]?.borrow_deduction || 0,
@@ -138,7 +139,7 @@ const PaySlip = ({ selectedRecord }) => {
       );
 
       startY = addSection(
-        "G. POTONGAN KOPERASI",
+        "E. POTONGAN KOPERASI",
         {
           "Simpanan Wajib":
             data.details.other_deductions[0]?.simpanan_wajib || 0,
@@ -160,11 +161,11 @@ const PaySlip = ({ selectedRecord }) => {
       doc.text(
         `TOTAL GAJI BERSIH: ${formatCurrency(data.payroll.total_salary)}`,
         15,
-        startY + 10
+        startY
       );
 
       // Signatures
-      const signatureY = startY + 30;
+      const signatureY = Math.min(startY + 30, pageHeight - 40); // Ensure signatures fit on the page
       doc.setFont("helvetica", "normal");
       doc.text("Diterima oleh,", 35, signatureY);
       doc.text("Disetujui oleh,", pageWidth - 65, signatureY);
@@ -218,7 +219,7 @@ const PaySlip = ({ selectedRecord }) => {
 
         <Form.Item className="flex justify-end gap-2">
           <Button type="primary" htmlType="submit" loading={loading}>
-            Generate Slip Gaji
+            Print Slip Gaji
           </Button>
         </Form.Item>
       </Form>

@@ -34,6 +34,13 @@ export default function Approval() {
     setIsModalOpen(false);
   };
 
+  const statusOptions = [
+    { value: "all", label: "Semua Status" },
+    { value: "reject", label: "Reject" },
+    { value: "pending", label: "Pending" },
+    { value: "accept", label: "Accept" },
+  ];
+
   const handleApproval = async (isApproved) => {
     try {
       if (!selectedRecord) return;
@@ -56,12 +63,32 @@ export default function Approval() {
     }
   };
 
+  const handleReject = async () => {
+    try {
+      if (!selectedRecord) return;
+
+      await bookingServices.rejectBooking(selectedRecord.id_booking);
+      setSelectedRecord((prev) => ({
+        ...prev,
+        booking_status: "Reject",
+      }));
+      setRefreshTrigger((prev) => prev + 1);
+      message.success("Booking ruangan berhasil ditolak");
+      setIsModalOpen(false);
+    } catch (error) {
+      console.error("Error handling rejection:", error);
+      message.error("Gagal menolak booking");
+    }
+  };
+
   const getStatusColor = (status) => {
     switch (status.toLowerCase()) {
       case "pending":
         return "orange";
       case "accept":
         return "green";
+      case "reject":
+        return "red";
       default:
         return "default";
     }
@@ -73,37 +100,39 @@ export default function Approval() {
       <NavigationHRGA />
 
       {/* Main Content */}
-      <main className="flex-grow px-4 py-6 md:px-6 lg:px-8">
-        {/* Filter Section */}
-        <div className="max-w-7xl mx-auto mb-6">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <h1 className="text-2xl font-semibold text-gray-900">
-              Approval Booking
-            </h1>
-            <Select
-              defaultValue="all"
-              className="w-full sm:w-48"
-              onChange={(value) => setStatusFilter(value)}
-            >
-              <Option value="all">Semua Status</Option>
-              <Option value="pending">Pending</Option>
-              <Option value="accept">Accept</Option>
-            </Select>
-          </div>
-        </div>
+      <main className="flex-grow p-6 space-y-8">
+        {/* Section: Daftar Booking */}
+        <section className="max-w-7xl mx-auto w-full">
+          <div className="bg-white rounded-xl shadow-md overflow-hidden">
+            <div className="p-6">
+              {/* Header dan Filter */}
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+                <h1 className="text-2xl font-bold text-gray-900">
+                  Approval Booking
+                </h1>
+                <Select
+                  defaultValue="all"
+                  style={{
+                    width: "100%",
+                    maxWidth: "200px",
+                  }}
+                  className="!min-w-[200px]"
+                  onChange={(value) => setStatusFilter(value)}
+                  options={statusOptions}
+                />
+              </div>
 
-        {/* Table Section */}
-        <div className="max-w-7xl mx-auto">
-          <div className="bg-third rounded-xl shadow-sm overflow-hidden">
-            <div className="p-4 sm:p-6">
-              <TabelApprovalHRGA
-                detail={showModal}
-                refreshTrigger={refreshTrigger}
-                statusFilter={statusFilter}
-              />
+              {/* Tabel */}
+              <div className="mt-4">
+                <TabelApprovalHRGA
+                  detail={showModal}
+                  refreshTrigger={refreshTrigger}
+                  statusFilter={statusFilter}
+                />
+              </div>
             </div>
           </div>
-        </div>
+        </section>
       </main>
 
       {/* Detail Modal */}
@@ -118,6 +147,15 @@ export default function Approval() {
         footer={[
           selectedRecord?.booking_status === "Pending" && (
             <div key="footer" className="flex justify-end gap-3">
+              <Button
+                key="reject"
+                type="primary"
+                danger
+                onClick={() => handleReject(true)}
+                className="px-6"
+              >
+                Tolak
+              </Button>
               <Button
                 key="approve"
                 type="primary"
@@ -138,10 +176,18 @@ export default function Approval() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="bg-gray-50 p-4 rounded-lg">
                 <strong className="text-sm font-medium text-gray-700 block mb-1">
-                  ID Booking
+                  Nama Ruangan
                 </strong>
                 <p className="text-base text-gray-900">
-                  {selectedRecord.id_booking}
+                  {selectedRecord.room_name}
+                </p>
+              </div>
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <strong className="text-sm font-medium text-gray-700 block mb-1">
+                  Departemen
+                </strong>
+                <p className="text-base text-gray-900">
+                  {selectedRecord.department_name}
                 </p>
               </div>
 
