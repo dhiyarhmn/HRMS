@@ -7,18 +7,22 @@ const AllowanceForm = ({ employeeId, onSubmitSuccess }) => {
 
   const onFinish = async (values) => {
     try {
-      // Memastikan semua nilai adalah number
+      const formattedDate = values.date.format("YYYY-MM-01");
+
       const allowanceData = {
-        id_employee: employeeId, // employeeId sudah berupa number
-        position_allowance: values.position_allowance ? Number(values.position_allowance) : 0,
-        health_allowance: values.health_allowance ? Number(values.health_allowance) : 0,
+        id_employee: employeeId,
+        position_allowance: values.position_allowance
+          ? Number(values.position_allowance)
+          : 0,
+        health_allowance: values.health_allowance
+          ? Number(values.health_allowance)
+          : 0,
         pension: values.pension ? Number(values.pension) : 0,
         communication: values.communication ? Number(values.communication) : 0,
-        date: values.date.format("YYYY-MM-DD"),
+        date: formattedDate,
       };
 
       console.log("Sending allowance data:", allowanceData);
-
       const response = await allowanceServices.createAllowance(allowanceData);
       console.log("Response:", response);
 
@@ -26,9 +30,8 @@ const AllowanceForm = ({ employeeId, onSubmitSuccess }) => {
       if (onSubmitSuccess) onSubmitSuccess();
     } catch (error) {
       console.error("Error saving allowance:", error);
-      console.error("Error response:", error.response?.data);
       message.error(
-        error.response?.data?.message || "Failed to save allowance data"
+        error.response?.data?.message || "Gagal menyimpan data tunjangan"
       );
     }
   };
@@ -37,14 +40,13 @@ const AllowanceForm = ({ employeeId, onSubmitSuccess }) => {
     <Form form={form} layout="vertical" onFinish={onFinish}>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Form.Item
-          label="Position Allowance"
+          label="Tunjangan Jabatan"
           name="position_allowance"
           rules={[
-            { required: true, message: "Position Allowance is required!" },
             {
               type: "number",
               min: 0,
-              message: "Position Allowance must be a positive number!",
+              message: "Tunjangan Jabatan harus berupa angka positif!",
             },
           ]}
         >
@@ -59,14 +61,14 @@ const AllowanceForm = ({ employeeId, onSubmitSuccess }) => {
         </Form.Item>
 
         <Form.Item
-          label="Health Allowance"
+          label="Tunjangan Kesehatan"
           name="health_allowance"
           rules={[
-            { required: true, message: "Health Allowance is required!" },
+            { required: true, message: "Tunjangan Kesehatan wajib diisi!" },
             {
               type: "number",
               min: 0,
-              message: "Health Allowance must be a positive number!",
+              message: "Tunjangan Kesehatan harus berupa angka positif!",
             },
           ]}
         >
@@ -81,14 +83,14 @@ const AllowanceForm = ({ employeeId, onSubmitSuccess }) => {
         </Form.Item>
 
         <Form.Item
-          label="Pension"
+          label="Pensiun"
           name="pension"
           rules={[
-            { required: true, message: "Pension is required!" },
+            { required: true, message: "Pensiun wajib diisi!" },
             {
               type: "number",
               min: 0,
-              message: "Pension must be a positive number!",
+              message: "Pensiun harus berupa angka positif!",
             },
           ]}
         >
@@ -103,14 +105,13 @@ const AllowanceForm = ({ employeeId, onSubmitSuccess }) => {
         </Form.Item>
 
         <Form.Item
-          label="Communication"
+          label="Komunikasi"
           name="communication"
           rules={[
-            { required: true, message: "Communication is required!" },
             {
               type: "number",
               min: 0,
-              message: "Communication must be a positive number!",
+              message: "Komunikasi harus berupa angka positif!",
             },
           ]}
         >
@@ -125,17 +126,19 @@ const AllowanceForm = ({ employeeId, onSubmitSuccess }) => {
         </Form.Item>
 
         <Form.Item
-          label="Date"
+          label="Tanggal (Bulan dan Tahun)"
           name="date"
-          rules={[{ required: true, message: "Please select date!" }]}
+          rules={[
+            { required: true, message: "Silakan pilih bulan dan tahun!" },
+          ]}
         >
-          <DatePicker className="w-full" />
+          <DatePicker picker="month" className="w-full" format="MMMM YYYY" />
         </Form.Item>
       </div>
 
       <Form.Item>
         <Button type="primary" htmlType="submit">
-          Save Allowance
+          Simpan Tunjangan
         </Button>
       </Form.Item>
     </Form>

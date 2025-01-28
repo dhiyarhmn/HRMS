@@ -1,9 +1,9 @@
 "use client";
-import TabelApprovalHRGA from "@/components/HRGA/approval/tabelApprovalHRGA";
+import { useEffect, useState } from "react";
 import NavigationHRGA from "@/components/HRGA/navigation/navigationHRGA";
+import TabelApprovalHRGA from "@/components/HRGA/approval/tabelApprovalHRGA";
 import Navbar from "@/components/Navbar/navbar";
 import { Button, message, Modal, Tag, Select } from "antd";
-import { useEffect, useState } from "react";
 import { bookingServices } from "@/api/api";
 import dayjs from "dayjs";
 
@@ -54,7 +54,13 @@ export default function Approval() {
         setRefreshTrigger((prev) => prev + 1);
         message.success("Booking ruangan berhasil disetujui");
       } else {
-        message.error("Booking ruangan ditolak");
+        await bookingServices.rejectBooking(selectedRecord.id_booking);
+        setSelectedRecord((prev) => ({
+          ...prev,
+          booking_status: "Reject",
+        }));
+        setRefreshTrigger((prev) => prev + 1);
+        message.success("Booking ruangan berhasil ditolak");
       }
       setIsModalOpen(false);
     } catch (error) {
@@ -145,17 +151,19 @@ export default function Approval() {
         open={isModalOpen}
         onCancel={handleCancel}
         footer={[
-          selectedRecord?.booking_status === "Pending" && (
-            <div key="footer" className="flex justify-end gap-3">
+          <div key="footer" className="flex justify-end gap-3">
+            {selectedRecord?.booking_status !== "Reject" && (
               <Button
                 key="reject"
                 type="primary"
                 danger
-                onClick={() => handleReject(true)}
+                onClick={handleReject}
                 className="px-6"
               >
                 Tolak
               </Button>
+            )}
+            {selectedRecord?.booking_status !== "Accept" && (
               <Button
                 key="approve"
                 type="primary"
@@ -164,8 +172,8 @@ export default function Approval() {
               >
                 Setujui
               </Button>
-            </div>
-          ),
+            )}
+          </div>,
         ]}
         width={modalWidth}
         centered

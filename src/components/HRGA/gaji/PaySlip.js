@@ -210,7 +210,7 @@ const PaySlip = ({ selectedRecord }) => {
     <div className="space-y-4">
       <Form form={form} layout="vertical" onFinish={onFinish}>
         <Form.Item
-          label="Pilih Periode"
+          label="Pilih Tanggal (Bulan dan Tahun)"
           name="date"
           rules={[{ required: true, message: "Silakan pilih periode!" }]}
         >
@@ -219,7 +219,7 @@ const PaySlip = ({ selectedRecord }) => {
 
         <Form.Item className="flex justify-end gap-2">
           <Button type="primary" htmlType="submit" loading={loading}>
-            Print Slip Gaji
+            Cetak Slip Gaji
           </Button>
         </Form.Item>
       </Form>

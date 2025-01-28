@@ -246,7 +246,7 @@ const SlipGajiStaff = ({ selectedRecord }) => {
         loading={loading}
         className="w-full"
       >
-        Generate Slip Gaji
+        Cetak Slip Gaji
       </Button>
     </div>
   );

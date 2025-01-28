@@ -212,21 +212,21 @@ export const roomServices = {
   getListRoomBookings: (roomId) => api.get(`/list/book/${roomId}`),
 };
 
-// Room Booking Services
+// bookingServices
 export const bookingServices = {
   getBookings: () => api.get("/books"),
-  getUserBookings: () => api.get("/userbooks"),
+  getUserBookings: () => api.get("/books/list"),
   createBooking: async (bookingData) => {
     try {
-      const response = await api.post("/book", bookingData); // Langsung kirim bookingData tanpa modifikasi
+      const response = await api.post("/book", bookingData);
       return response.data;
     } catch (error) {
       throw error;
     }
   },
   getBookingById: (id_booking) => api.get(`/book/${id_booking}`),
-  approveBooking: (id) => api.post(`/approve/book/${id}`),
-  rejectBooking: (id) => api.post(`/reject/book/${id}`),
+  approveBooking: (id) => api.put(`/approve/book/${id}`), // Ubah dari POST ke PUT
+  rejectBooking: (id) => api.put(`/reject/book/${id}`), // Ubah dari POST ke PUT
   deleteBooking: (id) => api.delete(`/book/${id}`),
 };
 

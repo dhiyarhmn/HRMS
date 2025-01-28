@@ -7,23 +7,27 @@ const BonusForm = ({ employeeId, onSubmitSuccess }) => {
 
   const onFinish = async (values) => {
     try {
+      const formattedDate = values.date.format("YYYY-MM-01");
+
       const bonusData = {
         id_employee: employeeId,
-        overtime: Number(values.overtime),
-        meal: Number(values.meal),
-        transport: Number(values.transport),
-        extra: Number(values.extra),
-        date: values.date.format("YYYY-MM-DD"),
+        overtime: values.overtime ? Number(values.overtime) : 0,
+        meal: values.meal ? Number(values.meal) : 0,
+        transport: values.transport ? Number(values.transport) : 0,
+        extra: values.extra ? Number(values.extra) : 0,
+        date: formattedDate,
       };
 
-      console.log("Sending bonus data:", bonusData); // Debug
+      console.log("Sending bonus data:", bonusData);
       await bonusServices.createBonus(bonusData);
 
       form.resetFields();
       if (onSubmitSuccess) onSubmitSuccess();
     } catch (error) {
-      console.error("Error details:", error.response?.data); // Debug
-      message.error(error.response?.data?.message || "Failed to save bonus data");
+      console.error("Error details:", error.response?.data);
+      message.error(
+        error.response?.data?.message || "Gagal menyimpan data bonus"
+      );
     }
   };
 
@@ -31,14 +35,13 @@ const BonusForm = ({ employeeId, onSubmitSuccess }) => {
     <Form form={form} layout="vertical" onFinish={onFinish}>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Form.Item
-          label="Overtime"
+          label="Lembur"
           name="overtime"
           rules={[
-            { required: true, message: "Overtime is required!" },
             {
               type: "number",
               min: 0,
-              message: "Overtime must be a positive number!",
+              message: "Lembur harus berupa angka positif!",
             },
           ]}
         >
@@ -48,18 +51,19 @@ const BonusForm = ({ employeeId, onSubmitSuccess }) => {
               `Rp ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".")
             }
             parser={(value) => value.replace(/Rp\s?|(\.*)/g, "")}
+            min={0}
           />
         </Form.Item>
 
         <Form.Item
-          label="Meal"
+          label="Makan"
           name="meal"
           rules={[
-            { required: true, message: "Meal is required!" },
+            { required: true, message: "Makan wajib diisi!" },
             {
               type: "number",
               min: 0,
-              message: "Meal must be a positive number!",
+              message: "Makan harus berupa angka positif!",
             },
           ]}
         >
@@ -69,6 +73,7 @@ const BonusForm = ({ employeeId, onSubmitSuccess }) => {
               `Rp ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".")
             }
             parser={(value) => value.replace(/Rp\s?|(\.*)/g, "")}
+            min={0}
           />
         </Form.Item>
 
@@ -76,11 +81,11 @@ const BonusForm = ({ employeeId, onSubmitSuccess }) => {
           label="Transport"
           name="transport"
           rules={[
-            { required: true, message: "Transport is required!" },
+            { required: true, message: "Transport wajib diisi!" },
             {
               type: "number",
               min: 0,
-              message: "Transport must be a positive number!",
+              message: "Transport harus berupa angka positif!",
             },
           ]}
         >
@@ -90,18 +95,18 @@ const BonusForm = ({ employeeId, onSubmitSuccess }) => {
               `Rp ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".")
             }
             parser={(value) => value.replace(/Rp\s?|(\.*)/g, "")}
+            min={0}
           />
         </Form.Item>
 
         <Form.Item
-          label="Extra"
+          label="Tambahan"
           name="extra"
           rules={[
-            { required: true, message: "Extra is required!" },
             {
               type: "number",
               min: 0,
-              message: "Extra must be a positive number!",
+              message: "Tambahan harus berupa angka positif!",
             },
           ]}
         >
@@ -111,21 +116,24 @@ const BonusForm = ({ employeeId, onSubmitSuccess }) => {
               `Rp ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".")
             }
             parser={(value) => value.replace(/Rp\s?|(\.*)/g, "")}
+            min={0}
           />
         </Form.Item>
 
         <Form.Item
-          label="Date"
+          label="Tanggal (Bulan dan Tahun)"
           name="date"
-          rules={[{ required: true, message: "Please select date!" }]}
+          rules={[
+            { required: true, message: "Silakan pilih bulan dan tahun!" },
+          ]}
         >
-          <DatePicker className="w-full" />
+          <DatePicker picker="month" className="w-full" format="MMMM YYYY" />
         </Form.Item>
       </div>
 
       <Form.Item>
         <Button type="primary" htmlType="submit">
-          Save Bonus
+          Simpan Bonus
         </Button>
       </Form.Item>
     </Form>

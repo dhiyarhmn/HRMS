@@ -1,124 +1,83 @@
 "use client";
+import { useEffect, useState } from "react";
 import Navbar from "@/components/Navbar/navbar";
-import Navigation from "@/components/navigation";
-import RoomForm from "@/components/Staff/ruangan/roomFormStaff";
-import room from "@/public/room-1.jpeg";
-import Image from "next/image";
+import NavigationDirektur from "@/components/Direktur/navigation/navigationDirektur";
+import TabelBookingDirektur from "@/components/Direktur/ruangan/tabelBookingDirektur";
+import DaftarRuanganDirektur from "@/components/Direktur/ruangan/daftarRuanganDirektur";
+import { Select } from "antd";
 
 export default function Ruangan() {
-  const links = [
-    { href: "/home", text: "Home" },
-    { href: "/cuti", text: "Cuti" },
-    { href: "/lembur", text: "Lembur" },
-    { href: "/bookroom", text: "Ruangan" },
-    { href: "/gaji", text: "Gaji" },
+  const [bookingRefreshTrigger, setBookingRefreshTrigger] = useState(0);
+  const [statusFilter, setStatusFilter] = useState("all");
+
+  const handleBookingSuccess = () => {
+    setBookingRefreshTrigger((prev) => prev + 1);
+  };
+
+  // Data options untuk Select
+  const statusOptions = [
+    { value: "all", label: "Semua Status" },
+    { value: "pending", label: "Pending" },
+    { value: "accept", label: "Accept" },
+    { value: "reject", label: "Reject" },
   ];
   return (
-    <div>
-      <Navbar />
-      <Navigation
-        links={links}
-        headerBg="flex mt-8 bg-transparent"
-        navigationBg="bg-third"
-      />
-      <section>
-        <div className="flex flex-col w-full h-auto gap-y-8 mt-6 p-8">
-          <div
-            id="lantai1"
-            className="flex w-full justify-evenly bg-second p-4 rounded-lg"
-          >
-            <div className="card card-compact bg-third w-1/6 shadow-xl text-black">
-              <figure>
-                <Image src={room} />
-              </figure>
-              <div className="card-body">
-                <h2 className="card-title">E101</h2>
-                <p>Ruangan Rapat</p>
-                <div className="card-actions justify-end">
-                  <RoomForm />
-                </div>
+    <div className="min-h-screen flex flex-col bg-gray-100">
+      <Navbar href={"/Direktur/home"} p={"Direktur"} />
+      <NavigationDirektur />
+
+      <main className="flex-grow p-6 space-y-8">
+        {/* Section: Daftar Booking */}
+        <section className="max-w-7xl mx-auto w-full">
+          <div className="bg-white rounded-xl shadow-md overflow-hidden">
+            <div className="p-6">
+              {/* Header dan Filter */}
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+                <h1 className="text-2xl font-bold text-gray-900">
+                  Daftar Booking
+                </h1>
+                <Select
+                  defaultValue="all"
+                  style={{
+                    width: "100%",
+                    maxWidth: "200px",
+                  }}
+                  className="!min-w-[200px]"
+                  onChange={(value) => setStatusFilter(value)}
+                  options={statusOptions}
+                />
               </div>
-            </div>
-            <div className="card card-compact bg-third w-1/6 shadow-xl text-black">
-              <figure>
-                <Image src={room} />
-              </figure>
-              <div className="card-body">
-                <h2 className="card-title">E101</h2>
-                <p>Ruangan Rapat</p>
-                <div className="card-actions justify-end">
-                  <RoomForm />
-                </div>
-              </div>
-            </div>
-            <div className="card card-compact bg-third w-1/6 shadow-xl text-black">
-              <figure>
-                <Image src={room} />
-              </figure>
-              <div className="card-body">
-                <h2 className="card-title">E101</h2>
-                <p>Ruangan Rapat</p>
-                <div className="card-actions justify-end">
-                  <RoomForm />
-                </div>
+
+              {/* Tabel */}
+              <div className="mt-4">
+                <TabelBookingDirektur
+                  refreshTrigger={bookingRefreshTrigger}
+                  statusFilter={statusFilter}
+                />
               </div>
             </div>
           </div>
-          <div
-            id="lantai2"
-            className="flex w-full justify-evenly bg-second p-4 rounded-lg"
-          >
-            <div className="card card-compact bg-third w-1/6 shadow-xl text-black">
-              <figure>
-                <Image src={room} />
-              </figure>
-              <div className="card-body">
-                <h2 className="card-title">E101</h2>
-                <p>Ruangan Rapat</p>
-                <div className="card-actions justify-end">
-                  <RoomForm />
-                </div>
+        </section>
+
+        {/* Section: Daftar Ruangan */}
+        <section className="max-w-7xl mx-auto w-full">
+          <div className="bg-white rounded-xl shadow-md overflow-hidden">
+            <div className="p-6">
+              {/* Header */}
+              <div className="mb-6">
+                <h1 className="text-2xl font-bold text-gray-900">
+                  Daftar Ruangan
+                </h1>
               </div>
-            </div>
-            <div className="card card-compact bg-third w-1/6 shadow-xl text-black">
-              <figure>
-                <Image src={room} />
-              </figure>
-              <div className="card-body">
-                <h2 className="card-title">E101</h2>
-                <p>Ruangan Rapat</p>
-                <div className="card-actions justify-end">
-                  <RoomForm />
-                </div>
-              </div>
-            </div>
-            <div className="card card-compact bg-third w-1/6 shadow-xl text-black">
-              <figure>
-                <Image src={room} />
-              </figure>
-              <div className="card-body">
-                <h2 className="card-title">E101</h2>
-                <p>Ruangan Rapat</p>
-                <div className="card-actions justify-end">
-                  <RoomForm />
-                </div>
-              </div>
-            </div>
-            <div className="card card-compact bg-third w-1/6 shadow-xl text-black">
-              <figure>
-                <Image src={room} />
-              </figure>
-              <div className="card-body">
-                <h2 className="card-title">E101</h2>
-                <p>Ruangan Rapat</p>
-                <div className="card-actions justify-end">
-                  <RoomForm />
-                </div>
+
+              {/* Content */}
+              <div className="mt-4">
+                <DaftarRuanganDirektur onBookingSuccess={handleBookingSuccess} />
               </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </main>
     </div>
   );
 }

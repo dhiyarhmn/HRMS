@@ -1,8 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
-import TabelRiwayatGajiDirektur from "@/components/Direktur/gaji/tabelRiwayatGajiDirektur";
-import NavigationDirektur from "@/components/Direktur/navigation/navigationDirektur";
-import SlipGajiDirektur from "@/components/Direktur/gaji/slipGajiDirektur";
+import TabelRiwayatGajiManager from "@/components/Manager/gaji/tabelRiwayatGajiManager";
+import NavigationManager from "@/components/Manager/navigation/navigationManager";
+import SlipGajiManager from "@/components/Manager/gaji/slipGajiManager";
 import Navbar from "@/components/Navbar/navbar";
 import { Modal, Tabs } from "antd";
 
@@ -41,8 +41,8 @@ export default function Gaji() {
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
-      <Navbar href={"/Direktur/home"} p={"Direktur"} />
-      <NavigationDirektur />
+      <Navbar href={"/Manager/home"} p={"Manager"} />
+      <NavigationManager />
 
       <main className="flex-grow px-4 py-6 md:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto mb-6">
@@ -54,7 +54,7 @@ export default function Gaji() {
         <div className="max-w-7xl mx-auto">
           <div className="bg-third rounded-xl shadow-sm overflow-hidden">
             <div className="p-4 sm:p-6">
-              <TabelRiwayatGajiDirektur detail={showModal} />
+              <TabelRiwayatGajiManager detail={showModal} />
             </div>
           </div>
         </div>
@@ -139,7 +139,7 @@ export default function Gaji() {
               </div>
             </TabPane>
             <TabPane tab="Generate Slip Gaji" key="2">
-              <SlipGajiDirektur selectedRecord={selectedRecord.key} />
+              <SlipGajiManager selectedRecord={selectedRecord.key} />
             </TabPane>
           </Tabs>
         )}
