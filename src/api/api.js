@@ -1,4 +1,5 @@
 import axios from "axios";
+import { message } from "antd";
 
 const api = axios.create({
   baseURL: "http://127.0.0.1:8000/api",
@@ -8,6 +9,9 @@ const api = axios.create({
     "X-Requested-With": "XMLHttpRequest",
   },
 });
+
+// Flag untuk menandai apakah pesan error dan redirect sudah dilakukan
+let isUnauthorizedHandled = false;
 
 // Request interceptor
 api.interceptors.request.use(
@@ -27,10 +31,30 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
+    const originalRequest = error.config;
+    if (
+      error.response?.status === 401 &&
+      !isUnauthorizedHandled &&
+      !originalRequest.url.includes("/login")
+    ) {
+      
+      // Tandai bahwa pesan error dan redirect sudah dilakukan
+      isUnauthorizedHandled = true;
+
+      // Tampilkan pesan error menggunakan Ant Design
+      message.error("Session Anda telah habis, silakan login kembali.");
+
+      // Hapus token dan user dari localStorage
       localStorage.removeItem("token");
       localStorage.removeItem("user");
-      return Promise.reject(error);
+
+      // Pastikan kode ini hanya dijalankan di client-side
+      if (typeof window !== "undefined") {
+        // Redirect ke halaman login setelah pesan error selesai (3 detik)
+        setTimeout(() => {
+          window.location.href = "/login"; // Gunakan window.location untuk redirect
+        }, 3000); // Sesuaikan dengan durasi pesan error
+      }
     }
     return Promise.reject(error);
   }
@@ -92,18 +116,6 @@ export const getProfile = async () => {
 
 // Employee Services for New User Registration
 export const employeeServices = {
-  getHomeRoute: (role) => {
-    const routes = {
-      staff: "/Staff/home",
-      manager: "/Manager/home",
-      hrga: "/HRGA/home",
-      director: "/Direktur/home",
-      admin: "/Admin/home",
-    };
-    const normalizedRole = role?.toLowerCase();
-    return routes[normalizedRole] || "/login";
-  },
-
   completeNewUserProfile: async (userData) => {
     try {
       const currentUser = JSON.parse(localStorage.getItem("user"));
