@@ -19,6 +19,7 @@ export default function Ruangan() {
     { value: "all", label: "Semua Status" },
     { value: "pending", label: "Pending" },
     { value: "accept", label: "Accept" },
+    { value: "reject", label: "Reject" },
   ];
   return (
     <div className="min-h-screen flex flex-col bg-gray-100">

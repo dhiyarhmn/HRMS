@@ -41,7 +41,7 @@ const PayrollCalculator = ({ employeeId, onCalculateSuccess }) => {
   return (
     <Form form={form} layout="vertical" onFinish={onFinish}>
       <Form.Item
-        label="Select Month and Year"
+        label="Pilih Tanggal (Bulan dan Tahun)"
         name="date"
         rules={[{ required: true, message: "Please select date!" }]}
       >
@@ -50,7 +50,7 @@ const PayrollCalculator = ({ employeeId, onCalculateSuccess }) => {
 
       <Form.Item>
         <Button type="primary" htmlType="submit" loading={loading}>
-          Calculate Payroll
+          Kalkulasi Gaji
         </Button>
       </Form.Item>
     </Form>

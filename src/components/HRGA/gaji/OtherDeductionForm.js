@@ -7,6 +7,8 @@ const OtherDeductionForm = ({ employeeId, onSubmitSuccess }) => {
 
   const onFinish = async (values) => {
     try {
+      const formattedDate = values.date.format("YYYY-MM-01");
+
       const otherDeductionData = {
         id_employee: employeeId,
         simpanan_wajib: values.simpanan_wajib
@@ -22,7 +24,7 @@ const OtherDeductionForm = ({ employeeId, onSubmitSuccess }) => {
         makan: values.makan ? Number(values.makan) : 0,
         iuran_spmi: values.iuran_spmi ? Number(values.iuran_spmi) : 0,
         soft_loan: values.soft_loan ? Number(values.soft_loan) : 0,
-        date: values.date.format("YYYY-MM-DD"),
+        date: formattedDate,
       };
 
       console.log("Sending other deduction data:", otherDeductionData); // Debug
@@ -51,7 +53,7 @@ const OtherDeductionForm = ({ employeeId, onSubmitSuccess }) => {
             {
               type: "number",
               min: 0,
-              message: "Simpanan Wajib must be a positive number!",
+              message: "Simpanan Wajib harus berupa angka positif!",
             },
           ]}
         >
@@ -71,7 +73,7 @@ const OtherDeductionForm = ({ employeeId, onSubmitSuccess }) => {
             {
               type: "number",
               min: 0,
-              message: "Simpanan Sukarela must be a positive number!",
+              message: "Simpanan Sukarela harus berupa angka positif!",
             },
           ]}
         >
@@ -91,7 +93,7 @@ const OtherDeductionForm = ({ employeeId, onSubmitSuccess }) => {
             {
               type: "number",
               min: 0,
-              message: "Pinjaman Uang/Barang must be a positive number!",
+              message: "Pinjaman Uang/Barang harus berupa angka positif!",
             },
           ]}
         >
@@ -111,7 +113,7 @@ const OtherDeductionForm = ({ employeeId, onSubmitSuccess }) => {
             {
               type: "number",
               min: 0,
-              message: "Ruko must be a positive number!",
+              message: "Ruko harus berupa angka positif!",
             },
           ]}
         >
@@ -131,7 +133,7 @@ const OtherDeductionForm = ({ employeeId, onSubmitSuccess }) => {
             {
               type: "number",
               min: 0,
-              message: "Makan must be a positive number!",
+              message: "Makan harus berupa angka positif!",
             },
           ]}
         >
@@ -151,7 +153,7 @@ const OtherDeductionForm = ({ employeeId, onSubmitSuccess }) => {
             {
               type: "number",
               min: 0,
-              message: "Iuran SPMI must be a positive number!",
+              message: "Iuran SPMI harus berupa angka positif!",
             },
           ]}
         >
@@ -165,13 +167,13 @@ const OtherDeductionForm = ({ employeeId, onSubmitSuccess }) => {
         </Form.Item>
 
         <Form.Item
-          label="Soft Loan"
+          label="Pinjaman Lunak"
           name="soft_loan"
           rules={[
             {
               type: "number",
               min: 0,
-              message: "Soft Loan must be a positive number!",
+              message: "Pinjaman Lunak harus berupa angka positif!",
             },
           ]}
         >
@@ -185,17 +187,19 @@ const OtherDeductionForm = ({ employeeId, onSubmitSuccess }) => {
         </Form.Item>
 
         <Form.Item
-          label="Date"
+          label="Tanggal (Bulan dan Tahun)"
           name="date"
-          rules={[{ required: true, message: "Please select date!" }]}
+          rules={[
+            { required: true, message: "Silakan pilih bulan dan tahun!" },
+          ]}
         >
-          <DatePicker className="w-full" />
+          <DatePicker picker="month" className="w-full" format="MMMM YYYY" />
         </Form.Item>
       </div>
 
       <Form.Item>
         <Button type="primary" htmlType="submit">
-          Save Other Deductions
+          Simpan Potongan Tambahan
         </Button>
       </Form.Item>
     </Form>

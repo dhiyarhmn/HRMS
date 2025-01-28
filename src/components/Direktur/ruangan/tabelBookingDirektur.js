@@ -6,7 +6,7 @@ import React, { useRef, useState, useEffect } from "react";
 import Highlighter from "react-highlight-words";
 import dayjs from "dayjs";
 
-const TabelBookingStaff = ({ refreshTrigger, statusFilter }) => {
+const TabelBookingDirektur = ({ refreshTrigger, statusFilter }) => {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchText, setSearchText] = useState("");
@@ -209,4 +209,4 @@ const TabelBookingStaff = ({ refreshTrigger, statusFilter }) => {
   );
 };
 
-export default TabelBookingStaff;
+export default TabelBookingDirektur;

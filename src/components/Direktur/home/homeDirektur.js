@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 
 const { Meta } = Card;
 
-export default function HomeStaff() {
+export default function HomeDirektur() {
   const router = useRouter();
   const handleCardClick = (path) => {
     router.push(path);
@@ -19,7 +19,7 @@ export default function HomeStaff() {
       title: "Absensi & Cuti",
       description: "Lorem ipsum dolor sit amet",
       image: absence,
-      path: "/Staff/cuti",
+      path: "/Direktur/cuti",
       bgColor: "bg-first",
       rounded: "rounded-s-badge rounded-br-badge",
     },
@@ -27,7 +27,7 @@ export default function HomeStaff() {
       title: "Gaji",
       description: "Lorem ipsum dolor sit amet",
       image: salary,
-      path: "/Staff/gaji",
+      path: "/Direktur/gaji",
       bgColor: "bg-second",
       rounded: "rounded-e-badge rounded-tl-badge",
     },
@@ -35,7 +35,7 @@ export default function HomeStaff() {
       title: "Booking Ruangan",
       description: "Lorem ipsum dolor sit amet",
       image: booking,
-      path: "/Staff/ruangan",
+      path: "/Direktur/ruangan",
       bgColor: "bg-second",
       rounded: "rounded-badge",
     },

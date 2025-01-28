@@ -1,11 +1,10 @@
-import React, { useState } from "react";
-import { Button, Form, DatePicker, message } from "antd";
 import { payrollServices } from "@/api/api";
+import { Button, message } from "antd";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
+import { useState } from "react";
 
-const PaySlip = ({ selectedRecord }) => {
-  const [form] = Form.useForm();
+const SlipGajiDirektur = ({ selectedRecord }) => {
   const [loading, setLoading] = useState(false);
 
   const formatCurrency = (value) => {
@@ -17,11 +16,11 @@ const PaySlip = ({ selectedRecord }) => {
     }).format(value);
   };
 
-  const generatePDF = (data, date) => {
+  const generatePDF = (data) => {
     try {
       const doc = new jsPDF();
       const pageWidth = doc.internal.pageSize.getWidth();
-      const pageHeight = doc.internal.pageSize.getHeight();
+      const payrollDate = new Date(data.payroll.date);
 
       // Header
       doc.setFontSize(16);
@@ -50,7 +49,10 @@ const PaySlip = ({ selectedRecord }) => {
           `Nama: ${data.employee.name}`,
           `NIK: ${data.employee.nik}`,
           `Departemen: ${data.employee.department_id}`,
-          `Periode: ${date.format("MMMM YYYY")}`,
+          `Periode: ${payrollDate.toLocaleDateString("id-ID", {
+            month: "long",
+            year: "numeric",
+          })}`,
         ],
         15,
         45
@@ -161,11 +163,11 @@ const PaySlip = ({ selectedRecord }) => {
       doc.text(
         `TOTAL GAJI BERSIH: ${formatCurrency(data.payroll.total_salary)}`,
         15,
-        startY
+        startY + 10
       );
 
       // Signatures
-      const signatureY = Math.min(startY + 30, pageHeight - 40); // Ensure signatures fit on the page
+      const signatureY = startY + 30;
       doc.setFont("helvetica", "normal");
       doc.text("Diterima oleh,", 35, signatureY);
       doc.text("Disetujui oleh,", pageWidth - 65, signatureY);
@@ -175,7 +177,11 @@ const PaySlip = ({ selectedRecord }) => {
       doc.text("Karyawan", 39, signatureY + 30);
       doc.text("HRGA", pageWidth - 57, signatureY + 30);
 
-      doc.save(`slip-gaji-${data.employee.name}-${date.format("MMYYYY")}.pdf`);
+      doc.save(
+        `slip-gaji-${data.employee.name}-${
+          payrollDate.getMonth() + 1
+        }${payrollDate.getFullYear()}.pdf`
+      );
       message.success("PDF berhasil di-generate");
     } catch (error) {
       console.error("Error generating PDF:", error);
@@ -183,24 +189,50 @@ const PaySlip = ({ selectedRecord }) => {
     }
   };
 
-  const onFinish = async (values) => {
+  const handleGeneratePDF = async () => {
     try {
       setLoading(true);
-      const params = {
-        id_employee: selectedRecord,
-        month: values.date.format("MM"),
-        year: values.date.format("YYYY"),
-      };
+      const response = await payrollServices.getEmployeePayroll();
 
-      // Mengambil data dari endpoint yang sudah ada
-      const response = await payrollServices.getPayrollSummary({
-        params: params,
+      // Find the specific payroll record
+      const payrollRecord = response.data.find(
+        (record) => record.id_payroll === selectedRecord
+      );
+
+      if (!payrollRecord) {
+        message.error("Data payroll tidak ditemukan");
+        return;
+      }
+
+      // Ensure month and year are correctly formatted
+      const month = String(payrollRecord.month).padStart(2, "0");
+      const year = String(payrollRecord.year);
+
+      // Fetch detailed payroll data
+      const detailedResponse = await payrollServices.getPayrollSummary({
+        params: {
+          id_employee: payrollRecord.id_employee,
+          month: month,
+          year: year,
+        },
       });
 
-      generatePDF(response.data.data, values.date);
+      generatePDF(detailedResponse.data.data);
     } catch (error) {
       console.error("Error:", error);
-      message.error("Gagal mengambil data payroll");
+      // More detailed error logging
+      if (error.response) {
+        console.error("Response error:", error.response.data);
+        message.error(
+          `Gagal mengambil data payroll: ${
+            error.response.data.message || error.message
+          }`
+        );
+      } else {
+        message.error(
+          "Gagal mengambil data payroll: Terjadi kesalahan tidak dikenal"
+        );
+      }
     } finally {
       setLoading(false);
     }
@@ -208,23 +240,16 @@ const PaySlip = ({ selectedRecord }) => {
 
   return (
     <div className="space-y-4">
-      <Form form={form} layout="vertical" onFinish={onFinish}>
-        <Form.Item
-          label="Pilih Tanggal (Bulan dan Tahun)"
-          name="date"
-          rules={[{ required: true, message: "Silakan pilih periode!" }]}
-        >
-          <DatePicker picker="month" className="w-full" />
-        </Form.Item>
-
-        <Form.Item className="flex justify-end gap-2">
-          <Button type="primary" htmlType="submit" loading={loading}>
-            Cetak Slip Gaji
-          </Button>
-        </Form.Item>
-      </Form>
+      <Button
+        type="primary"
+        onClick={handleGeneratePDF}
+        loading={loading}
+        className="w-full"
+      >
+        Cetak Slip Gaji
+      </Button>
     </div>
   );
 };
 
-export default PaySlip;
+export default SlipGajiDirektur;

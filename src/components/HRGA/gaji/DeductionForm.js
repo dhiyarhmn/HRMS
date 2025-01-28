@@ -7,6 +7,8 @@ const DeductionForm = ({ employeeId, onSubmitSuccess }) => {
 
   const onFinish = async (values) => {
     try {
+      const formattedDate = values.date.format("YYYY-MM-01");
+
       const deductionData = {
         id_employee: employeeId,
         bpjs_deduction: values.bpjs_deduction
@@ -28,18 +30,18 @@ const DeductionForm = ({ employeeId, onSubmitSuccess }) => {
         leave_deduction: values.leave_deduction
           ? Number(values.leave_deduction)
           : 0,
-        date: values.date.format("YYYY-MM-DD"),
+        date: formattedDate,
       };
 
-      console.log("Sending deduction data:", deductionData); // Debug
+      console.log("Sending deduction data:", deductionData);
       await deductionServices.createDeduction(deductionData);
 
       form.resetFields();
       if (onSubmitSuccess) onSubmitSuccess();
     } catch (error) {
-      console.error("Error details:", error.response?.data); // Debug
+      console.error("Error details:", error.response?.data);
       message.error(
-        error.response?.data?.message || "Failed to save deduction data"
+        error.response?.data?.message || "Gagal menyimpan data potongan"
       );
     }
   };
@@ -48,13 +50,14 @@ const DeductionForm = ({ employeeId, onSubmitSuccess }) => {
     <Form form={form} layout="vertical" onFinish={onFinish}>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Form.Item
-          label="BPJS Deduction"
+          label="Potongan BPJS"
           name="bpjs_deduction"
           rules={[
+            { required: true, message: "Potongan BPJS harus diisi!" },
             {
               type: "number",
               min: 0,
-              message: "BPJS Deduction must be a positive number!",
+              message: "Potongan BPJS harus berupa angka positif!",
             },
           ]}
         >
@@ -68,13 +71,13 @@ const DeductionForm = ({ employeeId, onSubmitSuccess }) => {
         </Form.Item>
 
         <Form.Item
-          label="Borrow Deduction"
+          label="Potongan Pinjaman"
           name="borrow_deduction"
           rules={[
             {
               type: "number",
               min: 0,
-              message: "Borrow Deduction must be a positive number!",
+              message: "Potongan Pinjaman harus berupa angka positif!",
             },
           ]}
         >
@@ -88,13 +91,14 @@ const DeductionForm = ({ employeeId, onSubmitSuccess }) => {
         </Form.Item>
 
         <Form.Item
-          label="Jamsostek JHT"
+          label="Potongan Jamsostek JHT"
           name="jamsostek_jht_deduction"
           rules={[
+            { required: true, message: "Potongan Jamsostek JHT harus diisi!" },
             {
               type: "number",
               min: 0,
-              message: "Jamsostek JHT must be a positive number!",
+              message: "Potongan Jamsostek JHT harus berupa angka positif!",
             },
           ]}
         >
@@ -108,13 +112,14 @@ const DeductionForm = ({ employeeId, onSubmitSuccess }) => {
         </Form.Item>
 
         <Form.Item
-          label="Tax Deduction"
+          label="Potongan Pajak"
           name="tax_deduction"
           rules={[
+            { required: true, message: "Potongan Pajak harus diisi!" },
             {
               type: "number",
               min: 0,
-              message: "Tax Deduction must be a positive number!",
+              message: "Potongan Pajak harus berupa angka positif!",
             },
           ]}
         >
@@ -128,13 +133,13 @@ const DeductionForm = ({ employeeId, onSubmitSuccess }) => {
         </Form.Item>
 
         <Form.Item
-          label="Death Deduction"
+          label="Potongan Kematian"
           name="death_deduction"
           rules={[
             {
               type: "number",
               min: 0,
-              message: "Death Deduction must be a positive number!",
+              message: "Potongan Kematian harus berupa angka positif!",
             },
           ]}
         >
@@ -148,13 +153,14 @@ const DeductionForm = ({ employeeId, onSubmitSuccess }) => {
         </Form.Item>
 
         <Form.Item
-          label="Jamsostek JP"
+          label="Potongan Jamsostek JP"
           name="jamsostek_jp_deduction"
           rules={[
+            { required: true, message: "Potongan Jamsostek JP harus diisi!" },
             {
               type: "number",
               min: 0,
-              message: "Jamsostek JP must be a positive number!",
+              message: "Potongan Jamsostek JP harus berupa angka positif!",
             },
           ]}
         >
@@ -168,13 +174,13 @@ const DeductionForm = ({ employeeId, onSubmitSuccess }) => {
         </Form.Item>
 
         <Form.Item
-          label="Leave Deduction"
+          label="Potongan Cuti"
           name="leave_deduction"
           rules={[
             {
               type: "number",
               min: 0,
-              message: "Leave Deduction must be a positive number!",
+              message: "Potongan Cuti harus berupa angka positif!",
             },
           ]}
         >
@@ -188,17 +194,19 @@ const DeductionForm = ({ employeeId, onSubmitSuccess }) => {
         </Form.Item>
 
         <Form.Item
-          label="Date"
+          label="Tanggal (Bulan dan Tahun)"
           name="date"
-          rules={[{ required: true, message: "Please select date!" }]}
+          rules={[
+            { required: true, message: "Silakan pilih bulan dan tahun!" },
+          ]}
         >
-          <DatePicker className="w-full" />
+          <DatePicker picker="month" className="w-full" format="MMMM YYYY" />
         </Form.Item>
       </div>
 
       <Form.Item>
         <Button type="primary" htmlType="submit">
-          Save Deductions
+          Simpan Potongan
         </Button>
       </Form.Item>
     </Form>
