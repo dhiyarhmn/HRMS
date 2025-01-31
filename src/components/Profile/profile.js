@@ -9,7 +9,7 @@ const Profile = () => {
   const [employeeData, setEmployeeData] = useState(null);
 
   useEffect(() => {
-    const fetchEmployeeData = async () => {
+    const fetchProfile = async () => {
       try {
         const data = await getProfile();
         setEmployeeData(data);
@@ -18,7 +18,7 @@ const Profile = () => {
       }
     };
 
-    fetchEmployeeData();
+    fetchProfile();
   }, []);
 
   const handleOpenChange = (newOpen) => {

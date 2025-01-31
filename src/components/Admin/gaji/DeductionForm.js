@@ -5,7 +5,7 @@ import { deductionServices } from "@/api/api";
 const DeductionForm = ({ employeeId, onSubmitSuccess }) => {
   const [form] = Form.useForm();
 
-  const onFinish = async (values) => {
+  const handleDeduction = async (values) => {
     try {
       const formattedDate = values.date.format("YYYY-MM-01");
 
@@ -47,7 +47,7 @@ const DeductionForm = ({ employeeId, onSubmitSuccess }) => {
   };
 
   return (
-    <Form form={form} layout="vertical" onFinish={onFinish}>
+    <Form form={form} layout="vertical" onFinish={handleDeduction}>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Form.Item
           label="Potongan BPJS"

@@ -5,7 +5,7 @@ import { bonusServices } from "@/api/api";
 const BonusForm = ({ employeeId, onSubmitSuccess }) => {
   const [form] = Form.useForm();
 
-  const onFinish = async (values) => {
+  const handleBonus = async (values) => {
     try {
       const formattedDate = values.date.format("YYYY-MM-01");
 
@@ -32,7 +32,7 @@ const BonusForm = ({ employeeId, onSubmitSuccess }) => {
   };
 
   return (
-    <Form form={form} layout="vertical" onFinish={onFinish}>
+    <Form form={form} layout="vertical" onFinish={handleBonus}>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Form.Item
           label="Lembur"

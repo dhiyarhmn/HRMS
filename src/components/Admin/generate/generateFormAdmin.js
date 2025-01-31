@@ -173,7 +173,7 @@ export const UploadCSV = () => {
   const uploadProps = {
     name: "file",
     multiple: false,
-    accept: ".csv,.txt",
+    accept: ".csv",
     beforeUpload: (file) => {
       setUploadedFile(file);
       message.success(`${file.name} berhasil diunggah`);
@@ -185,7 +185,7 @@ export const UploadCSV = () => {
     },
   };
 
-  const handleSubmit = async () => {
+  const handleImport = async () => {
     if (!uploadedFile) {
       message.error("Silakan unggah file terlebih dahulu");
       return;
@@ -216,10 +216,10 @@ export const UploadCSV = () => {
             <InboxOutlined className="text-3xl text-blue-500" />
           </p>
           <p className="ant-upload-text text-base sm:text-lg font-medium">
-            Klik atau seret file CSV/TXT ke area ini
+            Klik atau seret file CSV ke area ini
           </p>
           <p className="ant-upload-hint text-sm text-gray-500 px-4 text-center">
-            Hanya mendukung file CSV atau TXT. Pastikan file memiliki format
+            Hanya mendukung file CSV. Pastikan file memiliki format CSV
             yang sesuai.
           </p>
         </Dragger>
@@ -228,7 +228,7 @@ export const UploadCSV = () => {
       <div className="flex justify-end">
         <Button
           type="primary"
-          onClick={handleSubmit}
+          onClick={handleImport}
           loading={loading}
           disabled={!uploadedFile}
         >

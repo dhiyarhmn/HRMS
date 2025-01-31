@@ -10,10 +10,8 @@ const api = axios.create({
   },
 });
 
-// Flag untuk menandai apakah pesan error dan redirect sudah dilakukan
 let isUnauthorizedHandled = false;
 
-// Request interceptor
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("token");
@@ -27,7 +25,6 @@ api.interceptors.request.use(
   }
 );
 
-// Response interceptor
 api.interceptors.response.use(
   (response) => response,
   (error) => {
@@ -37,23 +34,16 @@ api.interceptors.response.use(
       !isUnauthorizedHandled &&
       !originalRequest.url.includes("/login")
     ) {
-      
-      // Tandai bahwa pesan error dan redirect sudah dilakukan
       isUnauthorizedHandled = true;
+      message.error("Sesi Anda telah berakhir, silakan login kembali.");
 
-      // Tampilkan pesan error menggunakan Ant Design
-      message.error("Session Anda telah habis, silakan login kembali.");
-
-      // Hapus token dan user dari localStorage
       localStorage.removeItem("token");
       localStorage.removeItem("user");
 
-      // Pastikan kode ini hanya dijalankan di client-side
       if (typeof window !== "undefined") {
-        // Redirect ke halaman login setelah pesan error selesai (3 detik)
         setTimeout(() => {
-          window.location.href = "/login"; // Gunakan window.location untuk redirect
-        }, 3000); // Sesuaikan dengan durasi pesan error
+          window.location.href = "/login";
+        }, 3000);
       }
     }
     return Promise.reject(error);
@@ -78,7 +68,7 @@ export const login = async (identifier, password) => {
   } catch (error) {
     const errorMessage =
       error.response?.data?.message ||
-      "Login gagal, cek kembali username/email dan password";
+      "Login gagal, mohon periksa kembali username/email dan password Anda";
     throw new Error(errorMessage);
   }
 };
@@ -121,10 +111,9 @@ export const employeeServices = {
       const currentUser = JSON.parse(localStorage.getItem("user"));
 
       if (!currentUser?.id_employee) {
-        throw new Error("User ID not found");
+        throw new Error("ID Pengguna tidak ditemukan");
       }
 
-      // First update the employee profile
       const profileResponse = await api.put(
         `/employee/${currentUser.id_employee}`,
         {
@@ -132,24 +121,32 @@ export const employeeServices = {
           phone: userData.phone,
           gender: userData.gender,
           date_of_birth: userData.date_of_birth,
-          marital_status: userData.marital_status, // Add this line
-          dependents: userData.dependents, // Add this line
+          marital_status: userData.marital_status,
+          dependents: userData.dependents,
         }
       );
 
-      // Then change the password
       if (userData.new_password) {
-        await api.put(`/user/password`, {
-          old_password: userData.old_password,
-          new_password: userData.new_password,
-          new_password_confirmation: userData.new_password,
-        });
+        try {
+          await api.put(`/user/password`, {
+            old_password: userData.old_password,
+            new_password: userData.new_password,
+            new_password_confirmation: userData.new_password,
+          });
+        } catch (passwordError) {
+          if (passwordError.response?.data?.errors?.new_password) {
+            throw new Error(
+              "Password baru tidak boleh sama dengan password lama"
+            );
+          }
+          throw passwordError;
+        }
       }
 
       if (profileResponse.data.employee) {
         return {
           success: true,
-          message: "Profile updated successfully",
+          message: "Profil berhasil diperbarui",
           data: profileResponse.data.employee,
         };
       }
@@ -159,9 +156,11 @@ export const employeeServices = {
         message: profileResponse.data.message,
       };
     } catch (error) {
-      console.error("API Error:", error);
+      console.error("Kesalahan API:", error);
       throw new Error(
-        error.response?.data?.message || "Failed to update profile"
+        error.message ||
+          error.response?.data?.message ||
+          "Gagal memperbarui profil"
       );
     }
   },
@@ -279,21 +278,16 @@ export const bonusServices = {
 
 // Payroll Services
 export const payrollServices = {
-  // Menghitung payroll untuk karyawan tertentu
   calculatePayroll: (payrollData) =>
     api.post("/payroll/calculate", payrollData),
 
-  // Mendapatkan summary payroll berdasarkan bulan dan tahun
   getPayrollSummary: (params) => api.get("/payrolls/summary", params),
 
-  // Mendapatkan semua data payroll
   getAllPayroll: () => api.get("/payrolls"),
 
-  // Mendapatkan payroll berdasarkan bulan
   getPayrollByMonth: (monthData) =>
     api.get("/payrolls/month", { params: monthData }),
 
-  // Mendapatkan payroll berdasarkan karyawan
   getEmployeePayroll: async () => {
     try {
       const response = await api.get("/payrolls/employee");
@@ -303,20 +297,17 @@ export const payrollServices = {
       };
     } catch (error) {
       if (error.response?.status === 404) {
-        return { data: [], message: error.response.data.message };
+        return { data: [], message: "Data penggajian tidak ditemukan" };
       }
       throw error;
     }
   },
 
-  // Update payroll karyawan
   updatePayrollByEmployee: (payrollData) =>
     api.put("/payroll/update", payrollData),
 
-  // Menghapus payroll tertentu
   deletePayroll: (id) => api.delete(`/payroll/${id}`),
 
-  // Menghapus semua data payroll
   deleteAllPayroll: () => api.delete("/payrolls/delete"),
 };
 

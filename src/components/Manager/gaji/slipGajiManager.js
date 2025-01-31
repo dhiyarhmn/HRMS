@@ -166,17 +166,6 @@ const SlipGajiManager = ({ selectedRecord }) => {
         startY + 10
       );
 
-      // Signatures
-      const signatureY = startY + 30;
-      doc.setFont("helvetica", "normal");
-      doc.text("Diterima oleh,", 35, signatureY);
-      doc.text("Disetujui oleh,", pageWidth - 65, signatureY);
-
-      doc.text("(________________)", 30, signatureY + 25);
-      doc.text("(________________)", pageWidth - 70, signatureY + 25);
-      doc.text("Karyawan", 39, signatureY + 30);
-      doc.text("HRGA", pageWidth - 57, signatureY + 30);
-
       doc.save(
         `slip-gaji-${data.employee.name}-${
           payrollDate.getMonth() + 1

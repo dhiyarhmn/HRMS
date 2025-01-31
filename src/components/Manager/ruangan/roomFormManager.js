@@ -13,7 +13,7 @@ const RoomFormManager = ({ room, onBookingSuccess }) => {
   const [bookedSlots, setBookedSlots] = useState([]);
 
   useEffect(() => {
-    const fetchBookings = async () => {
+    const fetchListRoomBookings = async () => {
       if (bookingDate && room.id_room) {
         try {
           const response = await roomServices.getListRoomBookings(room.id_room);
@@ -45,14 +45,14 @@ const RoomFormManager = ({ room, onBookingSuccess }) => {
       }
     };
 
-    fetchBookings();
+    fetchListRoomBookings();
   }, [bookingDate, room.id_room]);
 
   const showModal = () => {
     setIsModalOpen(true);
   };
 
-  const handleOk = async () => {
+  const handleBooking = async () => {
     try {
       setLoading(true);
 
@@ -180,7 +180,7 @@ const RoomFormManager = ({ room, onBookingSuccess }) => {
       <Modal
         title="Detail Ruangan"
         open={isModalOpen}
-        onOk={handleOk}
+        onOk={handleBooking}
         onCancel={handleCancel}
         width="90%"
         maxWidth={900}

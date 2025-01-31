@@ -1,13 +1,13 @@
 // components/Admin/gaji/PayrollCalculator.js
-import React, { useState } from "react";
-import { Form, DatePicker, Button, message } from "antd";
 import { payrollServices } from "@/api/api";
+import { Button, DatePicker, Form, message } from "antd";
+import { useState } from "react";
 
 const PayrollCalculator = ({ employeeId, onCalculateSuccess }) => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
 
-  const onFinish = async (values) => {
+  const handleCalculate = async (values) => {
     try {
       setLoading(true);
       const month = values.date.format("MM");
@@ -32,18 +32,18 @@ const PayrollCalculator = ({ employeeId, onCalculateSuccess }) => {
       message.success("Payroll calculated successfully");
     } catch (error) {
       console.error("Error details:", error.response?.data);
-      message.error("Failed to calculate payroll");
+      message.error("Gagal melakukan kalkulasi gaji");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <Form form={form} layout="vertical" onFinish={onFinish}>
+    <Form form={form} layout="vertical" onFinish={handleCalculate}>
       <Form.Item
         label="Pilih Tanggal (Bulan dan Tahun)"
         name="date"
-        rules={[{ required: true, message: "Please select date!" }]}
+        rules={[{ required: true, message: "Silakan pilih bulan dan tahun!" }]}
       >
         <DatePicker picker="month" className="w-full" />
       </Form.Item>

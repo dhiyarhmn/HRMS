@@ -12,10 +12,10 @@ const TabelRiwayatGajiManager = ({ detail }) => {
   const searchInput = useRef(null);
 
   useEffect(() => {
-    fetchPayrollData();
+    fetchEmployeePayroll();
   }, []);
 
-  const fetchPayrollData = async () => {
+  const fetchEmployeePayroll = async () => {
     try {
       setLoading(true);
       const response = await payrollServices.getEmployeePayroll();
