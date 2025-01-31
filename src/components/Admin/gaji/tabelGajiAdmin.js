@@ -13,7 +13,7 @@ const TabelGajiAdmin = ({ detail }) => {
   const searchInput = useRef(null);
 
   useEffect(() => {
-    const fetchUserData = async (userId) => {
+    const fetchUsersById = async (userId) => {
       try {
         const response = await userServices.getUserById(userId);
         return {
@@ -27,7 +27,7 @@ const TabelGajiAdmin = ({ detail }) => {
       }
     };
 
-    const fetchAllUserData = async () => {
+    const fetchUsers = async () => {
       try {
         setLoading(true);
         // First, get the list of user IDs or basic user data
@@ -37,7 +37,7 @@ const TabelGajiAdmin = ({ detail }) => {
         );
 
         // Fetch detailed data for each user
-        const userDataPromises = userIds.map((userId) => fetchUserData(userId));
+        const userDataPromises = userIds.map((userId) => fetchUsersById(userId));
         const userData = await Promise.all(userDataPromises);
 
         // Filter out any null values from failed requests
@@ -50,7 +50,7 @@ const TabelGajiAdmin = ({ detail }) => {
       }
     };
 
-    fetchAllUserData();
+    fetchUsers();
   }, []);
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {

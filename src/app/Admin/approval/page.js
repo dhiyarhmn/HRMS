@@ -163,7 +163,7 @@ export default function Approval() {
                 Tolak
               </Button>
             )}
-            {selectedRecord?.booking_status !== "Accept" && (
+            {selectedRecord?.booking_status === "Pending" && (
               <Button
                 key="approve"
                 type="primary"

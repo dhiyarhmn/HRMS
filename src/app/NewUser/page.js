@@ -29,7 +29,7 @@ export default function NewUser() {
     }
   }, [form]);
 
-  const onFinish = async (values) => {
+  const handleComplete = async (values) => {
     try {
       setLoading(true);
       const currentUser = JSON.parse(localStorage.getItem("user"));
@@ -46,6 +46,14 @@ export default function NewUser() {
         return;
       }
 
+      // Add validation for new password same as old password
+      if (values.new_password === "dihi12345") {
+        message.error(
+          "Password tidak boleh sama dengan password lama."
+        );
+        return;
+      }
+
       const userData = {
         name: values.name,
         phone: values.phone,
@@ -53,8 +61,8 @@ export default function NewUser() {
         date_of_birth: values.date_of_birth.format("YYYY-MM-DD"),
         old_password: "dihi12345", // Default password
         new_password: values.new_password,
-        marital_status: values.marital_status, // Add this line
-        dependents: 0, // Add this with default value 0
+        marital_status: values.marital_status,
+        dependents: 0,
       };
 
       const response = await employeeServices.completeNewUserProfile(userData);
@@ -62,7 +70,7 @@ export default function NewUser() {
       if (response.success) {
         message.success({
           content:
-            "Profile updated successfully! Please login with your new password.",
+            "Profile berhasil terupdate, silakan login kembali dengan password baru.",
           duration: 1,
         });
 
@@ -107,7 +115,7 @@ export default function NewUser() {
 
             <Form
               form={form}
-              onFinish={onFinish}
+              onFinish={handleComplete}
               className="w-full border-2 border-white p-4 rounded-lg"
               layout="vertical"
             >

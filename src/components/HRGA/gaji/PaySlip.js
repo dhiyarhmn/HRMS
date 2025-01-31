@@ -183,7 +183,7 @@ const PaySlip = ({ selectedRecord }) => {
     }
   };
 
-  const onFinish = async (values) => {
+  const handlePayroll = async (values) => {
     try {
       setLoading(true);
       const params = {
@@ -208,7 +208,7 @@ const PaySlip = ({ selectedRecord }) => {
 
   return (
     <div className="space-y-4">
-      <Form form={form} layout="vertical" onFinish={onFinish}>
+      <Form form={form} layout="vertical" onFinish={handlePayroll}>
         <Form.Item
           label="Pilih Tanggal (Bulan dan Tahun)"
           name="date"

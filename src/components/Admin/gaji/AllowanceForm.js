@@ -5,7 +5,7 @@ import { allowanceServices } from "@/api/api";
 const AllowanceForm = ({ employeeId, onSubmitSuccess }) => {
   const [form] = Form.useForm();
 
-  const onFinish = async (values) => {
+  const handleAllowance = async (values) => {
     try {
       const formattedDate = values.date.format("YYYY-MM-01");
 
@@ -37,7 +37,7 @@ const AllowanceForm = ({ employeeId, onSubmitSuccess }) => {
   };
 
   return (
-    <Form form={form} layout="vertical" onFinish={onFinish}>
+    <Form form={form} layout="vertical" onFinish={handleAllowance}>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Form.Item
           label="Tunjangan Jabatan"

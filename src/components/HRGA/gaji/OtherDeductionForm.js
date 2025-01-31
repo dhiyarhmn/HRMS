@@ -5,7 +5,7 @@ import { otherDeductionServices } from "@/api/api";
 const OtherDeductionForm = ({ employeeId, onSubmitSuccess }) => {
   const [form] = Form.useForm();
 
-  const onFinish = async (values) => {
+  const handleOtherDeduction = async (values) => {
     try {
       const formattedDate = values.date.format("YYYY-MM-01");
 
@@ -38,13 +38,14 @@ const OtherDeductionForm = ({ employeeId, onSubmitSuccess }) => {
     } catch (error) {
       console.error("Error details:", error.response?.data); // Debug
       message.error(
-        error.response?.data?.message || "Failed to save other deduction data"
+        error.response?.data?.message ||
+          "Gagal menyimpan data potongan tambahan"
       );
     }
   };
 
   return (
-    <Form form={form} layout="vertical" onFinish={onFinish}>
+    <Form form={form} layout="vertical" onFinish={handleOtherDeduction}>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Form.Item
           label="Simpanan Wajib"
