@@ -4,17 +4,15 @@ import BackBtn from "@/components/LoginPageComponents/backbutton";
 import Image from "next/image";
 import hrms from "@/public/hrms.gif";
 import dihi from "@/public/logo-dihi.png";
-import { Button, message } from "antd";
+import { Button, Form, Input, message } from "antd";
 import { useRouter } from "next/navigation";
 import { login } from "@/api/api";
 import ContactPerson from "@/components/ContactPerson/contactPerson";
 
 export default function Login() {
   const router = useRouter();
-  const [identifier, setIdentifier] = useState("");
-  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-
+  const [form] = Form.useForm(); // Form instance dari Ant Design
   const [messageApi, contextHolder] = message.useMessage({
     duration: 1,
     maxCount: 1,
@@ -48,14 +46,8 @@ export default function Login() {
     }
   };
 
-  const handleLogin = async () => {
-    if (!identifier || !password) {
-      messageApi.error({
-        content: "Mohon isi semua field",
-        duration: 1,
-      });
-      return;
-    }
+  const handleLogin = async (values) => {
+    const { identifier, password } = values;
 
     setLoading(true);
     try {
@@ -79,7 +71,7 @@ export default function Login() {
 
   const handleKeyPress = (e) => {
     if (e.key === "Enter" && !loading) {
-      handleLogin();
+      form.submit(); // Submit form saat tombol Enter ditekan
     }
   };
 
@@ -112,46 +104,53 @@ export default function Login() {
                 Login
               </h1>
 
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <label className="text-sm font-semibold block">
-                    Username / Email
-                  </label>
-                  <input
-                    type="text"
-                    className="w-full p-2 border rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
-                    value={identifier}
-                    onChange={(e) => setIdentifier(e.target.value)}
-                    onKeyPress={handleKeyPress}
+              <Form
+                form={form}
+                onFinish={handleLogin} // Submit form saat validasi berhasil
+                layout="vertical"
+              >
+                <Form.Item
+                  label="Username / Email"
+                  name="identifier"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Mohon masukkan username atau email!",
+                    },
+                  ]}
+                >
+                  <Input
                     placeholder="user123 / user@example.com"
                     disabled={loading}
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <label className="text-sm font-semibold block">
-                    Password
-                  </label>
-                  <input
-                    type="password"
-                    className="w-full p-2 border rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
                     onKeyPress={handleKeyPress}
+                  />
+                </Form.Item>
+
+                <Form.Item
+                  label="Password"
+                  name="password"
+                  rules={[
+                    { required: true, message: "Mohon masukkan password!" },
+                  ]}
+                >
+                  <Input.Password
                     placeholder="********"
                     disabled={loading}
+                    onKeyPress={handleKeyPress}
                   />
-                </div>
+                </Form.Item>
 
-                <Button
-                  type="primary"
-                  onClick={handleLogin}
-                  loading={loading}
-                  className="w-full h-10"
-                >
-                  {loading ? "Loading..." : "Login"}
-                </Button>
-              </div>
+                <Form.Item>
+                  <Button
+                    type="primary"
+                    htmlType="submit"
+                    loading={loading}
+                    className="w-full h-10"
+                  >
+                    {loading ? "Loading..." : "Login"}
+                  </Button>
+                </Form.Item>
+              </Form>
             </div>
           </div>
         </div>
