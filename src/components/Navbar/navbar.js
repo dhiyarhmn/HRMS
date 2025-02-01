@@ -2,7 +2,7 @@ import Profile from "@/components/Profile/profile";
 import dihi from "@/public/logo-dihi.png";
 import Image from "next/image";
 
-export default function Navbar({ href, p }) {
+export default function Navbar({ href, p, role }) {
   return (
     <div>
       <nav className="flex grow-0 top-0 w-full h-auto p-4">
@@ -17,7 +17,7 @@ export default function Navbar({ href, p }) {
             <p className="text-center font-semibold">{p}</p>
           </div>
           <div className="flex grow-0 w-1/6 justify-end">
-            <Profile />
+            <Profile role={role} />
           </div>
         </div>
       </nav>

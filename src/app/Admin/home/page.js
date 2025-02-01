@@ -6,7 +6,7 @@ import HomeAdmin from "@/components/Admin/home/homeAdmin";
 export default function Home() {
   return (
     <div className="min-h-screen">
-      <Navbar href={"/Admin/home"} p={"Admin"} />
+      <Navbar href={"/Admin/home"} p={"Admin"} role="admin" />
       <NavigationAdmin />
       <main className="w-full">
         <HomeAdmin />

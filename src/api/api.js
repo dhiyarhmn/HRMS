@@ -113,8 +113,6 @@ export const employeeServices = {
       if (!currentUser?.id_employee) {
         throw new Error("ID Pengguna tidak ditemukan");
       }
-
-      // Update profil
       const profileResponse = await api.put(
         `/employee/${currentUser.id_employee}`,
         {
@@ -126,8 +124,6 @@ export const employeeServices = {
           dependents: userData.dependents,
         }
       );
-
-      // Jika ada password baru, update password
       if (userData.new_password) {
         try {
           await api.put(`/user/password`, {
@@ -136,7 +132,6 @@ export const employeeServices = {
             new_password_confirmation: userData.new_password,
           });
         } catch (passwordError) {
-          // Tangkap error response dari API
           if (
             passwordError.response?.data?.message ===
             "Current password is incorrect"
@@ -158,7 +153,6 @@ export const employeeServices = {
           throw passwordError;
         }
       }
-
       if (profileResponse.data.employee) {
         return {
           success: true,
@@ -166,7 +160,6 @@ export const employeeServices = {
           data: profileResponse.data.employee,
         };
       }
-
       return {
         success: false,
         message: profileResponse.data.message,
@@ -189,14 +182,15 @@ export const userServices = {
   importUsers: (formData) => {
     return api.post("/user/csv", formData, {
       headers: {
-        "Content-Type": "multipart/form-data", // Penting: set content type yang benar
+        "Content-Type": "multipart/form-data",
       },
     });
   },
   updateUser: (id, userData) => api.put(`/user/${id}`, userData),
   getUserById: (id) => api.get(`/user/${id}`),
   deleteUser: (id) => api.delete(`/user/${id}`),
-  getUserStats: () => api.get("/user/stat"), // Fungsi untuk mengambil data jumlah karyawan berdasarkan role
+  getUserStats: () => api.get("/user/stat"),
+  resetPassword: (data) => api.put("/user/resetPassword", data),
 };
 
 // Role Services
@@ -240,8 +234,8 @@ export const bookingServices = {
     }
   },
   getBookingById: (id_booking) => api.get(`/book/${id_booking}`),
-  approveBooking: (id) => api.put(`/approve/book/${id}`), // Ubah dari POST ke PUT
-  rejectBooking: (id) => api.put(`/reject/book/${id}`), // Ubah dari POST ke PUT
+  approveBooking: (id) => api.put(`/approve/book/${id}`),
+  rejectBooking: (id) => api.put(`/reject/book/${id}`),
   deleteBooking: (id) => api.delete(`/book/${id}`),
 };
 
