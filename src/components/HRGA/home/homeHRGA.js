@@ -35,7 +35,6 @@ export default function HomeHRGA() {
   const menuItems = [
     {
       title: "Absensi & Cuti",
-      description: "Lorem ipsum dolor sit amet",
       image: absence,
       path: "/HRGA/cuti",
       bgColor: "bg-first",
@@ -43,19 +42,17 @@ export default function HomeHRGA() {
     },
     {
       title: "E-Slip Gaji",
-      description: "Lorem ipsum dolor sit amet",
       image: salary,
       path: "/HRGA/gaji",
       bgColor: "bg-second",
-      rounded: "rounded-e-badge rounded-t-badge",
+      rounded: "rounded-badge",
     },
     {
-      title: "Approval Booking Ruangan",
-      description: "Lorem ipsum dolor sit amet",
+      title: "Approval Booking",
       image: approval,
       path: "/HRGA/approval",
       bgColor: "bg-third",
-      rounded: "rounded-s-badge rounded-bl-badge",
+      rounded: "rounded-e-badge rounded-tl-badge",
     },
   ];
 
@@ -108,7 +105,6 @@ export default function HomeHRGA() {
               >
                 <Meta
                   title={item.title}
-                  description={item.description}
                   className="text-center"
                 />
               </Card>

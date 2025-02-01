@@ -6,7 +6,7 @@ import { UploadCSV } from "@/components/Admin/generate/generateFormAdmin";
 export default function Generate() {
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
-      <Navbar href={"/Admin/home"} p={"Admin"} />
+      <Navbar href={"/Admin/home"} p={"Admin"} role="admin" />
       <NavigationAdmin />
 
       {/* Main Content */}

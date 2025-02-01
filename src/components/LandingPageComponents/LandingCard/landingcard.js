@@ -21,31 +21,26 @@ export default function LandingCard() {
   const menuItems = [
     {
       title: "Absensi & Cuti",
-
       image: absence,
       path: "/login",
     },
     {
       title: "Booking Ruangan",
-
       image: booking,
       path: "/login",
     },
     {
       title: "E-Slip Gaji",
-
       image: salary,
       path: "/login",
     },
     {
-      title: "Approval Booking Ruangan",
-
+      title: "Approval Booking",
       image: approval,
       path: "/login",
     },
     {
       title: "Generate Akun",
-
       image: generate,
       path: "/login",
     },

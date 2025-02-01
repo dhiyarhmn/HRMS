@@ -17,7 +17,6 @@ export default function HomeDirektur() {
   const menuItems = [
     {
       title: "Absensi & Cuti",
-      description: "Lorem ipsum dolor sit amet",
       image: absence,
       path: "/Direktur/cuti",
       bgColor: "bg-first",
@@ -25,19 +24,17 @@ export default function HomeDirektur() {
     },
     {
       title: "Gaji",
-      description: "Lorem ipsum dolor sit amet",
       image: salary,
       path: "/Direktur/gaji",
       bgColor: "bg-second",
-      rounded: "rounded-e-badge rounded-tl-badge",
+      rounded: "rounded-badge",
     },
     {
       title: "Booking Ruangan",
-      description: "Lorem ipsum dolor sit amet",
       image: booking,
       path: "/Direktur/ruangan",
       bgColor: "bg-second",
-      rounded: "rounded-badge",
+      rounded: "rounded-e-badge rounded-tl-badge",
     },
   ];
   return (
@@ -68,7 +65,6 @@ export default function HomeDirektur() {
               >
                 <Meta
                   title={item.title}
-                  description={item.description}
                   className="text-center"
                 />
               </Card>

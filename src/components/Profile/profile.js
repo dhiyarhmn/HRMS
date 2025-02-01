@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Button, Popover } from "antd";
-import { UserOutlined } from "@ant-design/icons";
+import { UserOutlined, KeyOutlined } from "@ant-design/icons";
 import { Avatar } from "antd";
 import { logout, getProfile } from "@/api/api";
 
-const Profile = () => {
+const Profile = ({ role }) => {
   const [open, setOpen] = useState(false);
   const [employeeData, setEmployeeData] = useState(null);
 
@@ -41,6 +41,15 @@ const Profile = () => {
 
   const content = (
     <>
+      {role === "admin" && (
+        <div className="flex flex-col gap-y-2 border border-black p-1 rounded-lg hover:bg-gray-100 cursor-pointer">
+          <div className="flex items-center gap-x-4">
+            <a href="/Admin/reset">
+              <span className="text-black">Reset Password</span>
+            </a>
+          </div>
+        </div>
+      )}
       <div className="flex justify-center mt-4">
         <div
           onClick={handleLogout}

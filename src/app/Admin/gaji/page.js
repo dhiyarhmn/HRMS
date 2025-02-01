@@ -31,10 +31,8 @@ export default function Gaji() {
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
-      <Navbar href={"/Admin/home"} p={"Admin"} />
+      <Navbar href={"/Admin/home"} p={"Admin"} role="admin" />
       <NavigationAdmin />
-
-      
       {/* Main Content */}
       <main className="flex-grow p-6 space-y-8">
         {/* Header Section */}
