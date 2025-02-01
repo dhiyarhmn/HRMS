@@ -7,6 +7,7 @@ import dihi from "@/public/logo-dihi.png";
 import { Button, message } from "antd";
 import { useRouter } from "next/navigation";
 import { login } from "@/api/api";
+import ContactPerson from "@/components/ContactPerson/contactPerson";
 
 export default function Login() {
   const router = useRouter();
@@ -155,6 +156,7 @@ export default function Login() {
           </div>
         </div>
       </div>
+      <ContactPerson />
     </div>
   );
 }

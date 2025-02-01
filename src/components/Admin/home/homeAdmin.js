@@ -1,99 +1,107 @@
-// components/Admin/home/homeAdmin.js
-import React from "react";
-import { Card } from "antd";
-import Image from "next/image";
+import { userServices } from "@/api/api";
+import EmployeeChart from "@/components/Admin/EmployeeChart/employeeChart";
 import absence from "@/public/absence.gif";
 import approval from "@/public/approval.gif";
-import salary from "@/public/salary.gif";
-import generate from "@/public/generate.gif";
 import booking from "@/public/booking.gif";
+import generate from "@/public/generate.gif";
+import salary from "@/public/salary.gif";
+import { Spin } from "antd";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
-const { Meta } = Card;
+const FeatureCard = ({ title, image, onClick }) => (
+  <div
+    onClick={onClick}
+    className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 cursor-pointer p-4 flex flex-col items-center space-y-3"
+  >
+    <div className="relative w-16 h-16 md:w-24 md:h-24 lg:w-28 lg:h-28">
+      <Image src={image} alt={title} className="object-contain w-full h-full" />
+    </div>
+    <h3 className="text-sm lg:text-base font-semibold text-gray-800 text-center">
+      {title}
+    </h3>
+  </div>
+);
 
 export default function HomeAdmin() {
   const router = useRouter();
-  const handleCardClick = (path) => {
-    router.push(path);
-  };
+  const [employeeStats, setEmployeeStats] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchEmployeeStats = async () => {
+      try {
+        setLoading(true);
+        const response = await userServices.getUserStats();
+        setEmployeeStats(response.data);
+      } catch (error) {
+        console.error("Gagal mengambil data karyawan:", error);
+        setError("Gagal memuat data karyawan");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEmployeeStats();
+  }, []);
 
   const menuItems = [
-    {
-      title: "Absensi & Cuti",
-      description: "Lorem ipsum dolor sit amet",
-      image: absence,
-      path: "/Admin/cuti",
-      bgColor: "bg-first",
-      rounded: "rounded-s-badge rounded-br-badge",
-    },
-    {
-      title: "Gaji",
-      description: "Lorem ipsum dolor sit amet",
-      image: salary,
-      path: "/Admin/gaji",
-      bgColor: "bg-second",
-      rounded: "rounded-e-badge rounded-tl-badge",
-    },
-    {
-      title: "Approval",
-      description: "Lorem ipsum dolor sit amet",
-      image: approval,
-      path: "/Admin/approval",
-      bgColor: "bg-third",
-      rounded: "rounded-s-badge rounded-br-badge",
-    },
-    {
-      title: "Booking Ruangan",
-      description: "Lorem ipsum dolor sit amet",
-      image: booking,
-      path: "/Admin/ruangan",
-      bgColor: "bg-second",
-      rounded: "rounded-badge",
-    },
-    {
-      title: "Generate",
-      description: "Lorem ipsum dolor sit amet",
-      image: generate,
-      path: "/Admin/generate",
-      bgColor: "bg-first",
-      rounded: "rounded-e-badge rounded-tl-badge",
-    },
+    { title: "Absensi & Cuti", image: absence, path: "/Admin/cuti" },
+    { title: "Gaji", image: salary, path: "/Admin/gaji" },
+    { title: "Approval", image: approval, path: "/Admin/approval" },
+    { title: "Booking Ruangan", image: booking, path: "/Admin/ruangan" },
+    { title: "Generate", image: generate, path: "/Admin/generate" },
   ];
 
   return (
-    <div className="w-full px-4 py-8">
-      <div className="flex flex-col items-center justify-center w-full">
-        <h1 className="font-bold text-2xl md:text-3xl lg:text-4xl text-center mb-8">
-          Silakan Pilih Fitur yang Tersedia
-        </h1>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 w-full max-w-7xl">
-          {menuItems.map((item, index) => (
-            <div
-              key={index}
-              className={`flex justify-center p-4 md:p-6 lg:p-8 ${item.bgColor} shadow-lg border-4 md:border-6 lg:border-8 border-white ${item.rounded} cursor-pointer transition-transform duration-300 hover:scale-105`}
-              onClick={() => handleCardClick(item.path)}
-            >
-              <Card
-                hoverable
-                cover={
-                  <Image
-                    alt={item.title}
-                    src={item.image}
-                    unoptimized
-                    className="object-contain w-24 h-24 md:w-32 md:h-32 lg:w-40 lg:h-40 p-1"
-                  />
-                }
-                className="w-full max-w-xs transition-all duration-300 ease-in-out divide-y-2"
-              >
-                <Meta
-                  title={item.title}
-                  description={item.description}
-                  className="text-center"
-                />
-              </Card>
+    <div className="bg-gray-50 p-4 md:p-6 lg:p-8">
+      <div className="max-w-[1440px] mx-auto">
+        {/* Container utama yang akan menjadi flex pada lg breakpoint */}
+        <div className="flex flex-col lg:flex-row lg:gap-8">
+          {/* Bagian Chart - lebar 40% pada lg */}
+          <div className="w-full lg:w-2/5 mb-6 lg:mb-0">
+            <div className="bg-white rounded-xl shadow-lg p-4 md:p-6">
+              <h2 className="text-lg md:text-xl font-bold text-gray-800 mb-4 text-center">
+                Jumlah Karyawan
+              </h2>
+              <div className="w-full">
+                {loading ? (
+                  <div className="flex justify-center items-center h-[300px] md:h-[400px]">
+                    <Spin size="large" />
+                  </div>
+                ) : error ? (
+                  <div className="flex justify-center items-center h-[300px] md:h-[400px] text-red-500">
+                    <p>{error}</p>
+                  </div>
+                ) : (
+                  employeeStats && (
+                    <EmployeeChart employeeData={employeeStats.data} />
+                  )
+                )}
+              </div>
             </div>
-          ))}
+          </div>
+
+          {/* Bagian Fitur - lebar 60% pada lg */}
+          <div className="w-full lg:w-3/5">
+            <div className="bg-white rounded-xl shadow-lg p-4 md:p-6">
+              <h1 className="text-lg md:text-xl font-bold text-gray-800 mb-4 text-center">
+                Fitur yang Tersedia
+              </h1>
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-4">
+                {menuItems.map((item, index) => (
+                  <FeatureCard
+                    key={index}
+                    title={item.title}
+                    image={item.image}
+                    onClick={() => router.push(item.path)}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

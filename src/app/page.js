@@ -1,20 +1,18 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import dihi from "@/public/logo-dihi.png";
 import Image from "next/image";
 import LoginButton from "@/components/LandingPageComponents/LoginButton/loginbutton";
-import { Card } from "antd";
 import { useRouter } from "next/navigation";
 import bg1 from "@/public/bg-2.jpg";
 import LandingCard from "@/components/LandingPageComponents/LandingCard/landingcard";
-
-const { Meta } = Card;
 
 export default function LandingPage() {
   const router = useRouter();
   const handleLogin = () => {
     router.push("/login");
   };
+
   return (
     <div
       className="flex flex-col min-h-screen bg-cover bg-center bg-fixed"
@@ -45,7 +43,7 @@ export default function LandingPage() {
       </nav>
 
       {/* Main Content */}
-      <div className="w-full px-4 py-8 flex-grow flex items-center">
+      <div className="w-full flex-grow flex items-center">
         <div className="flex flex-col items-center justify-center w-full">
           <h1 className="font-bold text-2xl md:text-3xl lg:text-4xl text-center mb-8">
             Fitur yang Tersedia di HRMS

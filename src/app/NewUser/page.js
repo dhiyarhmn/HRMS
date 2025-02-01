@@ -25,6 +25,8 @@ export default function NewUser() {
         date_of_birth: currentUser.date_of_birth
           ? dayjs(currentUser.date_of_birth)
           : null,
+        marital_status: currentUser.marital_status,
+        dependents: currentUser.dependents,
       });
     }
   }, [form]);
@@ -32,62 +34,40 @@ export default function NewUser() {
   const handleComplete = async (values) => {
     try {
       setLoading(true);
-      const currentUser = JSON.parse(localStorage.getItem("user"));
 
-      if (!currentUser) {
-        message.error("User data not found. Please login again.");
-        router.push("/login");
-        return;
-      }
-
-      // Validate passwords match
-      if (values.new_password !== values.confirm_password) {
-        message.error("Passwords do not match!");
-        return;
-      }
-
-      // Add validation for new password same as old password
-      if (values.new_password === "dihi12345") {
-        message.error(
-          "Password tidak boleh sama dengan password lama."
-        );
-        return;
-      }
-
-      const userData = {
-        name: values.name,
-        phone: values.phone,
-        gender: values.gender,
+      // Format tanggal lahir ke format yang diharapkan backend
+      const formattedValues = {
+        ...values,
         date_of_birth: values.date_of_birth.format("YYYY-MM-DD"),
-        old_password: "dihi12345", // Default password
-        new_password: values.new_password,
-        marital_status: values.marital_status,
-        dependents: 0,
       };
 
-      const response = await employeeServices.completeNewUserProfile(userData);
+      // Panggil fungsi completeNewUserProfile dari api.js
+      const response = await employeeServices.completeNewUserProfile(
+        formattedValues
+      );
 
       if (response.success) {
         message.success({
           content:
-            "Profile berhasil terupdate, silakan login kembali dengan password baru.",
-          duration: 1,
+            "Profil dan password berhasil diperbarui. Silakan login kembali dengan password baru.",
+          duration: 3,
         });
 
         // Clear local storage
         localStorage.removeItem("token");
         localStorage.removeItem("user");
 
-        // Redirect to login page after short delay
+        // Redirect ke halaman login setelah beberapa detik
         setTimeout(() => {
           router.push("/login");
-        }, 1000);
+        }, 3000);
       } else {
         throw new Error(response.message);
       }
     } catch (error) {
       console.error("Form submission error:", error);
-      message.error(error.message || "Failed to update profile");
+      // Tampilkan pesan error yang sesuai
+      message.error(error.message || "Gagal memperbarui profil");
     } finally {
       setLoading(false);
     }
@@ -124,8 +104,11 @@ export default function NewUser() {
                   label="Nama Lengkap"
                   name="name"
                   rules={[
-                    { required: true, message: "Please input your name!" },
-                    { max: 255, message: "Name cannot exceed 255 characters!" },
+                    { required: true, message: "Harap masukkan nama lengkap!" },
+                    {
+                      max: 255,
+                      message: "Nama tidak boleh lebih dari 255 karakter!",
+                    },
                   ]}
                 >
                   <Input
@@ -141,15 +124,15 @@ export default function NewUser() {
                   rules={[
                     {
                       required: true,
-                      message: "Please input your phone number!",
+                      message: "Harap masukkan nomor HP!",
                     },
                     {
                       max: 15,
-                      message: "Phone number cannot exceed 15 characters!",
+                      message: "Nomor HP tidak boleh lebih dari 15 karakter!",
                     },
                     {
                       pattern: /^(\+62|62|0)[0-9]{9,12}$/,
-                      message: "Please input a valid Indonesian phone number!",
+                      message: "Harap masukkan nomor HP yang valid!",
                     },
                   ]}
                 >
@@ -164,11 +147,11 @@ export default function NewUser() {
                   label="Jenis Kelamin"
                   name="gender"
                   rules={[
-                    { required: true, message: "Please select your gender!" },
+                    { required: true, message: "Harap pilih jenis kelamin!" },
                   ]}
                 >
                   <Select
-                    placeholder="Select gender"
+                    placeholder="Pilih jenis kelamin"
                     disabled={isProfileCompleted}
                     className="w-full"
                   >
@@ -183,12 +166,12 @@ export default function NewUser() {
                   rules={[
                     {
                       required: true,
-                      message: "Please select your marital status!",
+                      message: "Harap pilih status pernikahan!",
                     },
                   ]}
                 >
                   <Select
-                    placeholder="Select marital status"
+                    placeholder="Pilih status pernikahan"
                     disabled={isProfileCompleted}
                     className="w-full"
                   >
@@ -203,7 +186,7 @@ export default function NewUser() {
                   rules={[
                     {
                       required: true,
-                      message: "Please select your date of birth!",
+                      message: "Harap pilih tanggal lahir!",
                     },
                   ]}
                 >
@@ -215,10 +198,48 @@ export default function NewUser() {
                   />
                 </Form.Item>
 
+                <Form.Item
+                  label="Jumlah Tanggungan"
+                  name="dependents"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Harap masukkan jumlah tanggungan!",
+                    },
+                    {
+                      type: "number",
+                      message: "Jumlah tanggungan harus berupa angka!",
+                      transform: (value) => Number(value), // Konversi input ke number
+                    },
+                  ]}
+                >
+                  <Input
+                    type="number" // Pastikan input hanya menerima angka
+                    placeholder="0"
+                    disabled={isProfileCompleted}
+                    className="w-full"
+                  />
+                </Form.Item>
+
                 <div className="border-t pt-4 mt-4">
-                  <h2 className="text-lg font-semibold mb-4">
-                    Change Password
-                  </h2>
+                  <h2 className="text-lg font-semibold mb-4">Ganti Password</h2>
+
+                  <Form.Item
+                    label="Password Lama"
+                    name="old_password"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Harap masukkan password lama!",
+                      },
+                    ]}
+                  >
+                    <Input.Password
+                      placeholder="Masukkan password lama"
+                      disabled={isProfileCompleted}
+                      className="w-full"
+                    />
+                  </Form.Item>
 
                   <Form.Item
                     label="Password Baru"
@@ -226,29 +247,29 @@ export default function NewUser() {
                     rules={[
                       {
                         required: true,
-                        message: "Please input your new password!",
+                        message: "Harap masukkan password baru!",
                       },
                       {
                         min: 8,
-                        message: "Password must be at least 8 characters!",
+                        message: "Password harus minimal 8 karakter!",
                       },
                     ]}
                   >
                     <Input.Password
-                      placeholder="Enter new password"
+                      placeholder="Masukkan password baru"
                       disabled={isProfileCompleted}
                       className="w-full"
                     />
                   </Form.Item>
 
                   <Form.Item
-                    label="Konfirmasi Password"
+                    label="Konfirmasi Password Baru"
                     name="confirm_password"
                     dependencies={["new_password"]}
                     rules={[
                       {
                         required: true,
-                        message: "Please confirm your password!",
+                        message: "Harap konfirmasi password baru!",
                       },
                       ({ getFieldValue }) => ({
                         validator(_, value) {
@@ -259,14 +280,16 @@ export default function NewUser() {
                             return Promise.resolve();
                           }
                           return Promise.reject(
-                            new Error("Passwords do not match!")
+                            new Error(
+                              "Password baru dan konfirmasi tidak cocok!"
+                            )
                           );
                         },
                       }),
                     ]}
                   >
                     <Input.Password
-                      placeholder="Confirm new password"
+                      placeholder="Konfirmasi password baru"
                       disabled={isProfileCompleted}
                       className="w-full"
                     />
@@ -281,7 +304,7 @@ export default function NewUser() {
                     disabled={isProfileCompleted}
                     className="w-full md:w-auto"
                   >
-                    {isProfileCompleted ? "Profile Completed" : "Submit"}
+                    {isProfileCompleted ? "Profil Telah Lengkap" : "Simpan"}
                   </Button>
                 </Form.Item>
               </div>
