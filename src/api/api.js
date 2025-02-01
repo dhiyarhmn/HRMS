@@ -114,6 +114,7 @@ export const employeeServices = {
         throw new Error("ID Pengguna tidak ditemukan");
       }
 
+      // Update profil
       const profileResponse = await api.put(
         `/employee/${currentUser.id_employee}`,
         {
@@ -126,6 +127,7 @@ export const employeeServices = {
         }
       );
 
+      // Jika ada password baru, update password
       if (userData.new_password) {
         try {
           await api.put(`/user/password`, {
@@ -134,10 +136,24 @@ export const employeeServices = {
             new_password_confirmation: userData.new_password,
           });
         } catch (passwordError) {
-          if (passwordError.response?.data?.errors?.new_password) {
-            throw new Error(
-              "Password baru tidak boleh sama dengan password lama"
-            );
+          // Tangkap error response dari API
+          if (
+            passwordError.response?.data?.message ===
+            "Current password is incorrect"
+          ) {
+            throw new Error("Password lama yang anda masukkan tidak tepat");
+          }
+          if (passwordError.response?.status === 422) {
+            const errorMessage =
+              passwordError.response.data.errors.new_password[0];
+            if (
+              errorMessage ===
+              "The new password field and old password must be different."
+            ) {
+              throw new Error(
+                "Password baru tidak boleh sama dengan password lama"
+              );
+            }
           }
           throw passwordError;
         }
@@ -180,7 +196,7 @@ export const userServices = {
   updateUser: (id, userData) => api.put(`/user/${id}`, userData),
   getUserById: (id) => api.get(`/user/${id}`),
   deleteUser: (id) => api.delete(`/user/${id}`),
-  getUserStats: () => api.get("/user/stat"),
+  getUserStats: () => api.get("/user/stat"), // Fungsi untuk mengambil data jumlah karyawan berdasarkan role
 };
 
 // Role Services

@@ -52,6 +52,31 @@ const RoomFormAdmin = ({ room }) => {
     setIsModalOpen(true);
   };
 
+  // Fungsi untuk mengelompokkan waktu yang berurutan
+  const groupConsecutiveTimes = (selectedTimes) => {
+    const sortedTimes = selectedTimes.sort();
+    const groupedTimes = [];
+    let currentGroup = [sortedTimes[0]];
+
+    for (let i = 1; i < sortedTimes.length; i++) {
+      const prevEndTime = currentGroup[currentGroup.length - 1].split(" - ")[1];
+      const currentStartTime = sortedTimes[i].split(" - ")[0];
+
+      if (prevEndTime === currentStartTime) {
+        currentGroup.push(sortedTimes[i]);
+      } else {
+        groupedTimes.push(currentGroup);
+        currentGroup = [sortedTimes[i]];
+      }
+    }
+
+    if (currentGroup.length > 0) {
+      groupedTimes.push(currentGroup);
+    }
+
+    return groupedTimes;
+  };
+
   const handleBooking = async () => {
     try {
       setLoading(true);
@@ -65,25 +90,17 @@ const RoomFormAdmin = ({ room }) => {
         return;
       }
 
-      // Validasi slot waktu berurutan
-      const timeSlots = selectedTimes.sort();
-      for (let i = 1; i < timeSlots.length; i++) {
-        const prevEndTime = timeSlots[i - 1].split(" - ")[1];
-        const currentStartTime = timeSlots[i].split(" - ")[0];
-        if (prevEndTime !== currentStartTime) {
-          message.error("Silakan pilih slot waktu yang berurutan");
-          return;
-        }
-      }
+      // Kelompokkan waktu yang berurutan
+      const groupedTimes = groupConsecutiveTimes(selectedTimes);
 
       // Format data sesuai yang diharapkan backend
-      const times = [];
-      const firstTimeSlot = timeSlots[0].split(" - ");
-      const lastTimeSlot = timeSlots[timeSlots.length - 1].split(" - ");
-
-      times.push({
-        start: firstTimeSlot[0],
-        end: lastTimeSlot[1],
+      const times = groupedTimes.map((group) => {
+        const firstTimeSlot = group[0].split(" - ");
+        const lastTimeSlot = group[group.length - 1].split(" - ");
+        return {
+          start: firstTimeSlot[0],
+          end: lastTimeSlot[1],
+        };
       });
 
       const bookingData = {
