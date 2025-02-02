@@ -22,10 +22,7 @@ const PayrollCalculator = ({ employeeId, onCalculateSuccess }) => {
       console.log("Sending payroll calculation data:", payrollData);
       const response = await payrollServices.calculatePayroll(payrollData);
 
-      // Pastikan kita mengirim data yang benar ke parent component
       if (onCalculateSuccess) {
-        // Kirim response.data.data karena struktur response adalah
-        // { message: "...", data: { ... payroll data ... } }
         onCalculateSuccess(response.data.data);
       }
 

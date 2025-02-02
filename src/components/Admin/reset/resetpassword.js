@@ -3,19 +3,18 @@ import React, { useEffect, useRef, useState } from "react";
 import { SearchOutlined } from "@ant-design/icons";
 import { Button, Input, Space, Table, Modal, Form, Spin, message } from "antd";
 import Highlighter from "react-highlight-words";
-import { userServices } from "@/api/api"; // Sesuaikan path ke file API Anda
+import { userServices } from "@/api/api";
 
 const ResetPassword = () => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
-  const [users, setUsers] = useState([]); // State untuk menyimpan data user
-  const [isModalVisible, setIsModalVisible] = useState(false); // State untuk mengontrol modal
-  const [selectedUserId, setSelectedUserId] = useState(null); // State untuk menyimpan ID user yang dipilih
+  const [users, setUsers] = useState([]);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState(null);
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef(null);
 
-  // Fetch data user saat komponen pertama kali di-render
   useEffect(() => {
     fetchUsers();
   }, []);
@@ -24,7 +23,7 @@ const ResetPassword = () => {
     try {
       setLoading(true);
       const response = await userServices.getUsers();
-      setUsers(response.data.data); // Sesuaikan dengan struktur response dari backend
+      setUsers(response.data.data);
     } catch (error) {
       message.error("Gagal mengambil data user: " + error.message);
     } finally {
@@ -33,14 +32,12 @@ const ResetPassword = () => {
   };
 
   const handleResetPassword = (id_employee) => {
-    setSelectedUserId(id_employee); // Simpan ID user yang dipilih
-    setIsModalVisible(true); // Tampilkan modal
+    setSelectedUserId(id_employee);
+    setIsModalVisible(true);
   };
 
   const onFinish = async (values) => {
-    
     try {
-      // Panggil fungsi resetPassword dari userServices
       const response = await userServices.resetPassword({
         id_employee: selectedUserId,
         new_password: values.new_password,
@@ -50,7 +47,7 @@ const ResetPassword = () => {
       if (response.status === 200) {
         message.success("Password berhasil diubah");
         form.resetFields();
-        setIsModalVisible(false); // Tutup modal
+        setIsModalVisible(false);
       }
     } catch (error) {
       message.error(
@@ -60,7 +57,6 @@ const ResetPassword = () => {
     }
   };
 
-  // Fungsi untuk fitur pencarian
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm({ closeDropdown: false });
     setSearchText(selectedKeys[0]);
@@ -259,7 +255,7 @@ const ResetPassword = () => {
               type="primary"
               htmlType="submit"
               loading={loading}
-              style={{ width: "100%" }} // Tombol memenuhi lebar form
+              style={{ width: "100%" }}
             >
               Reset Password
             </Button>

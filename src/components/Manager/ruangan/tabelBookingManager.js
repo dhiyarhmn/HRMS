@@ -15,7 +15,7 @@ const TabelBookingManager = ({ refreshTrigger, statusFilter }) => {
 
   useEffect(() => {
     fetchBookings();
-  }, [refreshTrigger, statusFilter]); // Add statusFilter to dependencies
+  }, [refreshTrigger, statusFilter]);
 
   const fetchBookings = async () => {
     try {
@@ -25,7 +25,6 @@ const TabelBookingManager = ({ refreshTrigger, statusFilter }) => {
       if (response.data && response.data.data) {
         let filteredData = response.data.data;
 
-        // Apply status filter
         if (statusFilter && statusFilter !== "all") {
           filteredData = filteredData.filter(
             (booking) =>

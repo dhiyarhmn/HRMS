@@ -12,7 +12,7 @@ import ContactPerson from "@/components/ContactPerson/contactPerson";
 export default function Login() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [form] = Form.useForm(); // Form instance dari Ant Design
+  const [form] = Form.useForm();
   const [messageApi, contextHolder] = message.useMessage({
     duration: 1,
     maxCount: 1,
@@ -69,12 +69,6 @@ export default function Login() {
     }
   };
 
-  const handleKeyPress = (e) => {
-    if (e.key === "Enter" && !loading) {
-      form.submit(); // Submit form saat tombol Enter ditekan
-    }
-  };
-
   return (
     <div className="min-h-screen bg-first">
       {contextHolder}
@@ -104,11 +98,7 @@ export default function Login() {
                 Login
               </h1>
 
-              <Form
-                form={form}
-                onFinish={handleLogin} // Submit form saat validasi berhasil
-                layout="vertical"
-              >
+              <Form form={form} onFinish={handleLogin} layout="vertical">
                 <Form.Item
                   label="Username / Email"
                   name="identifier"
@@ -122,7 +112,6 @@ export default function Login() {
                   <Input
                     placeholder="user123 / user@example.com"
                     disabled={loading}
-                    onKeyPress={handleKeyPress}
                   />
                 </Form.Item>
 
@@ -133,11 +122,7 @@ export default function Login() {
                     { required: true, message: "Mohon masukkan password!" },
                   ]}
                 >
-                  <Input.Password
-                    placeholder="********"
-                    disabled={loading}
-                    onKeyPress={handleKeyPress}
-                  />
+                  <Input.Password placeholder="********" disabled={loading} />
                 </Form.Item>
 
                 <Form.Item>

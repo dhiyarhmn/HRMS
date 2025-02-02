@@ -14,7 +14,6 @@ const FormGajiManager = ({ selectedRecord }) => {
   const [employeeId, setEmployeeId] = useState(null);
 
   useEffect(() => {
-    // selectedRecord sekarang langsung berupa ID
     if (selectedRecord) {
       setEmployeeId(selectedRecord);
     }
@@ -31,7 +30,6 @@ const FormGajiManager = ({ selectedRecord }) => {
   return (
     <div className="space-y-4">
       <Tabs defaultActiveKey="1">
-        
         <TabPane tab="Print Payslip" key="1">
           <PaySlip selectedRecord={employeeId} />
         </TabPane>

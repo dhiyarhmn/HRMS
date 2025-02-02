@@ -35,13 +35,11 @@ export default function NewUser() {
     try {
       setLoading(true);
 
-      // Format tanggal lahir ke format yang diharapkan backend
       const formattedValues = {
         ...values,
         date_of_birth: values.date_of_birth.format("YYYY-MM-DD"),
       };
 
-      // Panggil fungsi completeNewUserProfile dari api.js
       const response = await employeeServices.completeNewUserProfile(
         formattedValues
       );
@@ -50,17 +48,15 @@ export default function NewUser() {
         message.success({
           content:
             "Profil dan password berhasil diperbarui. Silakan login kembali dengan password baru.",
-          duration: 3,
+          duration: 2,
         });
 
-        // Clear local storage
         localStorage.removeItem("token");
         localStorage.removeItem("user");
 
-        // Redirect ke halaman login setelah beberapa detik
         setTimeout(() => {
           router.push("/login");
-        }, 3000);
+        }, 2000);
       } else {
         throw new Error(response.message);
       }
@@ -71,6 +67,10 @@ export default function NewUser() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const disableFutureDates = (current) => {
+    return current && current > dayjs().endOf("day");
   };
 
   return (
@@ -195,6 +195,7 @@ export default function NewUser() {
                     format="YYYY-MM-DD"
                     disabled={isProfileCompleted}
                     className="w-full"
+                    disabledDate={disableFutureDates}
                   />
                 </Form.Item>
 
@@ -209,12 +210,12 @@ export default function NewUser() {
                     {
                       type: "number",
                       message: "Jumlah tanggungan harus berupa angka!",
-                      transform: (value) => Number(value), // Konversi input ke number
+                      transform: (value) => Number(value),
                     },
                   ]}
                 >
                   <Input
-                    type="number" // Pastikan input hanya menerima angka
+                    type="number"
                     placeholder="0"
                     disabled={isProfileCompleted}
                     className="w-full"

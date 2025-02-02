@@ -14,7 +14,6 @@ const FormGajiHRGA = ({ selectedRecord }) => {
   const [employeeId, setEmployeeId] = useState(null);
 
   useEffect(() => {
-    // selectedRecord sekarang langsung berupa ID
     if (selectedRecord) {
       setEmployeeId(selectedRecord);
     }

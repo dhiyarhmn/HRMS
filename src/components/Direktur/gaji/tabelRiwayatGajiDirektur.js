@@ -20,14 +20,12 @@ const TabelRiwayatGajiDirektur = ({ detail }) => {
       setLoading(true);
       const response = await payrollServices.getEmployeePayroll();
 
-      // Debugging: log the response
       console.log("Payroll Response:", response);
 
-      // Ensure data is an array and map it
       const transformedData = (
         Array.isArray(response.data) ? response.data : []
       ).map((payroll) => ({
-        key: payroll.id || payroll.id_payroll || payroll.key, // Multiple fallback options
+        key: payroll.id || payroll.id_payroll || payroll.key,
         date: payroll.date,
         month: payroll.month,
         year: payroll.year,
@@ -37,11 +35,6 @@ const TabelRiwayatGajiDirektur = ({ detail }) => {
         total_deduction: payroll.total_deduction,
         total_other_deduction: payroll.total_other_deduction,
         total_salary: payroll.total_salary,
-        formattedDate: new Date(payroll.date).toLocaleDateString("id-ID", {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-        }),
         formattedPeriod: new Date(payroll.date).toLocaleDateString("id-ID", {
           year: "numeric",
           month: "long",
@@ -54,14 +47,12 @@ const TabelRiwayatGajiDirektur = ({ detail }) => {
 
       setData(transformedData);
 
-      // If no data, show a message
       if (transformedData.length === 0) {
         message.info("Tidak ada data gaji yang ditemukan");
       }
     } catch (err) {
       console.error("Error fetching payroll data:", err);
 
-      // More detailed error handling
       if (err.response) {
         message.error(
           `Gagal mengambil data gaji: ${
@@ -155,12 +146,6 @@ const TabelRiwayatGajiDirektur = ({ detail }) => {
       dataIndex: "formattedPeriod",
       key: "month",
       ...getColumnSearchProps("formattedPeriod"),
-    },
-    {
-      title: "Tanggal",
-      dataIndex: "formattedDate",
-      key: "date",
-      ...getColumnSearchProps("formattedDate"),
     },
     {
       title: "Total Gaji",

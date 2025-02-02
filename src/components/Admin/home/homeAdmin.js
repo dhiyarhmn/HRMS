@@ -58,9 +58,7 @@ export default function HomeAdmin() {
   return (
     <div className="bg-gray-50 p-4 md:p-6 lg:p-8">
       <div className="max-w-[1440px] mx-auto">
-        {/* Container utama yang akan menjadi flex pada lg breakpoint */}
         <div className="flex flex-col lg:flex-row lg:gap-8">
-          {/* Bagian Chart - lebar 40% pada lg */}
           <div className="w-full lg:w-2/5 mb-6 lg:mb-0">
             <div className="bg-white rounded-xl shadow-lg p-4 md:p-6">
               <h2 className="text-lg md:text-xl font-bold text-gray-800 mb-4 text-center">
@@ -84,7 +82,6 @@ export default function HomeAdmin() {
             </div>
           </div>
 
-          {/* Bagian Fitur - lebar 60% pada lg */}
           <div className="w-full lg:w-3/5">
             <div className="bg-white rounded-xl shadow-lg p-4 md:p-6">
               <h1 className="text-lg md:text-xl font-bold text-gray-800 mb-4 text-center">

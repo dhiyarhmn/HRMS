@@ -14,7 +14,9 @@ export default function Navbar({ href, p, role }) {
             </a>
           </div>
           <div className="flex grow w-4/6 justify-center">
-            <p className="text-center font-semibold">{p}</p>
+            <p className="text-center font-semibold hidden sm:block md:block lg:block">
+              {p}
+            </p>
           </div>
           <div className="flex grow-0 w-1/6 justify-end">
             <Profile role={role} />
