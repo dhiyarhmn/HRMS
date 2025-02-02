@@ -20,6 +20,7 @@ const TabelGajiHRGA = ({ detail }) => {
           key: response.data.data.id_employee,
           nama: response.data.data.employee_data.name,
           department_name: response.data.data.employee_data.department_name,
+          role_name: response.data.data.role_name,
         };
       } catch (err) {
         console.error(`Error fetching user ${userId}:`, err);
@@ -30,17 +31,17 @@ const TabelGajiHRGA = ({ detail }) => {
     const fetchUsers = async () => {
       try {
         setLoading(true);
-        // First, get the list of user IDs or basic user data
+
         const userListResponse = await userServices.getUsers();
         const userIds = userListResponse.data.data.map(
           (user) => user.id_employee
         );
 
-        // Fetch detailed data for each user
-        const userDataPromises = userIds.map((userId) => fetchUsersById(userId));
+        const userDataPromises = userIds.map((userId) =>
+          fetchUsersById(userId)
+        );
         const userData = await Promise.all(userDataPromises);
 
-        // Filter out any null values from failed requests
         const validUserData = userData.filter((user) => user !== null);
         setData(validUserData);
       } catch (err) {
@@ -141,7 +142,12 @@ const TabelGajiHRGA = ({ detail }) => {
       dataIndex: "department_name",
       key: "department_name",
       ...getColumnSearchProps("department_name"),
-      responsive: ["md"],
+    },
+    {
+      title: "Role",
+      dataIndex: "role_name",
+      key: "role_name",
+      ...getColumnSearchProps("role_name"),
     },
     {
       title: "Action",

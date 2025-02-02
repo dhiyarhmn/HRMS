@@ -20,13 +20,11 @@ const EmployeeChart = ({ employeeData }) => {
     const handleResize = () => {
       const width = window.innerWidth;
       if (width < 768) {
-        // md breakpoint
         setChartDimensions({
           height: 300,
           outerRadius: 80,
         });
       } else if (width < 1024) {
-        // lg breakpoint
         setChartDimensions({
           height: 350,
           outerRadius: 100,
@@ -54,7 +52,6 @@ const EmployeeChart = ({ employeeData }) => {
     { name: "Staff", value: employeeData.staff },
   ];
 
-  // Tampilan tabel untuk mobile
   const MobileTable = () => (
     <div className="overflow-x-auto">
       <table className="min-w-full bg-white rounded-lg overflow-hidden">
@@ -92,12 +89,10 @@ const EmployeeChart = ({ employeeData }) => {
 
   return (
     <>
-      {/* Tampilkan tabel untuk mobile */}
       <div className="md:hidden">
         <MobileTable />
       </div>
 
-      {/* Tampilkan chart untuk tablet ke atas */}
       <div className="hidden md:block h-[300px] lg:h-[400px]">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>

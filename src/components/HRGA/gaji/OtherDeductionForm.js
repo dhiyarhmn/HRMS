@@ -27,7 +27,7 @@ const OtherDeductionForm = ({ employeeId, onSubmitSuccess }) => {
         date: formattedDate,
       };
 
-      console.log("Sending other deduction data:", otherDeductionData); // Debug
+      console.log("Sending other deduction data:", otherDeductionData); 
       const response = await otherDeductionServices.createOtherDeduction(
         otherDeductionData
       );
@@ -36,7 +36,7 @@ const OtherDeductionForm = ({ employeeId, onSubmitSuccess }) => {
       form.resetFields();
       if (onSubmitSuccess) onSubmitSuccess();
     } catch (error) {
-      console.error("Error details:", error.response?.data); // Debug
+      console.error("Error details:", error.response?.data); 
       message.error(
         error.response?.data?.message ||
           "Gagal menyimpan data potongan tambahan"

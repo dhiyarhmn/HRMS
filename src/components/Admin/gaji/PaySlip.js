@@ -192,7 +192,6 @@ const PaySlip = ({ selectedRecord }) => {
         year: values.date.format("YYYY"),
       };
 
-      // Mengambil data dari endpoint yang sudah ada
       const response = await payrollServices.getPayrollSummary({
         params: params,
       });

@@ -165,7 +165,7 @@ const PaySlip = ({ selectedRecord }) => {
       );
 
       // Signatures
-      const signatureY = Math.min(startY + 30, pageHeight - 40); // Ensure signatures fit on the page
+      const signatureY = Math.min(startY + 30, pageHeight - 40);
       doc.setFont("helvetica", "normal");
       doc.text("Diterima oleh,", 35, signatureY);
       doc.text("Disetujui oleh,", pageWidth - 65, signatureY);
@@ -192,7 +192,6 @@ const PaySlip = ({ selectedRecord }) => {
         year: values.date.format("YYYY"),
       };
 
-      // Mengambil data dari endpoint yang sudah ada
       const response = await payrollServices.getPayrollSummary({
         params: params,
       });

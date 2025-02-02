@@ -77,15 +77,12 @@ export default function Gaji() {
           <Tabs defaultActiveKey="1">
             <TabPane tab="Detail Gaji" key="1">
               <div className="space-y-6">
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols- gap-4">
                   <div>
                     <h3 className="font-semibold text-gray-700">Periode</h3>
                     <p className="text-lg">{selectedRecord.formattedPeriod}</p>
                   </div>
-                  <div>
-                    <h3 className="font-semibold text-gray-700">Tanggal</h3>
-                    <p className="text-lg">{selectedRecord.formattedDate}</p>
-                  </div>
+                  
                 </div>
 
                 <div className="border-t pt-4">

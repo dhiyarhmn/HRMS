@@ -35,7 +35,6 @@ export default function NavigationAdmin() {
         }}
         className="justify-center flex mt-4 sm:mt-8 bg-transparent p-0"
       >
-        {/* Mobile Menu Button */}
         <button
           className="md:hidden fixed bottom-4 right-4 bg-third p-3 rounded-full shadow-lg z-50"
           onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -57,7 +56,6 @@ export default function NavigationAdmin() {
           </svg>
         </button>
 
-        {/* Navigation Menu */}
         <div
           className={`${
             isMenuOpen ? "flex" : "hidden md:flex"

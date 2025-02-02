@@ -12,10 +12,9 @@ const { Meta } = Card;
 
 export default function HomeHRGA() {
   const router = useRouter();
-  const [employeeStats, setEmployeeStats] = useState(null); // State untuk menyimpan data jumlah karyawan
+  const [employeeStats, setEmployeeStats] = useState(null);
 
   useEffect(() => {
-    // Ambil data jumlah karyawan berdasarkan role
     const fetchEmployeeStats = async () => {
       try {
         const response = await userServices.getUserStats();
@@ -56,7 +55,6 @@ export default function HomeHRGA() {
     },
   ];
 
-  // Format data untuk chart
   const chartData = employeeStats
     ? [
         { name: "Admin", value: employeeStats.admin },
@@ -74,7 +72,6 @@ export default function HomeHRGA() {
           Silakan Pilih Fitur yang Tersedia
         </h1>
 
-        {/* Tampilkan Chart Jumlah Karyawan Berdasarkan Role */}
         {employeeStats && (
           <div className="w-full max-w-4xl mb-8">
             <h2 className="text-xl font-semibold mb-4 text-center">
@@ -103,10 +100,7 @@ export default function HomeHRGA() {
                 }
                 className="w-full max-w-xs transition-all duration-300 ease-in-out divide-y-2"
               >
-                <Meta
-                  title={item.title}
-                  className="text-center"
-                />
+                <Meta title={item.title} className="text-center" />
               </Card>
             </div>
           ))}

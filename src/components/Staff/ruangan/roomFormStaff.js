@@ -166,13 +166,11 @@ const RoomFormStaff = ({ room, onBookingSuccess }) => {
     const [slotStart, slotEnd] = timeSlot.split(" - ");
 
     return bookedSlots.some((bookedSlot) => {
-      // Convert times to minutes for easier comparison
       const bookedStartMinutes = convertTimeToMinutes(bookedSlot.start);
       const bookedEndMinutes = convertTimeToMinutes(bookedSlot.end);
       const slotStartMinutes = convertTimeToMinutes(slotStart);
       const slotEndMinutes = convertTimeToMinutes(slotEnd);
 
-      // Check for any overlap
       return (
         (slotStartMinutes >= bookedStartMinutes &&
           slotStartMinutes < bookedEndMinutes) ||

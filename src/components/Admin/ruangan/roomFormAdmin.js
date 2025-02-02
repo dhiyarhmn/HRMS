@@ -20,12 +20,10 @@ const RoomFormAdmin = ({ room }) => {
           if (response.data && response.data.bookings) {
             const selectedDate = dayjs(bookingDate).format("YYYY-MM-DD");
 
-            // Filter bookings for selected date
             const dateBookings = response.data.bookings.filter(
               (booking) => booking.booking_date === selectedDate
             );
 
-            // Extract all booked time slots for the selected date
             const bookedTimeSlots = dateBookings.flatMap((booking) =>
               booking.times.map((time) => ({
                 start: time.start,
@@ -37,7 +35,7 @@ const RoomFormAdmin = ({ room }) => {
           }
         } catch (error) {
           console.error("Error fetching bookings:", error);
-          // Only show error message if it's not a 404 (no bookings found)
+
           if (error.response?.status !== 404) {
             message.error("Gagal mengambil data booking yang ada");
           }
@@ -52,7 +50,6 @@ const RoomFormAdmin = ({ room }) => {
     setIsModalOpen(true);
   };
 
-  // Fungsi untuk mengelompokkan waktu yang berurutan
   const groupConsecutiveTimes = (selectedTimes) => {
     const sortedTimes = selectedTimes.sort();
     const groupedTimes = [];
@@ -90,10 +87,8 @@ const RoomFormAdmin = ({ room }) => {
         return;
       }
 
-      // Kelompokkan waktu yang berurutan
       const groupedTimes = groupConsecutiveTimes(selectedTimes);
 
-      // Format data sesuai yang diharapkan backend
       const times = groupedTimes.map((group) => {
         const firstTimeSlot = group[0].split(" - ");
         const lastTimeSlot = group[group.length - 1].split(" - ");
@@ -163,13 +158,11 @@ const RoomFormAdmin = ({ room }) => {
     const [slotStart, slotEnd] = timeSlot.split(" - ");
 
     return bookedSlots.some((bookedSlot) => {
-      // Convert times to minutes for easier comparison
       const bookedStartMinutes = convertTimeToMinutes(bookedSlot.start);
       const bookedEndMinutes = convertTimeToMinutes(bookedSlot.end);
       const slotStartMinutes = convertTimeToMinutes(slotStart);
       const slotEndMinutes = convertTimeToMinutes(slotEnd);
 
-      // Check for any overlap
       return (
         (slotStartMinutes >= bookedStartMinutes &&
           slotStartMinutes < bookedEndMinutes) ||

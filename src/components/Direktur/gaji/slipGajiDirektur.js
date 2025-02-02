@@ -183,7 +183,6 @@ const SlipGajiDirektur = ({ selectedRecord }) => {
       setLoading(true);
       const response = await payrollServices.getEmployeePayroll();
 
-      // Find the specific payroll record
       const payrollRecord = response.data.find(
         (record) => record.id_payroll === selectedRecord
       );
@@ -193,11 +192,9 @@ const SlipGajiDirektur = ({ selectedRecord }) => {
         return;
       }
 
-      // Ensure month and year are correctly formatted
       const month = String(payrollRecord.month).padStart(2, "0");
       const year = String(payrollRecord.year);
 
-      // Fetch detailed payroll data
       const detailedResponse = await payrollServices.getPayrollSummary({
         params: {
           id_employee: payrollRecord.id_employee,
@@ -209,7 +206,7 @@ const SlipGajiDirektur = ({ selectedRecord }) => {
       generatePDF(detailedResponse.data.data);
     } catch (error) {
       console.error("Error:", error);
-      // More detailed error logging
+
       if (error.response) {
         console.error("Response error:", error.response.data);
         message.error(

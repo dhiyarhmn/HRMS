@@ -167,26 +167,28 @@ export const ManualForm = () => {
 };
 
 export const UploadCSV = () => {
-  const [uploadedFile, setUploadedFile] = useState(null);
+  const [uploadedFiles, setUploadedFiles] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const uploadProps = {
-    name: "file",
-    multiple: false,
+    name: "files",
+    multiple: true,
     accept: ".csv",
     beforeUpload: (file) => {
-      setUploadedFile(file);
+      setUploadedFiles((prevFiles) => [...prevFiles, file]);
       message.success(`${file.name} berhasil diunggah`);
       return false;
     },
-    onRemove: () => {
-      setUploadedFile(null);
+    onRemove: (file) => {
+      setUploadedFiles((prevFiles) =>
+        prevFiles.filter((f) => f.uid !== file.uid)
+      );
       message.info("File unggahan telah dihapus");
     },
   };
 
   const handleImport = async () => {
-    if (!uploadedFile) {
+    if (uploadedFiles.length === 0) {
       message.error("Silakan unggah file terlebih dahulu");
       return;
     }
@@ -194,10 +196,12 @@ export const UploadCSV = () => {
     setLoading(true);
     try {
       const formData = new FormData();
-      formData.append("file", uploadedFile);
+      uploadedFiles.forEach((file) => {
+        formData.append("files[]", file);
+      });
       await userServices.importUsers(formData);
       message.success("Akun berhasil dibuat dari file CSV");
-      setUploadedFile(null);
+      setUploadedFiles([]);
     } catch (error) {
       console.error("Error importing users:", error);
       message.error(
@@ -219,8 +223,8 @@ export const UploadCSV = () => {
             Klik atau seret file CSV ke area ini
           </p>
           <p className="ant-upload-hint text-sm text-gray-500 px-4 text-center">
-            Hanya mendukung file CSV. Pastikan file memiliki format CSV
-            yang sesuai.
+            Hanya mendukung file CSV. Pastikan file memiliki format CSV yang
+            sesuai.
           </p>
         </Dragger>
       </div>
@@ -230,7 +234,7 @@ export const UploadCSV = () => {
           type="primary"
           onClick={handleImport}
           loading={loading}
-          disabled={!uploadedFile}
+          disabled={uploadedFiles.length === 0}
         >
           Submit
         </Button>
