@@ -19,7 +19,6 @@ export default function NavigationAdmin() {
     { href: "/Admin/home", icon: home, label: "Home" },
     { href: "/Admin/cuti", icon: cuti, label: "Cuti" },
     { href: "/Admin/lembur", icon: lembur, label: "Lembur" },
-    { href: "/Admin/ruangan", icon: booking, label: "Ruangan" },
     { href: "/Admin/gaji", icon: gaji, label: "Gaji" },
     { href: "/Admin/approval", icon: approval, label: "Approval" },
     { href: "/Admin/generate", icon: generate, label: "Generate" },
