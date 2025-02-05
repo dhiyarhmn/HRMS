@@ -3,11 +3,13 @@ import { useEffect, useState } from "react";
 import TabelGajiAdmin from "@/components/Admin/gaji/tabelGajiAdmin";
 import NavigationAdmin from "@/components/Admin/navigation/navigationAdmin";
 import FormGajiAdmin from "@/components/Admin/gaji/formGajiAdmin";
+import UpdateGajiModal from "@/components/Admin/gaji/UpdateGajiModal";
 import Navbar from "@/components/Navbar/navbar";
 import { Modal } from "antd";
 
 export default function Gaji() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null);
   const [modalWidth, setModalWidth] = useState(600);
 
@@ -20,35 +22,43 @@ export default function Gaji() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const showModal = (record) => {
+  const showDetailModal = (record) => {
     setSelectedRecord(record);
-    setIsModalOpen(true);
+    setIsDetailModalOpen(true);
   };
 
-  const handleCancel = () => {
-    setIsModalOpen(false);
+  const showUpdateModal = (record) => {
+    setSelectedRecord(record);
+    setIsUpdateModalOpen(true);
+  };
+
+  const handleDetailCancel = () => {
+    setIsDetailModalOpen(false);
+  };
+
+  const handleUpdateCancel = () => {
+    setIsUpdateModalOpen(false);
   };
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
       <Navbar href={"/Admin/home"} p={"Admin"} role="admin" />
       <NavigationAdmin />
-      {/* Main Content */}
       <main className="flex-grow p-6 space-y-8">
-        {/* Header Section */}
         <section className="max-w-7xl mx-auto w-full">
           <div className="bg-white rounded-xl shadow-md overflow-hidden">
             <div className="p-6">
-              {/* Header */}
               <div className="mb-6">
                 <h1 className="text-2xl font-bold text-gray-900">
                   Data Gaji Karyawan
                 </h1>
               </div>
 
-              {/* Content */}
               <div className="mt-4">
-                <TabelGajiAdmin detail={showModal} />
+                <TabelGajiAdmin
+                  detail={showDetailModal}
+                  update={showUpdateModal}
+                />
               </div>
             </div>
           </div>
@@ -62,8 +72,8 @@ export default function Gaji() {
             Detail Data Gaji
           </h3>
         }
-        open={isModalOpen}
-        onCancel={handleCancel}
+        open={isDetailModalOpen}
+        onCancel={handleDetailCancel}
         footer={null}
         width={modalWidth}
         centered
@@ -71,6 +81,13 @@ export default function Gaji() {
       >
         {selectedRecord && <FormGajiAdmin selectedRecord={selectedRecord} />}
       </Modal>
+
+      {/* Update Modal */}
+      <UpdateGajiModal
+        isOpen={isUpdateModalOpen}
+        onClose={handleUpdateCancel}
+        selectedRecord={selectedRecord}
+      />
     </div>
   );
 }

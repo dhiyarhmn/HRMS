@@ -26,22 +26,24 @@ const PaySlip = ({ selectedRecord }) => {
       // Header
       doc.setFontSize(16);
       doc.setFont("helvetica", "bold");
-      doc.text("SLIP GAJI KARYAWAN", pageWidth / 2, 15, { align: "center" });
+      doc.text("SLIP GAJI KARYAWAN", pageWidth / 2, 20, { align: "center" });
 
       // Company Info
-      doc.setFontSize(12);
-      doc.setFont("helvetica", "bold");
-      doc.text("PT. Daekyung Indah Heavy Industry", pageWidth / 2, 25, {
-        align: "center",
-      });
       doc.setFontSize(10);
       doc.setFont("helvetica", "normal");
+      doc.text("PT. Daekyung Indah Heavy Industry", pageWidth / 2, 30, {
+        align: "center",
+      });
+
       doc.text(
         "Jalan Australia II Kavling 1 KIEC, Warnasari, Kec. Citangkil, Kota Cilegon, Banten 42443",
         pageWidth / 2,
-        30,
+        35,
         { align: "center" }
       );
+
+      doc.setLineWidth(0.5);
+      doc.line(15, 45, pageWidth - 15, 45);
 
       // Employee Info
       doc.setFontSize(10);
@@ -53,10 +55,10 @@ const PaySlip = ({ selectedRecord }) => {
           `Periode: ${date.format("MMMM YYYY")}`,
         ],
         15,
-        45
+        55
       );
 
-      let startY = 65;
+      let startY = 75;
 
       // Function to add section
       const addSection = (title, items, y) => {
@@ -165,7 +167,7 @@ const PaySlip = ({ selectedRecord }) => {
       );
 
       // Signatures
-      const signatureY = Math.min(startY + 30, pageHeight - 40);
+      const signatureY = Math.min(startY + 30, pageHeight - 40); // Ensure signatures fit on the page
       doc.setFont("helvetica", "normal");
       doc.text("Diterima oleh,", 35, signatureY);
       doc.text("Disetujui oleh,", pageWidth - 65, signatureY);
@@ -188,13 +190,10 @@ const PaySlip = ({ selectedRecord }) => {
       setLoading(true);
       const params = {
         id_employee: selectedRecord,
-        month: values.date.format("MM"),
-        year: values.date.format("YYYY"),
+        date: values.date.format("YYYY-MM-01"),
       };
 
-      const response = await payrollServices.getPayrollSummary({
-        params: params,
-      });
+      const response = await payrollServices.getPayrollSummary(params);
 
       generatePDF(response.data.data, values.date);
     } catch (error) {

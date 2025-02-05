@@ -226,7 +226,18 @@ const RoomFormManager = ({ room, onBookingSuccess }) => {
                 value={bookingDate}
                 className="w-full"
                 disabledDate={(current) => {
-                  return current && current < dayjs().startOf("day");
+                  const today = dayjs();
+                  const endOfWeek = today.endOf("week");
+                  const startOfWeek = today.startOf("week");
+
+                  return (
+                    (current &&
+                      (current < startOfWeek ||
+                        current > endOfWeek ||
+                        current.day() === 0 ||
+                        current.day() === 6)) ||
+                    current < dayjs().startOf("day")
+                  );
                 }}
               />
             </div>
@@ -253,11 +264,11 @@ const RoomFormManager = ({ room, onBookingSuccess }) => {
                   </div>
 
                   {/* Time Slots Grid */}
-                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-4">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 sm:gap-3">
                     {schedule.map((time, index) => {
                       const isBooked = isTimeSlotBooked(time);
                       return (
-                        <label key={index} className="relative">
+                        <label key={index} className="relative flex">
                           <input
                             type="checkbox"
                             checked={checked[time] || false}
@@ -267,15 +278,16 @@ const RoomFormManager = ({ room, onBookingSuccess }) => {
                           />
                           <div
                             className={`
-                      w-full text-center p-2 rounded-lg text-sm sm:text-base
-                      ${
-                        isBooked
-                          ? "bg-red-100 text-red-800 border border-red-300 cursor-not-allowed"
-                          : checked[time]
-                          ? "bg-blue-500 text-white border border-blue-600"
-                          : "bg-green-100 text-green-800 border border-green-300 hover:bg-green-200 cursor-pointer"
-                      }
-                    `}
+            w-full text-center p-2 rounded-lg text-xs sm:text-sm
+            flex items-center justify-center 
+            ${
+              isBooked
+                ? "bg-red-100 text-red-800 border border-red-300 cursor-not-allowed"
+                : checked[time]
+                ? "bg-blue-500 text-white border border-blue-600"
+                : "bg-green-100 text-green-800 border border-green-300 hover:bg-green-200 cursor-pointer"
+            }
+          `}
                           >
                             {time}
                           </div>

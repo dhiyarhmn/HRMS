@@ -4,7 +4,7 @@ import { Button, Input, Space, Table, Spin } from "antd";
 import Highlighter from "react-highlight-words";
 import { userServices } from "@/api/api";
 
-const TabelGajiAdmin = ({ detail }) => {
+const TabelGajiAdmin = ({ detail, update }) => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -31,17 +31,14 @@ const TabelGajiAdmin = ({ detail }) => {
     const fetchUsers = async () => {
       try {
         setLoading(true);
-
         const userListResponse = await userServices.getUsers();
         const userIds = userListResponse.data.data.map(
           (user) => user.id_employee
         );
-
         const userDataPromises = userIds.map((userId) =>
           fetchUsersById(userId)
         );
         const userData = await Promise.all(userDataPromises);
-
         const validUserData = userData.filter((user) => user !== null);
         setData(validUserData);
       } catch (err) {
@@ -107,7 +104,7 @@ const TabelGajiAdmin = ({ detail }) => {
               close();
             }}
           >
-            Close
+            close
           </Button>
         </Space>
       </div>
@@ -153,16 +150,26 @@ const TabelGajiAdmin = ({ detail }) => {
       title: "Action",
       key: "action",
       fixed: "right",
-      width: 100,
       render: (_, record) => (
-        <Button
-          type="primary"
-          size="small"
-          onClick={() => detail(record.key)}
-          className="px-4"
-        >
-          Detail
-        </Button>
+        <Space>
+          <Button
+            type="primary"
+            size="small"
+            onClick={() => detail(record.key)}
+            className="px-4"
+          >
+            Detail
+          </Button>
+          <Button
+            type="primary"
+            size="small"
+            onClick={() => update(record.key)}
+            className="bg-green-500 hover:bg-green-600 border-green-500"
+            style={{ backgroundColor: "#10B981", borderColor: "#10B981" }}
+          >
+            Update
+          </Button>
+        </Space>
       ),
     },
   ];

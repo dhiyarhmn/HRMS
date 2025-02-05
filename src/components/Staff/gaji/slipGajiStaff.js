@@ -192,15 +192,13 @@ const SlipGajiStaff = ({ selectedRecord }) => {
         return;
       }
 
-      const month = String(payrollRecord.month).padStart(2, "0");
-      const year = String(payrollRecord.year);
+      const date = `${payrollRecord.year}-${String(
+        payrollRecord.month
+      ).padStart(2, "0")}-01`;
 
       const detailedResponse = await payrollServices.getPayrollSummary({
-        params: {
-          id_employee: payrollRecord.id_employee,
-          month: month,
-          year: year,
-        },
+        id_employee: payrollRecord.id_employee,
+        date: date,
       });
 
       generatePDF(detailedResponse.data.data);

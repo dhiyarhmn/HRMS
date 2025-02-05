@@ -1,4 +1,3 @@
-// components/Admin/gaji/PayrollCalculator.js
 import { payrollServices } from "@/api/api";
 import { Button, DatePicker, Form, message } from "antd";
 import { useState } from "react";
@@ -15,8 +14,7 @@ const PayrollCalculator = ({ employeeId, onCalculateSuccess }) => {
 
       const payrollData = {
         id_employee: employeeId,
-        month: month,
-        year: year,
+        date: values.date.format("YYYY-MM-01"), // Gunakan format date sesuai backend
       };
 
       console.log("Sending payroll calculation data:", payrollData);

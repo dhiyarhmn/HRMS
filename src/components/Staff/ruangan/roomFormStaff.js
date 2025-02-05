@@ -20,12 +20,10 @@ const RoomFormStaff = ({ room, onBookingSuccess }) => {
           if (response.data && response.data.bookings) {
             const selectedDate = dayjs(bookingDate).format("YYYY-MM-DD");
 
-            // Filter bookings for selected date
             const dateBookings = response.data.bookings.filter(
               (booking) => booking.booking_date === selectedDate
             );
 
-            // Extract all booked time slots for the selected date
             const bookedTimeSlots = dateBookings.flatMap((booking) =>
               booking.times.map((time) => ({
                 start: time.start,
@@ -37,7 +35,7 @@ const RoomFormStaff = ({ room, onBookingSuccess }) => {
           }
         } catch (error) {
           console.error("Error fetching bookings:", error);
-          // Only show error message if it's not a 404 (no bookings found)
+
           if (error.response?.status !== 404) {
             message.error("Gagal mengambil data booking yang ada");
           }
@@ -52,7 +50,6 @@ const RoomFormStaff = ({ room, onBookingSuccess }) => {
     setIsModalOpen(true);
   };
 
-  // Fungsi untuk mengelompokkan waktu yang berurutan
   const groupConsecutiveTimes = (selectedTimes) => {
     const sortedTimes = selectedTimes.sort();
     const groupedTimes = [];
@@ -90,10 +87,8 @@ const RoomFormStaff = ({ room, onBookingSuccess }) => {
         return;
       }
 
-      // Kelompokkan waktu yang berurutan
       const groupedTimes = groupConsecutiveTimes(selectedTimes);
 
-      // Format data sesuai yang diharapkan backend
       const times = groupedTimes.map((group) => {
         const firstTimeSlot = group[0].split(" - ");
         const lastTimeSlot = group[group.length - 1].split(" - ");
@@ -231,7 +226,18 @@ const RoomFormStaff = ({ room, onBookingSuccess }) => {
                 value={bookingDate}
                 className="w-full"
                 disabledDate={(current) => {
-                  return current && current < dayjs().startOf("day");
+                  const today = dayjs();
+                  const endOfWeek = today.endOf("week"); 
+                  const startOfWeek = today.startOf("week"); 
+
+                  return (
+                    (current &&
+                      (current < startOfWeek ||
+                        current > endOfWeek ||
+                        current.day() === 0 ||
+                        current.day() === 6)) ||
+                    current < dayjs().startOf("day")
+                  );
                 }}
               />
             </div>
@@ -258,11 +264,11 @@ const RoomFormStaff = ({ room, onBookingSuccess }) => {
                   </div>
 
                   {/* Time Slots Grid */}
-                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-4">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 sm:gap-3">
                     {schedule.map((time, index) => {
                       const isBooked = isTimeSlotBooked(time);
                       return (
-                        <label key={index} className="relative">
+                        <label key={index} className="relative flex">
                           <input
                             type="checkbox"
                             checked={checked[time] || false}
@@ -272,15 +278,16 @@ const RoomFormStaff = ({ room, onBookingSuccess }) => {
                           />
                           <div
                             className={`
-                    w-full text-center p-2 rounded-lg text-sm sm:text-base
-                    ${
-                      isBooked
-                        ? "bg-red-100 text-red-800 border border-red-300 cursor-not-allowed"
-                        : checked[time]
-                        ? "bg-blue-500 text-white border border-blue-600"
-                        : "bg-green-100 text-green-800 border border-green-300 hover:bg-green-200 cursor-pointer"
-                    }
-                  `}
+            w-full text-center p-2 rounded-lg text-xs sm:text-sm
+            flex items-center justify-center 
+            ${
+              isBooked
+                ? "bg-red-100 text-red-800 border border-red-300 cursor-not-allowed"
+                : checked[time]
+                ? "bg-blue-500 text-white border border-blue-600"
+                : "bg-green-100 text-green-800 border border-green-300 hover:bg-green-200 cursor-pointer"
+            }
+          `}
                           >
                             {time}
                           </div>
