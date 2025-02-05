@@ -205,7 +205,7 @@ export default function NewUser() {
                   rules={[
                     {
                       required: true,
-                      message: "Harap masukkan jumlah tanggungan!",
+                      
                     },
                     {
                       validator: (_, value) => {
