@@ -6,7 +6,11 @@ import React, { useRef, useState, useEffect } from "react";
 import Highlighter from "react-highlight-words";
 import dayjs from "dayjs";
 
-const TabelBookingDirektur = ({ refreshTrigger, statusFilter }) => {
+const TabelBookingDirektur = ({
+  refreshTrigger,
+  statusFilter,
+  onShowDetail,
+}) => {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchText, setSearchText] = useState("");
@@ -177,6 +181,19 @@ const TabelBookingDirektur = ({ refreshTrigger, statusFilter }) => {
         <Tag color={getStatusColor(status)} className="text-sm">
           {status.toUpperCase()}
         </Tag>
+      ),
+    },
+    {
+      title: "Action",
+      key: "action",
+      render: (_, record) => (
+        <Button
+          type="primary"
+          size="small"
+          onClick={() => onShowDetail(record)}
+        >
+          Detail
+        </Button>
       ),
     },
   ];

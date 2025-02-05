@@ -46,7 +46,6 @@ const TabelApprovalAdmin = ({ detail, refreshTrigger, statusFilter }) => {
       }
     } catch (error) {
       console.error("Error fetching bookings:", error);
-      setError("Data booking tidak tersedia");
     } finally {
       setLoading(false);
     }
@@ -55,12 +54,6 @@ const TabelApprovalAdmin = ({ detail, refreshTrigger, statusFilter }) => {
   useEffect(() => {
     fetchBookings();
   }, [fetchBookings, refreshTrigger]);
-
-  useEffect(() => {
-    if (error) {
-      message.error(error);
-    }
-  }, [error]);
 
   const getStatusColor = (status) => {
     switch (status.toLowerCase()) {

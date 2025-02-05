@@ -69,23 +69,23 @@ const UpdateOtherDeductionForm = ({ employeeId, onSuccess }) => {
 
     try {
       setLoading(true);
-      const formattedDate = selectedMonth.format("YYYY-MM-01");
+      const formattedDate = selectedMonth.format("YYYY-MM-DD");
 
       const otherDeductionUpdateData = {
         id_employee: employeeId,
-        simpanan_wajib: values.simpanan_wajib || 0,
-        simpanan_sukarela: values.simpanan_sukarela || 0,
-        pinjaman_uang_barang: values.pinjaman_uang_barang || 0,
-        ruko: values.ruko || 0,
-        makan: values.makan || 0,
-        iuran_spmi: values.iuran_spmi || 0,
-        soft_loan: values.soft_loan || 0,
         date: formattedDate,
+        ...Object.fromEntries(
+          Object.entries(values).filter(
+            ([_, value]) => value !== null && value !== undefined
+          )
+        ),
       };
 
-      await otherDeductionServices.updateOtherDeduction(otherDeductionUpdateData);
-      
+      await otherDeductionServices.updateOtherDeduction(
+        otherDeductionUpdateData
+      );
       if (onSuccess) onSuccess();
+      message.success("Data potongan lainnya berhasil diupdate");
     } catch (error) {
       console.error("Error updating other deduction:", error);
       message.error(
@@ -129,11 +129,16 @@ const UpdateOtherDeductionForm = ({ employeeId, onSuccess }) => {
             <Form.Item
               label="Simpanan Wajib"
               name="simpanan_wajib"
+              validateStatus={
+                form.getFieldError("simpanan_wajib").length > 0 ? "error" : ""
+              }
+              help={form.getFieldError("simpanan_wajib")[0]}
               rules={[
                 {
                   type: "number",
                   min: 0,
                   message: "Simpanan Wajib harus berupa angka positif!",
+                  transform: (value) => Number(value),
                 },
               ]}
             >
@@ -142,18 +147,26 @@ const UpdateOtherDeductionForm = ({ employeeId, onSuccess }) => {
                 formatter={(value) =>
                   `Rp ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".")
                 }
-                parser={(value) => value.replace(/Rp\s?|(\.*)/g, "")}
+                parser={(value) => value.replace(/[^\d]/g, "")}
+                min={0}
               />
             </Form.Item>
 
             <Form.Item
               label="Simpanan Sukarela"
               name="simpanan_sukarela"
+              validateStatus={
+                form.getFieldError("simpanan_sukarela").length > 0
+                  ? "error"
+                  : ""
+              }
+              help={form.getFieldError("simpanan_sukarela")[0]}
               rules={[
                 {
                   type: "number",
                   min: 0,
                   message: "Simpanan Sukarela harus berupa angka positif!",
+                  transform: (value) => Number(value),
                 },
               ]}
             >
@@ -162,18 +175,26 @@ const UpdateOtherDeductionForm = ({ employeeId, onSuccess }) => {
                 formatter={(value) =>
                   `Rp ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".")
                 }
-                parser={(value) => value.replace(/Rp\s?|(\.*)/g, "")}
+                parser={(value) => value.replace(/[^\d]/g, "")}
+                min={0}
               />
             </Form.Item>
 
             <Form.Item
               label="Pinjaman Uang/Barang"
               name="pinjaman_uang_barang"
+              validateStatus={
+                form.getFieldError("pinjaman_uang_barang").length > 0
+                  ? "error"
+                  : ""
+              }
+              help={form.getFieldError("pinjaman_uang_barang")[0]}
               rules={[
                 {
                   type: "number",
                   min: 0,
                   message: "Pinjaman Uang/Barang harus berupa angka positif!",
+                  transform: (value) => Number(value),
                 },
               ]}
             >
@@ -182,18 +203,24 @@ const UpdateOtherDeductionForm = ({ employeeId, onSuccess }) => {
                 formatter={(value) =>
                   `Rp ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".")
                 }
-                parser={(value) => value.replace(/Rp\s?|(\.*)/g, "")}
+                parser={(value) => value.replace(/[^\d]/g, "")}
+                min={0}
               />
             </Form.Item>
 
             <Form.Item
               label="Ruko"
               name="ruko"
+              validateStatus={
+                form.getFieldError("ruko").length > 0 ? "error" : ""
+              }
+              help={form.getFieldError("ruko")[0]}
               rules={[
                 {
                   type: "number",
                   min: 0,
                   message: "Ruko harus berupa angka positif!",
+                  transform: (value) => Number(value),
                 },
               ]}
             >
@@ -202,18 +229,24 @@ const UpdateOtherDeductionForm = ({ employeeId, onSuccess }) => {
                 formatter={(value) =>
                   `Rp ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".")
                 }
-                parser={(value) => value.replace(/Rp\s?|(\.*)/g, "")}
+                parser={(value) => value.replace(/[^\d]/g, "")}
+                min={0}
               />
             </Form.Item>
 
             <Form.Item
               label="Makan"
               name="makan"
+              validateStatus={
+                form.getFieldError("makan").length > 0 ? "error" : ""
+              }
+              help={form.getFieldError("makan")[0]}
               rules={[
                 {
                   type: "number",
                   min: 0,
                   message: "Makan harus berupa angka positif!",
+                  transform: (value) => Number(value),
                 },
               ]}
             >
@@ -222,18 +255,24 @@ const UpdateOtherDeductionForm = ({ employeeId, onSuccess }) => {
                 formatter={(value) =>
                   `Rp ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".")
                 }
-                parser={(value) => value.replace(/Rp\s?|(\.*)/g, "")}
+                parser={(value) => value.replace(/[^\d]/g, "")}
+                min={0}
               />
             </Form.Item>
 
             <Form.Item
               label="Iuran SPMI"
               name="iuran_spmi"
+              validateStatus={
+                form.getFieldError("iuran_spmi").length > 0 ? "error" : ""
+              }
+              help={form.getFieldError("iuran_spmi")[0]}
               rules={[
                 {
                   type: "number",
                   min: 0,
                   message: "Iuran SPMI harus berupa angka positif!",
+                  transform: (value) => Number(value),
                 },
               ]}
             >
@@ -242,18 +281,24 @@ const UpdateOtherDeductionForm = ({ employeeId, onSuccess }) => {
                 formatter={(value) =>
                   `Rp ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".")
                 }
-                parser={(value) => value.replace(/Rp\s?|(\.*)/g, "")}
+                parser={(value) => value.replace(/[^\d]/g, "")}
+                min={0}
               />
             </Form.Item>
 
             <Form.Item
               label="Pinjaman Lunak"
               name="soft_loan"
+              validateStatus={
+                form.getFieldError("soft_loan").length > 0 ? "error" : ""
+              }
+              help={form.getFieldError("soft_loan")[0]}
               rules={[
                 {
                   type: "number",
                   min: 0,
                   message: "Pinjaman Lunak harus berupa angka positif!",
+                  transform: (value) => Number(value),
                 },
               ]}
             >
@@ -262,7 +307,8 @@ const UpdateOtherDeductionForm = ({ employeeId, onSuccess }) => {
                 formatter={(value) =>
                   `Rp ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".")
                 }
-                parser={(value) => value.replace(/Rp\s?|(\.*)/g, "")}
+                parser={(value) => value.replace(/[^\d]/g, "")}
+                min={0}
               />
             </Form.Item>
           </div>

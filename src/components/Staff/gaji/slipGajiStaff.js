@@ -183,40 +183,23 @@ const SlipGajiStaff = ({ selectedRecord }) => {
       setLoading(true);
       const response = await payrollServices.getEmployeePayroll();
 
-      const payrollRecord = response.data.find(
-        (record) => record.id_payroll === selectedRecord
-      );
-
-      if (!payrollRecord) {
+      const payrollData = response.data[0]; // Ambil data pertama
+      if (!payrollData) {
         message.error("Data payroll tidak ditemukan");
         return;
       }
 
-      const date = `${payrollRecord.year}-${String(
-        payrollRecord.month
-      ).padStart(2, "0")}-01`;
-
       const detailedResponse = await payrollServices.getPayrollSummary({
-        id_employee: payrollRecord.id_employee,
-        date: date,
+        id_employee: payrollData.id_employee,
+        date: payrollData.date,
       });
 
       generatePDF(detailedResponse.data.data);
     } catch (error) {
       console.error("Error:", error);
-
-      if (error.response) {
-        console.error("Response error:", error.response.data);
-        message.error(
-          `Gagal mengambil data payroll: ${
-            error.response.data.message || error.message
-          }`
-        );
-      } else {
-        message.error(
-          "Gagal mengambil data payroll: Terjadi kesalahan tidak dikenal"
-        );
-      }
+      message.error(
+        error.response?.data?.message || "Gagal mengambil data payroll"
+      );
     } finally {
       setLoading(false);
     }

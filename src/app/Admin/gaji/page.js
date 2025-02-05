@@ -34,6 +34,7 @@ export default function Gaji() {
 
   const handleDetailCancel = () => {
     setIsDetailModalOpen(false);
+    setSelectedRecord(null);
   };
 
   const handleUpdateCancel = () => {

@@ -4,17 +4,46 @@ import Navbar from "@/components/Navbar/navbar";
 import NavigationManager from "@/components/Manager/navigation/navigationManager";
 import TabelBookingManager from "@/components/Manager/ruangan/tabelBookingManager";
 import DaftarRuanganManager from "@/components/Manager/ruangan/daftarRuanganManager";
-import { Select } from "antd";
+import { Select, Modal, Tag } from "antd";
 
 export default function Ruangan() {
   const [bookingRefreshTrigger, setBookingRefreshTrigger] = useState(0);
   const [statusFilter, setStatusFilter] = useState("all");
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const [selectedBooking, setSelectedBooking] = useState(null);
+  const [modalWidth, setModalWidth] = useState(600);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setModalWidth(window.innerWidth < 640 ? "95%" : 600);
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const handleBookingSuccess = () => {
     setBookingRefreshTrigger((prev) => prev + 1);
   };
 
-  // Data options untuk Select
+  const showDetailModal = (record) => {
+    setSelectedBooking(record);
+    setIsDetailModalOpen(true);
+  };
+
+  const getStatusColor = (status) => {
+    switch (status.toLowerCase()) {
+      case "pending":
+        return "orange";
+      case "accept":
+        return "green";
+      case "reject":
+        return "red";
+      default:
+        return "default";
+    }
+  };
+
   const statusOptions = [
     { value: "all", label: "Semua Status" },
     { value: "pending", label: "Pending" },
@@ -53,6 +82,7 @@ export default function Ruangan() {
                 <TabelBookingManager
                   refreshTrigger={bookingRefreshTrigger}
                   statusFilter={statusFilter}
+                  onShowDetail={showDetailModal}
                 />
               </div>
             </div>
@@ -78,6 +108,48 @@ export default function Ruangan() {
           </div>
         </section>
       </main>
+      <Modal
+        title={
+          <h3 className="text-lg font-semibold text-gray-900">
+            Detail Booking Ruangan
+          </h3>
+        }
+        open={isDetailModalOpen}
+        onCancel={() => setIsDetailModalOpen(false)}
+        footer={null}
+        width={modalWidth}
+        centered
+      >
+        {selectedBooking && (
+          <div className="space-y-4">
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <p className="font-medium">Ruangan</p>
+              <p>{selectedBooking.room}</p>
+            </div>
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <p className="font-medium">Tanggal</p>
+              <p>{selectedBooking.booking_date}</p>
+            </div>
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <p className="font-medium">Jadwal</p>
+              <p>{selectedBooking.time}</p>
+            </div>
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <p className="font-medium">Status</p>
+              <Tag color={getStatusColor(selectedBooking.status)}>
+                {selectedBooking.status.toUpperCase()}
+              </Tag>
+            </div>
+            {selectedBooking.raw_data.notes &&
+              selectedBooking.status === "Reject" && (
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <p className="font-medium">Alasan Penolakan</p>
+                  <p>{selectedBooking.raw_data.notes}</p>
+                </div>
+              )}
+          </div>
+        )}
+      </Modal>
     </div>
   );
 }
