@@ -58,20 +58,21 @@ const UpdateBonusForm = ({ employeeId, onSuccess }) => {
 
     try {
       setLoading(true);
-      const formattedDate = selectedMonth.format("YYYY-MM-01");
+      const formattedDate = selectedMonth.format("YYYY-MM-DD");
 
       const bonusUpdateData = {
         id_employee: employeeId,
-        overtime: values.overtime || 0,
-        meal: values.meal || 0,
-        transport: values.transport || 0,
-        extra: values.extra || 0,
         date: formattedDate,
+        ...Object.fromEntries(
+          Object.entries(values).filter(
+            ([_, value]) => value !== null && value !== undefined
+          )
+        ),
       };
 
       await bonusServices.updateBonus(bonusUpdateData);
-      
       if (onSuccess) onSuccess();
+      message.success("Data bonus berhasil diupdate");
     } catch (error) {
       console.error("Error updating bonus:", error);
       message.error(
@@ -114,11 +115,16 @@ const UpdateBonusForm = ({ employeeId, onSuccess }) => {
             <Form.Item
               label="Lembur"
               name="overtime"
+              validateStatus={
+                form.getFieldError("overtime").length > 0 ? "error" : ""
+              }
+              help={form.getFieldError("overtime")[0]}
               rules={[
                 {
                   type: "number",
                   min: 0,
                   message: "Lembur harus berupa angka positif!",
+                  transform: (value) => Number(value),
                 },
               ]}
             >
@@ -127,7 +133,7 @@ const UpdateBonusForm = ({ employeeId, onSuccess }) => {
                 formatter={(value) =>
                   `Rp ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".")
                 }
-                parser={(value) => value.replace(/Rp\s?|(\.*)/g, "")}
+                parser={(value) => value.replace(/[^\d]/g, "")}
                 min={0}
               />
             </Form.Item>
@@ -135,12 +141,16 @@ const UpdateBonusForm = ({ employeeId, onSuccess }) => {
             <Form.Item
               label="Makan"
               name="meal"
+              validateStatus={
+                form.getFieldError("meal").length > 0 ? "error" : ""
+              }
+              help={form.getFieldError("meal")[0]}
               rules={[
-                { required: true, message: "Makan wajib diisi!" },
                 {
                   type: "number",
                   min: 0,
                   message: "Makan harus berupa angka positif!",
+                  transform: (value) => Number(value),
                 },
               ]}
             >
@@ -149,7 +159,7 @@ const UpdateBonusForm = ({ employeeId, onSuccess }) => {
                 formatter={(value) =>
                   `Rp ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".")
                 }
-                parser={(value) => value.replace(/Rp\s?|(\.*)/g, "")}
+                parser={(value) => value.replace(/[^\d]/g, "")}
                 min={0}
               />
             </Form.Item>
@@ -157,12 +167,16 @@ const UpdateBonusForm = ({ employeeId, onSuccess }) => {
             <Form.Item
               label="Transport"
               name="transport"
+              validateStatus={
+                form.getFieldError("transport").length > 0 ? "error" : ""
+              }
+              help={form.getFieldError("transport")[0]}
               rules={[
-                { required: true, message: "Transport wajib diisi!" },
                 {
                   type: "number",
                   min: 0,
                   message: "Transport harus berupa angka positif!",
+                  transform: (value) => Number(value),
                 },
               ]}
             >
@@ -171,7 +185,7 @@ const UpdateBonusForm = ({ employeeId, onSuccess }) => {
                 formatter={(value) =>
                   `Rp ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".")
                 }
-                parser={(value) => value.replace(/Rp\s?|(\.*)/g, "")}
+                parser={(value) => value.replace(/[^\d]/g, "")}
                 min={0}
               />
             </Form.Item>
@@ -179,11 +193,16 @@ const UpdateBonusForm = ({ employeeId, onSuccess }) => {
             <Form.Item
               label="Tambahan"
               name="extra"
+              validateStatus={
+                form.getFieldError("extra").length > 0 ? "error" : ""
+              }
+              help={form.getFieldError("extra")[0]}
               rules={[
                 {
                   type: "number",
                   min: 0,
                   message: "Tambahan harus berupa angka positif!",
+                  transform: (value) => Number(value),
                 },
               ]}
             >
@@ -192,7 +211,7 @@ const UpdateBonusForm = ({ employeeId, onSuccess }) => {
                 formatter={(value) =>
                   `Rp ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".")
                 }
-                parser={(value) => value.replace(/Rp\s?|(\.*)/g, "")}
+                parser={(value) => value.replace(/[^\d]/g, "")}
                 min={0}
               />
             </Form.Item>

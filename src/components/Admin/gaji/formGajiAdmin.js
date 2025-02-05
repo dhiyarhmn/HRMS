@@ -14,12 +14,23 @@ const FormGajiAdmin = ({ selectedRecord }) => {
   const [employeeId, setEmployeeId] = useState(null);
   const [activeKey, setActiveKey] = useState("1");
 
+  // Reset states when selectedRecord changes
   useEffect(() => {
-    // selectedRecord sekarang langsung berupa ID
     if (selectedRecord) {
       setEmployeeId(selectedRecord);
+      setPayrollResult(null); 
+      setActiveKey("1"); 
     }
   }, [selectedRecord]);
+
+  // Reset states when component unmounts or modal closes
+  useEffect(() => {
+    return () => {
+      setPayrollResult(null);
+      setEmployeeId(null);
+      setActiveKey("1");
+    };
+  }, []);
 
   const handlePayrollCalculated = (result) => {
     setPayrollResult(result);
@@ -100,7 +111,7 @@ const FormGajiAdmin = ({ selectedRecord }) => {
               <h3 className="text-lg font-semibold mb-4 text-gray-900">
                 Ringkasan Gaji
               </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="p-4 bg-gray-50 rounded-lg">
                   <p className="font-medium text-gray-600">Gaji Pokok:</p>
                   <p className="text-lg">

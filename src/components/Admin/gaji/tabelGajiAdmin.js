@@ -20,7 +20,7 @@ const TabelGajiAdmin = ({ detail, update }) => {
           key: response.data.data.id_employee,
           nama: response.data.data.employee_data.name,
           department_name: response.data.data.employee_data.department_name,
-          role_name: response.data.data.role_name,
+          position: response.data.data.employee_data.position,
         };
       } catch (err) {
         console.error(`Error fetching user ${userId}:`, err);
@@ -141,10 +141,10 @@ const TabelGajiAdmin = ({ detail, update }) => {
       ...getColumnSearchProps("department_name"),
     },
     {
-      title: "Role",
-      dataIndex: "role_name",
-      key: "role_name",
-      ...getColumnSearchProps("role_name"),
+      title: "Posisi",
+      dataIndex: "position",
+      key: "position",
+      ...getColumnSearchProps("position"),
     },
     {
       title: "Action",

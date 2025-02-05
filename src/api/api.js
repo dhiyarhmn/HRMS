@@ -235,7 +235,7 @@ export const bookingServices = {
   },
   getBookingById: (id_booking) => api.get(`/book/${id_booking}`),
   approveBooking: (id) => api.put(`/approve/book/${id}`),
-  rejectBooking: (id) => api.put(`/reject/book/${id}`),
+  rejectBooking: (id, notes) => api.put(`/reject/book/${id}`, { notes }),
   deleteBooking: (id) => api.delete(`/book/${id}`),
 };
 

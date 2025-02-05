@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import NavigationHRGA from "@/components/HRGA/navigation/navigationHRGA";
 import TabelApprovalHRGA from "@/components/HRGA/approval/tabelApprovalHRGA";
 import Navbar from "@/components/Navbar/navbar";
-import { Button, message, Modal, Tag, Select } from "antd";
+import { Button, message, Modal, Tag, Select, Input } from "antd";
 import { bookingServices } from "@/api/api";
 import dayjs from "dayjs";
 
@@ -11,10 +11,12 @@ const { Option } = Select;
 
 export default function Approval() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null);
   const [modalWidth, setModalWidth] = useState(600);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const [statusFilter, setStatusFilter] = useState("all");
+  const [rejectNote, setRejectNote] = useState("");
 
   useEffect(() => {
     const handleResize = () => {
@@ -32,6 +34,7 @@ export default function Approval() {
 
   const handleCancel = () => {
     setIsModalOpen(false);
+    setRejectNote("");
   };
 
   const statusOptions = [
@@ -53,37 +56,41 @@ export default function Approval() {
         }));
         setRefreshTrigger((prev) => prev + 1);
         message.success("Booking ruangan berhasil disetujui");
-      } else {
-        await bookingServices.rejectBooking(selectedRecord.id_booking);
-        setSelectedRecord((prev) => ({
-          ...prev,
-          booking_status: "Reject",
-        }));
-        setRefreshTrigger((prev) => prev + 1);
-        message.success("Booking ruangan berhasil ditolak");
       }
       setIsModalOpen(false);
     } catch (error) {
-      console.error("Error handling approval:", error);
       message.error("Gagal memproses approval");
     }
   };
 
+  const showRejectModal = () => {
+    setIsModalOpen(false);
+    setIsRejectModalOpen(true);
+  };
+
   const handleReject = async () => {
     try {
-      if (!selectedRecord) return;
+      if (!rejectNote) {
+        message.error("Harap isi alasan penolakan");
+        return;
+      }
 
-      await bookingServices.rejectBooking(selectedRecord.id_booking);
+      await bookingServices.rejectBooking(
+        selectedRecord.id_booking,
+        rejectNote
+      );
       setSelectedRecord((prev) => ({
         ...prev,
         booking_status: "Reject",
+        notes: rejectNote,
       }));
       setRefreshTrigger((prev) => prev + 1);
       message.success("Booking ruangan berhasil ditolak");
-      setIsModalOpen(false);
+      setIsRejectModalOpen(false);
+      setRejectNote("");
     } catch (error) {
-      console.error("Error handling rejection:", error);
-      message.error("Gagal menolak booking");
+      console.error(error);
+      message.error(error.response?.data?.message || "Gagal menolak booking");
     }
   };
 
@@ -107,11 +114,9 @@ export default function Approval() {
 
       {/* Main Content */}
       <main className="flex-grow p-6 space-y-8">
-        {/* Section: Daftar Booking */}
         <section className="max-w-7xl mx-auto w-full">
           <div className="bg-white rounded-xl shadow-md overflow-hidden">
             <div className="p-6">
-              {/* Header dan Filter */}
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
                 <h1 className="text-2xl font-bold text-gray-900">
                   Approval Booking
@@ -157,7 +162,7 @@ export default function Approval() {
                 key="reject"
                 type="primary"
                 danger
-                onClick={handleReject}
+                onClick={showRejectModal}
                 className="px-6"
               >
                 Tolak
@@ -229,9 +234,49 @@ export default function Approval() {
                   ))}
                 </div>
               </div>
+
+              {selectedRecord.booking_status === "Reject" && (
+                <div className="bg-gray-50 p-4 rounded-lg sm:col-span-2">
+                  <strong className="text-sm font-medium text-gray-700 block mb-2">
+                    Alasan Penolakan
+                  </strong>
+                  <p className="text-base text-gray-900">
+                    {selectedRecord.notes}
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         )}
+      </Modal>
+
+      {/* Reject Modal */}
+      <Modal
+        title="Alasan Penolakan"
+        open={isRejectModalOpen}
+        onCancel={() => setIsRejectModalOpen(false)}
+        footer={[
+          <Button key="cancel" onClick={() => setIsRejectModalOpen(false)}>
+            Batal
+          </Button>,
+          <Button
+            key="submit"
+            type="primary"
+            danger
+            onClick={handleReject}
+            disabled={!rejectNote}
+          >
+            Tolak Booking
+          </Button>,
+        ]}
+      >
+        <Input.TextArea
+          value={rejectNote}
+          onChange={(e) => setRejectNote(e.target.value)}
+          placeholder="Masukkan alasan penolakan"
+          rows={4}
+          maxLength={255}
+        />
       </Modal>
     </div>
   );

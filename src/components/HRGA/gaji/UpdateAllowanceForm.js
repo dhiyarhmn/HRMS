@@ -63,20 +63,29 @@ const UpdateAllowanceForm = ({ employeeId, onSuccess }) => {
 
     try {
       setLoading(true);
-      const formattedDate = selectedMonth.format("YYYY-MM-01");
+      const formattedDate = selectedMonth.format("YYYY-MM-DD");
 
       const allowanceUpdateData = {
         id_employee: employeeId,
-        position_allowance: values.position_allowance || 0,
-        health_allowance: values.health_allowance || 0,
-        pension: values.pension || 0,
-        communication: values.communication || 0,
         date: formattedDate,
+        position_allowance: values.position_allowance,
+        health_allowance: values.health_allowance,
+        pension: values.pension,
+        communication: values.communication,
       };
 
+      Object.keys(allowanceUpdateData).forEach((key) => {
+        if (
+          allowanceUpdateData[key] === null ||
+          allowanceUpdateData[key] === undefined
+        ) {
+          delete allowanceUpdateData[key];
+        }
+      });
+
       await allowanceServices.updateAllowance(allowanceUpdateData);
-      
       if (onSuccess) onSuccess();
+      message.success("Data tunjangan berhasil diupdate");
     } catch (error) {
       console.error("Error updating allowance:", error);
       message.error(
@@ -119,11 +128,18 @@ const UpdateAllowanceForm = ({ employeeId, onSuccess }) => {
             <Form.Item
               label="Tunjangan Jabatan"
               name="position_allowance"
+              validateStatus={
+                form.getFieldError("position_allowance").length > 0
+                  ? "error"
+                  : ""
+              }
+              help={form.getFieldError("position_allowance")[0]}
               rules={[
                 {
                   type: "number",
                   min: 0,
                   message: "Tunjangan Jabatan harus berupa angka positif!",
+                  transform: (value) => Number(value),
                 },
               ]}
             >
@@ -132,7 +148,7 @@ const UpdateAllowanceForm = ({ employeeId, onSuccess }) => {
                 formatter={(value) =>
                   `Rp ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".")
                 }
-                parser={(value) => value.replace(/Rp\s?|(\.*)/g, "")}
+                parser={(value) => value.replace(/[^\d]/g, "")}
                 min={0}
               />
             </Form.Item>
@@ -140,12 +156,16 @@ const UpdateAllowanceForm = ({ employeeId, onSuccess }) => {
             <Form.Item
               label="Tunjangan Kesehatan"
               name="health_allowance"
+              validateStatus={
+                form.getFieldError("health_allowance").length > 0 ? "error" : ""
+              }
+              help={form.getFieldError("health_allowance")[0]}
               rules={[
-                { required: true, message: "Tunjangan Kesehatan wajib diisi!" },
                 {
                   type: "number",
                   min: 0,
                   message: "Tunjangan Kesehatan harus berupa angka positif!",
+                  transform: (value) => Number(value),
                 },
               ]}
             >
@@ -154,7 +174,7 @@ const UpdateAllowanceForm = ({ employeeId, onSuccess }) => {
                 formatter={(value) =>
                   `Rp ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".")
                 }
-                parser={(value) => value.replace(/Rp\s?|(\.*)/g, "")}
+                parser={(value) => value.replace(/[^\d]/g, "")}
                 min={0}
               />
             </Form.Item>
@@ -162,12 +182,16 @@ const UpdateAllowanceForm = ({ employeeId, onSuccess }) => {
             <Form.Item
               label="Pensiun"
               name="pension"
+              validateStatus={
+                form.getFieldError("pension").length > 0 ? "error" : ""
+              }
+              help={form.getFieldError("pension")[0]}
               rules={[
-                { required: true, message: "Pensiun wajib diisi!" },
                 {
                   type: "number",
                   min: 0,
                   message: "Pensiun harus berupa angka positif!",
+                  transform: (value) => Number(value),
                 },
               ]}
             >
@@ -176,7 +200,7 @@ const UpdateAllowanceForm = ({ employeeId, onSuccess }) => {
                 formatter={(value) =>
                   `Rp ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".")
                 }
-                parser={(value) => value.replace(/Rp\s?|(\.*)/g, "")}
+                parser={(value) => value.replace(/[^\d]/g, "")}
                 min={0}
               />
             </Form.Item>
@@ -184,11 +208,16 @@ const UpdateAllowanceForm = ({ employeeId, onSuccess }) => {
             <Form.Item
               label="Komunikasi"
               name="communication"
+              validateStatus={
+                form.getFieldError("communication").length > 0 ? "error" : ""
+              }
+              help={form.getFieldError("communication")[0]}
               rules={[
                 {
                   type: "number",
                   min: 0,
                   message: "Komunikasi harus berupa angka positif!",
+                  transform: (value) => Number(value),
                 },
               ]}
             >
@@ -197,7 +226,7 @@ const UpdateAllowanceForm = ({ employeeId, onSuccess }) => {
                 formatter={(value) =>
                   `Rp ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".")
                 }
-                parser={(value) => value.replace(/Rp\s?|(\.*)/g, "")}
+                parser={(value) => value.replace(/[^\d]/g, "")}
                 min={0}
               />
             </Form.Item>

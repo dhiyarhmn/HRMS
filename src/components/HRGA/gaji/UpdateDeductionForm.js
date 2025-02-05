@@ -69,23 +69,21 @@ const UpdateDeductionForm = ({ employeeId, onSuccess }) => {
 
     try {
       setLoading(true);
-      const formattedDate = selectedMonth.format("YYYY-MM-01");
+      const formattedDate = selectedMonth.format("YYYY-MM-DD");
 
       const deductionUpdateData = {
         id_employee: employeeId,
-        bpjs_deduction: values.bpjs_deduction || 0,
-        borrow_deduction: values.borrow_deduction || 0,
-        jamsostek_jht_deduction: values.jamsostek_jht_deduction || 0,
-        tax_deduction: values.tax_deduction || 0,
-        death_deduction: values.death_deduction || 0,
-        jamsostek_jp_deduction: values.jamsostek_jp_deduction || 0,
-        leave_deduction: values.leave_deduction || 0,
         date: formattedDate,
+        ...Object.fromEntries(
+          Object.entries(values).filter(
+            ([_, value]) => value !== null && value !== undefined
+          )
+        ),
       };
 
       await deductionServices.updateDeduction(deductionUpdateData);
-      
       if (onSuccess) onSuccess();
+      message.success("Data potongan berhasil diupdate");
     } catch (error) {
       console.error("Error updating deduction:", error);
       message.error(
@@ -128,12 +126,16 @@ const UpdateDeductionForm = ({ employeeId, onSuccess }) => {
             <Form.Item
               label="Potongan BPJS"
               name="bpjs_deduction"
+              validateStatus={
+                form.getFieldError("bpjs_deduction").length > 0 ? "error" : ""
+              }
+              help={form.getFieldError("bpjs_deduction")[0]}
               rules={[
-                { required: true, message: "Potongan BPJS harus diisi!" },
                 {
                   type: "number",
                   min: 0,
                   message: "Potongan BPJS harus berupa angka positif!",
+                  transform: (value) => Number(value),
                 },
               ]}
             >
@@ -142,18 +144,25 @@ const UpdateDeductionForm = ({ employeeId, onSuccess }) => {
                 formatter={(value) =>
                   `Rp ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".")
                 }
-                parser={(value) => value.replace(/Rp\s?|(\.*)/g, "")}
+                parser={(value) => value.replace(/[^\d]/g, "")}
+                min={0}
               />
             </Form.Item>
 
+            {/* Continue with similar pattern for other Form.Items */}
             <Form.Item
               label="Potongan Pinjaman"
               name="borrow_deduction"
+              validateStatus={
+                form.getFieldError("borrow_deduction").length > 0 ? "error" : ""
+              }
+              help={form.getFieldError("borrow_deduction")[0]}
               rules={[
                 {
                   type: "number",
                   min: 0,
                   message: "Potongan Pinjaman harus berupa angka positif!",
+                  transform: (value) => Number(value),
                 },
               ]}
             >
@@ -162,22 +171,26 @@ const UpdateDeductionForm = ({ employeeId, onSuccess }) => {
                 formatter={(value) =>
                   `Rp ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".")
                 }
-                parser={(value) => value.replace(/Rp\s?|(\.*)/g, "")}
+                parser={(value) => value.replace(/[^\d]/g, "")}
+                min={0}
               />
             </Form.Item>
 
             <Form.Item
               label="Potongan Jamsostek JHT"
               name="jamsostek_jht_deduction"
+              validateStatus={
+                form.getFieldError("jamsostek_jht_deduction").length > 0
+                  ? "error"
+                  : ""
+              }
+              help={form.getFieldError("jamsostek_jht_deduction")[0]}
               rules={[
-                {
-                  required: true,
-                  message: "Potongan Jamsostek JHT harus diisi!",
-                },
                 {
                   type: "number",
                   min: 0,
                   message: "Potongan Jamsostek JHT harus berupa angka positif!",
+                  transform: (value) => Number(value),
                 },
               ]}
             >
@@ -186,19 +199,24 @@ const UpdateDeductionForm = ({ employeeId, onSuccess }) => {
                 formatter={(value) =>
                   `Rp ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".")
                 }
-                parser={(value) => value.replace(/Rp\s?|(\.*)/g, "")}
+                parser={(value) => value.replace(/[^\d]/g, "")}
+                min={0}
               />
             </Form.Item>
 
             <Form.Item
               label="Potongan Pajak"
               name="tax_deduction"
+              validateStatus={
+                form.getFieldError("tax_deduction").length > 0 ? "error" : ""
+              }
+              help={form.getFieldError("tax_deduction")[0]}
               rules={[
-                { required: true, message: "Potongan Pajak harus diisi!" },
                 {
                   type: "number",
                   min: 0,
                   message: "Potongan Pajak harus berupa angka positif!",
+                  transform: (value) => Number(value),
                 },
               ]}
             >
@@ -207,18 +225,24 @@ const UpdateDeductionForm = ({ employeeId, onSuccess }) => {
                 formatter={(value) =>
                   `Rp ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".")
                 }
-                parser={(value) => value.replace(/Rp\s?|(\.*)/g, "")}
+                parser={(value) => value.replace(/[^\d]/g, "")}
+                min={0}
               />
             </Form.Item>
 
             <Form.Item
               label="Potongan Kematian"
               name="death_deduction"
+              validateStatus={
+                form.getFieldError("death_deduction").length > 0 ? "error" : ""
+              }
+              help={form.getFieldError("death_deduction")[0]}
               rules={[
                 {
                   type: "number",
                   min: 0,
                   message: "Potongan Kematian harus berupa angka positif!",
+                  transform: (value) => Number(value),
                 },
               ]}
             >
@@ -227,22 +251,26 @@ const UpdateDeductionForm = ({ employeeId, onSuccess }) => {
                 formatter={(value) =>
                   `Rp ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".")
                 }
-                parser={(value) => value.replace(/Rp\s?|(\.*)/g, "")}
+                parser={(value) => value.replace(/[^\d]/g, "")}
+                min={0}
               />
             </Form.Item>
 
             <Form.Item
               label="Potongan Jamsostek JP"
               name="jamsostek_jp_deduction"
+              validateStatus={
+                form.getFieldError("jamsostek_jp_deduction").length > 0
+                  ? "error"
+                  : ""
+              }
+              help={form.getFieldError("jamsostek_jp_deduction")[0]}
               rules={[
-                {
-                  required: true,
-                  message: "Potongan Jamsostek JP harus diisi!",
-                },
                 {
                   type: "number",
                   min: 0,
                   message: "Potongan Jamsostek JP harus berupa angka positif!",
+                  transform: (value) => Number(value),
                 },
               ]}
             >
@@ -251,18 +279,24 @@ const UpdateDeductionForm = ({ employeeId, onSuccess }) => {
                 formatter={(value) =>
                   `Rp ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".")
                 }
-                parser={(value) => value.replace(/Rp\s?|(\.*)/g, "")}
+                parser={(value) => value.replace(/[^\d]/g, "")}
+                min={0}
               />
             </Form.Item>
 
             <Form.Item
               label="Potongan Cuti"
               name="leave_deduction"
+              validateStatus={
+                form.getFieldError("leave_deduction").length > 0 ? "error" : ""
+              }
+              help={form.getFieldError("leave_deduction")[0]}
               rules={[
                 {
                   type: "number",
                   min: 0,
                   message: "Potongan Cuti harus berupa angka positif!",
+                  transform: (value) => Number(value),
                 },
               ]}
             >
@@ -271,7 +305,8 @@ const UpdateDeductionForm = ({ employeeId, onSuccess }) => {
                 formatter={(value) =>
                   `Rp ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".")
                 }
-                parser={(value) => value.replace(/Rp\s?|(\.*)/g, "")}
+                parser={(value) => value.replace(/[^\d]/g, "")}
+                min={0}
               />
             </Form.Item>
           </div>
