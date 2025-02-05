@@ -20,7 +20,7 @@ export default function LandingPage() {
         backgroundImage: `url(${bg1.src})`,
       }}
     >
-      {/* Navbar */}
+
       <nav className="sticky top-0 w-full p-2 sm:p-4 z-50">
         <div className="flex bg-third shadow-md w-full h-14 sm:h-16 rounded-xl p-2 sm:p-4 justify-between items-center">
           <div className="flex w-auto sm:w-1/6 justify-start">
@@ -42,7 +42,6 @@ export default function LandingPage() {
         </div>
       </nav>
 
-      {/* Main Content */}
       <div className="w-full flex-grow flex items-center">
         <div className="flex flex-col items-center justify-center w-full">
           <h1 className="font-bold text-2xl md:text-3xl lg:text-4xl text-center mb-8">
@@ -53,7 +52,6 @@ export default function LandingPage() {
         </div>
       </div>
 
-      {/* Footer */}
       <footer className="w-full px-2 sm:px-4">
         <div className="flex flex-col w-full py-4 sm:py-6 bg-third justify-center items-center rounded-t-xl shadow-md gap-y-2 sm:gap-y-4">
           <nav className="grid grid-cols-2 sm:grid-flow-col gap-4 sm:gap-8 text-sm sm:text-base font-semibold">
