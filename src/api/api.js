@@ -246,8 +246,7 @@ export const allowanceServices = {
     return api.post("/allowance", allowanceData);
   },
   getAllowanceById: (id) => api.get(`/allowance/${id}`),
-  updateAllowance: (id, allowanceData) =>
-    api.put(`/allowance/${id}`, allowanceData),
+  updateAllowance: (allowanceData) => api.put("/allowance", allowanceData),
   deleteAllowance: (id) => api.delete(`/allowance/${id}`),
 };
 
@@ -258,8 +257,7 @@ export const deductionServices = {
     return api.post("/deduction", deductionData);
   },
   getDeductionById: (id) => api.get(`/deduction/${id}`),
-  updateDeduction: (id, deductionData) =>
-    api.put(`/deduction/${id}`, deductionData),
+  updateDeduction: (deductionData) => api.put("/deduction", deductionData),
   deleteDeduction: (id) => api.delete(`/deduction/${id}`),
 };
 
@@ -270,8 +268,7 @@ export const otherDeductionServices = {
     return api.post("/other_deduction", deductionData);
   },
   getOtherDeductionById: (id) => api.get(`/other_deduction/${id}`),
-  updateOtherDeduction: (id, deductionData) =>
-    api.put(`/other_deduction/${id}`, deductionData),
+  updateOtherDeduction: (deductionData) => api.put("/other_deduction", deductionData),
   deleteOtherDeduction: (id) => api.delete(`/other_deduction/${id}`),
 };
 
@@ -282,7 +279,7 @@ export const bonusServices = {
     return api.post("/bonus", bonusData);
   },
   getBonusById: (id) => api.get(`/bonus/${id}`),
-  updateBonus: (id, bonusData) => api.put(`/bonus/${id}`, bonusData),
+  updateBonus: (bonusData) => api.put("/bonus", bonusData),
   deleteBonus: (id) => api.delete(`/bonus/${id}`),
 };
 
@@ -291,7 +288,13 @@ export const payrollServices = {
   calculatePayroll: (payrollData) =>
     api.post("/payroll/calculate", payrollData),
 
-  getPayrollSummary: (params) => api.get("/payrolls/summary", params),
+  getPayrollSummary: (params) =>
+    api.get("/payrolls/summary", {
+      params: {
+        id_employee: params.id_employee,
+        date: params.date,
+      },
+    }),
 
   getAllPayroll: () => api.get("/payrolls"),
 

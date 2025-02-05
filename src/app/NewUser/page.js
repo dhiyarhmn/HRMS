@@ -208,9 +208,25 @@ export default function NewUser() {
                       message: "Harap masukkan jumlah tanggungan!",
                     },
                     {
-                      type: "number",
-                      message: "Jumlah tanggungan harus berupa angka!",
-                      transform: (value) => Number(value),
+                      validator: (_, value) => {
+                        if (
+                          value === null ||
+                          value === undefined ||
+                          value === ""
+                        ) {
+                          return Promise.reject(
+                            new Error("Harap masukkan jumlah tanggungan!")
+                          );
+                        }
+                        if (isNaN(value) || value < 0) {
+                          return Promise.reject(
+                            new Error(
+                              "Jumlah tanggungan harus berupa angka positif!"
+                            )
+                          );
+                        }
+                        return Promise.resolve();
+                      },
                     },
                   ]}
                 >
@@ -219,6 +235,7 @@ export default function NewUser() {
                     placeholder="0"
                     disabled={isProfileCompleted}
                     className="w-full"
+                    min={0}
                   />
                 </Form.Item>
 

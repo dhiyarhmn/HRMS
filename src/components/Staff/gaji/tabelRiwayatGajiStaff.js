@@ -47,9 +47,7 @@ const TabelRiwayatGajiStaff = ({ detail }) => {
 
       setData(transformedData);
 
-      if (transformedData.length === 0) {
-        message.info("Tidak ada data gaji yang ditemukan");
-      }
+      
     } catch (err) {
       console.error("Error fetching payroll data:", err);
 

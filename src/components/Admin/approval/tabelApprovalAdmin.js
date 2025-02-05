@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useCallback } from "react";
 import { SearchOutlined } from "@ant-design/icons";
 import { Button, Input, Space, Table, message, Spin, Tag } from "antd";
 import Highlighter from "react-highlight-words";
@@ -11,15 +11,14 @@ const TabelApprovalAdmin = ({ detail, refreshTrigger, statusFilter }) => {
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef(null);
+  const [error, setError] = useState(null);
 
-  useEffect(() => {
-    fetchBookings();
-  }, [refreshTrigger, statusFilter]);
-
-  const fetchBookings = async () => {
+  const fetchBookings = useCallback(async () => {
     try {
       setLoading(true);
+      setError(null);
       const response = await bookingServices.getBookings();
+
       if (response.data && response.data.data) {
         let filteredData = response.data.data;
 
@@ -47,11 +46,21 @@ const TabelApprovalAdmin = ({ detail, refreshTrigger, statusFilter }) => {
       }
     } catch (error) {
       console.error("Error fetching bookings:", error);
-      message.error("Gagal mengambil data booking");
+      setError("Data booking tidak tersedia");
     } finally {
       setLoading(false);
     }
-  };
+  }, [statusFilter]);
+
+  useEffect(() => {
+    fetchBookings();
+  }, [fetchBookings, refreshTrigger]);
+
+  useEffect(() => {
+    if (error) {
+      message.error(error);
+    }
+  }, [error]);
 
   const getStatusColor = (status) => {
     switch (status.toLowerCase()) {
@@ -220,13 +229,11 @@ const TabelApprovalAdmin = ({ detail, refreshTrigger, statusFilter }) => {
           pageSize: 5,
           showTotal: (total, range) =>
             `${range[0]}-${range[1]} dari ${total} item`,
-          
         }}
         scroll={{
           x: "max-content",
           scrollToFirstRowOnChange: true,
         }}
-        
       />
     </div>
   );
