@@ -35,29 +35,21 @@ export default function EditFormKetidakhadiran({ selectedAbsence, onEditSuccess 
 
   useEffect(() => {
     if (selectedAbsence) {
+      const isValidDate = (date) => date && dayjs(date).isValid();
+  
       const initialData = {
         absence_code: selectedAbsence.absence_code,
         absence_type: selectedAbsence.absence_type,
-        start_date: selectedAbsence.start_date ? dayjs(selectedAbsence.start_date) : null,
-        end_date: selectedAbsence.end_date ? dayjs(selectedAbsence.end_date) : null,
+        start_date: isValidDate(selectedAbsence.start_date) ? dayjs(selectedAbsence.start_date) : null,
+        end_date: isValidDate(selectedAbsence.end_date) ? dayjs(selectedAbsence.end_date) : null,
         description: selectedAbsence.description,
       };
-
-      form.setFieldsValue(initialData); // Set nilai awal form
-      setInitialValues(initialData); // Simpan data awal
-
-      if (selectedAbsence.document) {
-        setFileList([
-          {
-            uid: "-1",
-            name: selectedAbsence.document,
-            status: "done",
-            url: selectedAbsence.document,
-          },
-        ]);
-      }
+  
+      form.setFieldsValue(initialData);
+      setInitialValues(initialData);
     }
   }, [selectedAbsence, form]);
+  
 
   const props = {
     name: "file",
