@@ -35,13 +35,15 @@ export default function EditFormKetidakhadiran({ selectedAbsence, onEditSuccess 
 
   useEffect(() => {
     if (selectedAbsence) {
-      const isValidDate = (date) => date && dayjs(date).isValid();
+      console.log("Selected Absence Data:", selectedAbsence); // Debugging log
+  
+      const parseDate = (date) => (date ? dayjs(date, "DD-MM-YYYY HH:mm") : undefined);
   
       const initialData = {
         absence_code: selectedAbsence.absence_code,
         absence_type: selectedAbsence.absence_type,
-        start_date: isValidDate(selectedAbsence.start_date) ? dayjs(selectedAbsence.start_date) : null,
-        end_date: isValidDate(selectedAbsence.end_date) ? dayjs(selectedAbsence.end_date) : null,
+        start_date: parseDate(selectedAbsence.start_date),
+        end_date: parseDate(selectedAbsence.end_date),
         description: selectedAbsence.description,
       };
   
