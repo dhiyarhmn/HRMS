@@ -15,7 +15,8 @@ export default function EditFormLembur({
   onEditSuccess,
 }) {
   const [form] = Form.useForm();
-  const [initialValues, setInitialValues] = useState(null); // Simpan data awal
+  const [initialValues, setInitialValues] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
 
   useEffect(() => {
     if (selectedOvertime) {
@@ -28,8 +29,8 @@ export default function EditFormLembur({
         description: selectedOvertime.description,
       };
 
-      form.setFieldsValue(initialData); // Set nilai awal form
-      setInitialValues(initialData); // Simpan data awal
+      form.setFieldsValue(initialData);
+      setInitialValues(initialData);
     }
   }, [selectedOvertime, form]);
 
@@ -76,25 +77,26 @@ export default function EditFormLembur({
 
       onEditSuccess(response.data.data);
       form.resetFields();
+      setErrorMessage(null);
       document.getElementById("modal12").close();
     } catch (error) {
       console.error("Error mengirim data:", error);
       if (error.response) {
-        message.error(
-          `${error.response.data.message || "Gagal mengirim data."}`
-        );
+        console.error(error.response.data);
+        setErrorMessage(error.response.data.message || "Gagal mengirim data.");
       } else if (error.request) {
-        message.error("Tidak ada response dari server.");
+        setErrorMessage("Tidak ada response dari server.");
       } else {
-        message.error("Terjadi kesalahan.");
+        setErrorMessage("Terjadi kesalahan.");
       }
     }
   };
 
   const handleCloseModal = () => {
     if (initialValues) {
-      form.setFieldsValue(initialValues); // Reset form ke data awal
+      form.setFieldsValue(initialValues);
     }
+    setErrorMessage(null);
     document.getElementById("modal12").close();
   };
 
@@ -139,7 +141,6 @@ export default function EditFormLembur({
             >
               <TimePicker
                 className="w-full max-w-s"
-                
                 getPopupContainer={() =>
                   document.getElementById("editFormPengajuanLemburContainer")
                 }
@@ -147,7 +148,6 @@ export default function EditFormLembur({
                 format="HH:mm"
                 disabledTime={disabledTime}
               />
-              
             </Form.Item>
             <Form.Item
               label="Keterangan"
@@ -161,6 +161,9 @@ export default function EditFormLembur({
               />
             </Form.Item>
 
+            {errorMessage && (
+              <div className="mb-4 text-red-500 text-center">{errorMessage}</div>
+            )}
             <div className="py-2 flex justify-center">
               <Space>
                 <Button type="primary" htmlType="submit" className="w-[100px]">

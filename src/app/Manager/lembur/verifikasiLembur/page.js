@@ -11,38 +11,41 @@ import Link from "next/link";
 export default function verifikasiPengajuan() {
   const [selectedRecord, setSelectedRecord] = useState(null);
   const { TextArea } = Input;
-  const [notes, setNotes] = useState(""); // State untuk menyimpan catatan
-  const tabelvplmRef = useRef(null); // Ref untuk mengakses fungsi di Tabelvplm
+  const [notes, setNotes] = useState("");
+  const [errorMessage, setErrorMessage] = useState(null);
+  const tabelvplmRef = useRef(null);
 
-  // Fungsi untuk menampilkan modal detail
+  const resetForm = () => {
+    setNotes("");
+    setErrorMessage(null);
+  };
+
   const showmodal = (record) => {
     setSelectedRecord(record);
     document.getElementById("modal11").showModal();
   };
 
-  // Fungsi untuk menghandle approve atau decline
   const handleApproval = async (status) => {
     if (!selectedRecord) {
-      message.error("Tidak ada data yang dipilih.");
+      setErrorMessage("Tidak ada data yang dipilih.");
+      return;
+    }
+
+    if (notes.length > 255) {
+      setErrorMessage("Notes terlalu panjang! Maksimal 255 karakter.");
       return;
     }
 
     try {
       const token = localStorage.getItem("token");
-
-      // Cek apakah token ada
       if (!token) {
-        message.error("Token tidak ditemukan. Silakan login kembali.");
+        setErrorMessage("Token tidak ditemukan. Silakan login kembali.");
         return;
       }
 
-      // Request ke API untuk approve/decline
       const response = await axios.post(
         `http://127.0.0.1:8000/api/overtime/approve/${selectedRecord.id_overtime}`,
-        {
-          status: status,
-          notes: notes,
-        },
+        { status, notes },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -51,23 +54,25 @@ export default function verifikasiPengajuan() {
         }
       );
 
-      // Tampilkan pesan sukses
       message.success(response.data.message);
-
-      // Tutup modal
       document.getElementById("modal11").close();
-
-      // Hapus data dari tabel
       if (tabelvplmRef.current) {
         tabelvplmRef.current.removeData(selectedRecord.id_overtime);
       }
-
-      // Reset state
       setSelectedRecord(null);
+      resetForm();
       setNotes("");
     } catch (error) {
       console.error("Error:", error);
-      message.error("Gagal memperbarui status lembur. Silakan coba lagi.");
+      if (error.response) {
+        setErrorMessage(
+          error.response.data.message || "Gagal memperbarui status lembur."
+        );
+      } else if (error.request) {
+        setErrorMessage("Tidak ada response dari server.");
+      } else {
+        setErrorMessage("Terjadi kesalahan.");
+      }
     }
   };
 
@@ -83,8 +88,7 @@ export default function verifikasiPengajuan() {
               href="/Manager/lembur"
               className="btn bg-second w-[100px] flex items-center gap-2 p-4 rounded-full"
             >
-              <ArrowLeftOutlined />
-              Back
+              <ArrowLeftOutlined /> Back
             </Link>
             <h2 className="text-xl font-bold text-black text-center mb-6">
               Verifikasi Pengajuan Lembur
@@ -96,18 +100,19 @@ export default function verifikasiPengajuan() {
                   <dialog
                     id="modal11"
                     className="modal modal-bottom sm:modal-middle"
+                    onClose={resetForm}
                   >
                     {selectedRecord && (
                       <Card
                         title="Detail"
-                        style={{
-                          width: "100%",
-                          maxWidth: 500,
-                        }}
+                        style={{ width: "100%", maxWidth: 500 }}
                         className="w-full md:max-w-md"
                       >
                         <form method="dialog">
-                          <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+                          <button
+                            className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+                            onClick={resetForm}
+                          >
                             ✕
                           </button>
                         </form>
@@ -191,8 +196,13 @@ export default function verifikasiPengajuan() {
                             onChange={(e) => setNotes(e.target.value)}
                           />
                         </div>
+                        {errorMessage && (
+                          <div className="mb-4 text-red-500 text-center">
+                            {errorMessage}
+                          </div>
+                        )}
                         <div className="modal-action flex justify-center">
-                        <button
+                          <button
                             className="btn bg-green-600 text-white hover:bg-green-700 w-[90px] h-[40px]"
                             onClick={() => handleApproval("Approve")}
                           >

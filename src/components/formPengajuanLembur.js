@@ -11,6 +11,7 @@ export default function FormPengajuanLembur({
 }) {
   const [form] = Form.useForm();
   const [dataLembur, setDataLembur] = useState();
+  const [errorMessage, setErrorMessage] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -34,12 +35,14 @@ export default function FormPengajuanLembur({
   }, []);
 
   const resetForm = () => {
-    form.resetFields();
-  };
+    form.setFieldsValue({
+      end_time: null,
+      description: "",
+    });
+  };  
 
   useEffect(() => {
-    const initialStartTime = dayjs().set('hour', 17).set('minute', 0).set('second', 0)
-
+    const initialStartTime = dayjs().set("hour", 17).set("minute", 0).set("second", 0);
     form.setFieldsValue({ start_time: initialStartTime });
   }, [form]);
 
@@ -70,10 +73,18 @@ export default function FormPengajuanLembur({
         window.location.reload();
       }, 1000);
       form.resetFields();
+      setErrorMessage(null);
       document.getElementById("modal8").close();
     } catch (error) {
       console.error("Error mengirim data:", error);
-      message.error(error.response?.data?.message || "Gagal mengirim data.");
+      if (error.response) {
+        console.error(error.response.data);
+        setErrorMessage(error.response.data.message || "Gagal mengirim data.");
+      } else if (error.request) {
+        setErrorMessage("Tidak ada response dari server.");
+      } else {
+        setErrorMessage("Terjadi kesalahan.");
+      }
     }
   };
 
@@ -98,7 +109,7 @@ export default function FormPengajuanLembur({
                 disabled
               />
             </Form.Item>
-            <Form.Item name="end_time" label="End Time" rules={[{ required: true, message: "End Time wajib diisi!" }]}>
+            <Form.Item name="end_time" label="End Time" rules={[{ required: true, message: "End Time wajib diisi!" }]}>            
               <TimePicker
                 className="w-full max-w-s"
                 getPopupContainer={() => document.getElementById("formPengajuanLemburContainer")}
@@ -107,9 +118,12 @@ export default function FormPengajuanLembur({
                 disabledTime={disabledTime}
               />
             </Form.Item>
-            <Form.Item label="Keterangan" name="description" rules={[{ required: true, message: "Keterangan wajib diisi!" }]}>
+            <Form.Item label="Keterangan" name="description" rules={[{ required: true, message: "Keterangan wajib diisi!" }]}>            
               <Input.TextArea placeholder="keterangan" rows={6} className="w-full max-w-s" />
             </Form.Item>
+            {errorMessage && (
+              <div className="mb-4 text-red-500 text-center">{errorMessage}</div>
+            )}
             <div className="py-2 flex justify-center">
               <Space>
                 <Button type="primary" htmlType="submit" className="w-[100px]">Submit</Button>
