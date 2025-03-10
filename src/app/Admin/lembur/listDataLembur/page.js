@@ -1,49 +1,43 @@
 "use client";
 import Navbar from "@/components/Navbar/navbar";
-import Navigation from "@/components/navigation";
-import Tabelldpl from "@/components/tabelldpl";
+import NavigationAdmin from "@/components/Admin/navigation/navigationAdmin";
+import Image from "next/image";
+import dihi from "@/public/logo-dihi.png";
 import { ArrowLeftOutlined } from "@ant-design/icons";
+import Tabelldpla from "@/components/Admin/Lembur/tabelldpla";
 
 export default function listDataLembur() {
-  const links = [
-    { href: "/home", text: "Home" },
-    { href: "/Manager/cuti", text: "Cuti" },
-    { href: "/lembur", text: "Lembur" },
-    { href: "/bookroom", text: "Ruangan" },
-    { href: "/gaji", text: "Gaji" },
-  ];
 
-  const goToDetail = (row) => {
-    window.location.href = `/Admin/lembur/detailListLembur?id=${row.id}`;
+  const goToDetail = (employeeId) => {
+    // Redirect ke halaman detail dengan ID Employee
+    window.location.href = `/Admin/lembur/detailListLembur?id=${employeeId}`;
   };
 
   return (
     <div>
-      <Navbar />
-      <Navigation
-        links={links}
-        headerBg="flex mt-8 bg-transparent"
-        navigationBg="bg-third"
-      />
+      <Navbar href={"/Admin/home"} p={"Admin"} role="admin" />
+      <NavigationAdmin />
+      <main className="flex-grow p-6 space-y-8"></main>
       <section>
-        <div className="flex flex-col w-full h-auto gap-y-8 mt-6 p-8">
-          <div className="w-full flex justify-between items-center">
+        <div className="flex flex-col w-full h-auto gap-y-4 p-4">
+          <div className="max-w-[85rem] mx-auto w-full">
             <button
-              className="btn bg-second"
-              onClick={() => (window.location.href = "/Admin/lembur")}
+              className="btn bg-second w-[100px]"
+              onClick={() =>
+                (window.location.href = "/Admin/lembur")
+              }
             >
               <ArrowLeftOutlined />
-              Kembali
+              Back
             </button>
-          </div>
-          <h2 className="text-xl font-bold text-black text-center">
-            List Data Pengajuan Lembur
+          <h2 className="text-xl font-bold text-black text-center mb-6">
+            List Data Pegawai
           </h2>
-
-          <div className="flex w-full justify-center">
-            <div className="w-full bg-second p-4 rounded-lg">
-              <div className="overflow-x-auto w-full">
-                <Tabelldpl onDetail={goToDetail} />
+            <div className="bg-white rounded-xl shadow-md overflow-x-auto w-full">
+              <div className="p-6">
+                <div className="w-full overflow-x-auto">
+                <Tabelldpla onDetail={goToDetail}/>
+                </div>
               </div>
             </div>
           </div>

@@ -4,6 +4,7 @@ import { Card } from "antd";
 import Image from "next/image";
 import booking from "@/public/booking.gif";
 import absence from "@/public/absence.gif";
+import overtime from "@/public/overtime.gif";
 import approval from "@/public/approval.gif";
 import salary from "@/public/salary.gif";
 import generate from "@/public/generate.gif";
@@ -20,8 +21,13 @@ export default function LandingCard() {
 
   const menuItems = [
     {
-      title: "Absensi & Cuti",
+      title: "Ketidakhadiran",
       image: absence,
+      path: "/login",
+    },
+    {
+      title: "Lembur",
+      image: overtime,
       path: "/login",
     },
     {

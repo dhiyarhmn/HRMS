@@ -1,46 +1,48 @@
 "use client";
-import FormPengajuanLembur from "@/components/formPengajuanLembur";
 import Navbar from "@/components/Navbar/navbar";
-import Navigation from "@/components/navigation";
-import Tabelhpl from "@/components/tabelhpl";
+import NavigationManager from "@/components/Manager/navigation/navigationManager";
+import Image from "next/image";
+import dihi from "@/public/logo-dihi.png";
+import { useState } from "react";
 import {
-  CalendarOutlined,
-  CheckOutlined,
   PlusOutlined,
   UnorderedListOutlined,
+  CheckOutlined,
+  CalendarOutlined,
 } from "@ant-design/icons";
+import Tabelhplm from "@/components/Manager/Lembur/tabelhplm";
+import FormPengajuanLembur from "@/components/formPengajuanLembur";
+import EditFormLembur from "@/components/editFormLembur";
 import { Card } from "antd";
-import { useState } from "react";
+import Link from "next/link";
 
 export default function lembur() {
-  const [selectedAbsensi, setSelectedAbsensi] = useState("1");
+  const [selectedOvertime, setSelectedOvertime] = useState("1");
   const [periode, setPeriode] = useState("1");
   const [selectedRecord, setSelectedRecord] = useState(null);
 
-  const links = [
-    { href: "/home", text: "Home" },
-    { href: "/Manager/cuti", text: "Cuti" },
-    { href: "/lembur", text: "Lembur" },
-    { href: "/bookroom", text: "Ruangan" },
-    { href: "/gaji", text: "Gaji" },
-  ];
+  // const showmodal = (record) => {
+  //   setSelectedRecord(record);
+  //   document.getElementById("modal8").showModal();
+  // };
 
-  const showmodal = (record) => {
-    setSelectedRecord(record);
-    document.getElementById("modal4").showModal();
+  const handleModalOpen = (record) => {
+    setSelectedOvertime(record);
+    document.getElementById("modal12").showModal();
+  };
+
+  const handleEditSuccess = () => {
+    document.getElementById("modal12").close();
   };
 
   return (
     <div>
-      <Navbar />
-      <Navigation
-        links={links}
-        headerBg="flex mt-8 bg-transparent"
-        navigationBg="bg-third"
-      />
+      <Navbar href={"/Manager/home"} p={"Manager"} />
+      <NavigationManager />
+      <main className="flex-grow px-4 py-6 md:px-6 lg:px-8"></main>
       <section>
-        <div className="flex flex-col w-full h-auto gap-y-8 mt-6 p-8">
-          <div className="flex justify-center space-x-4 mb-4">
+        <div className="flex flex-col w-full h-auto gap-y-8 p-4">
+          <div className="flex justify-center space-x-4">
             <button
               className="btn bg-second"
               onClick={() => document.getElementById("modal8").showModal()}
@@ -48,103 +50,52 @@ export default function lembur() {
               <PlusOutlined />
               Tambah Pengajuan Baru
             </button>
-
-            <button
-              className="btn bg-second"
-              onClick={() =>
-                (window.location.href = "/Manager/lembur/verifikasiLembur")
-              }
+            <Link
+              href="/Manager/lembur/verifikasiLembur"
+              className="btn bg-second flex items-center gap-2 p-4 rounded-full"
             >
               <CheckOutlined />
               Verifikasi
-            </button>
-            <button
-              className="btn bg-second"
-              onClick={() =>
-                (window.location.href = "/Manager/lembur/listDataLembur")
-              }
+            </Link>
+            <Link
+              href="/Manager/lembur/listDataLembur"
+              className="btn bg-second flex items-center gap-2 p-4 rounded-full"
             >
               <UnorderedListOutlined />
               List Data Pegawai
-            </button>
-            <button
-              className="btn bg-second"
-              onClick={() =>
-                (window.location.href = "/Manager/lembur/calendar")
-              }
+            </Link>
+            <Link
+              href="/Manager/lembur/calendar"
+              className="btn bg-second flex items-center gap-2 p-4 rounded-full"
             >
               <CalendarOutlined />
               Calendar
-            </button>
+            </Link>
           </div>
 
           <FormPengajuanLembur
-            selectedAbsensi={selectedAbsensi}
-            setSelectedAbsensi={setSelectedAbsensi}
+            selectedOvertime={selectedOvertime}
+            setSelectedOvertime={setSelectedOvertime}
             periode={periode}
             setPeriode={setPeriode}
           />
 
-          <div className="flex w-full justify-center bg-second p-4 rounded-lg">
-            <div className="overflow-x-auto w-full">
-              <Tabelhpl detail={showmodal} />
-              <dialog
-                id={"modal4"}
-                className="modal modal-bottom sm:modal-middle"
-              >
-                {selectedRecord && (
-                  <Card
-                    title="Detail"
-                    style={{
-                      width: "100%",
-                      maxWidth: 500,
-                    }}
-                    className="w-full md:max-w-md"
-                  >
-                    <form method="dialog">
-                      <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
-                        ✕
-                      </button>
-                    </form>
-                    <div className="p-2 flex flex-wrap">
-                      <div className="w-full flex">
-                        <div className="w-1/3 font-semibold">
-                          Tanggal Pengajuan
-                        </div>
-                        <div className="w-1/12 text-center">:</div>
-                        <div className="w-7/12">
-                          {selectedRecord.tanggalPengajuan}
-                        </div>
-                      </div>
-                      <div className="w-full flex">
-                        <div className="w-1/3 font-semibold">Start Time</div>
-                        <div className="w-1/12 text-center">:</div>
-                        <div className="w-7/12">{selectedRecord.startTime}</div>
-                      </div>
-                      <div className="w-full flex">
-                        <div className="w-1/3 font-semibold">End Time</div>
-                        <div className="w-1/12 text-center">:</div>
-                        <div className="w-7/12">{selectedRecord.endTime}</div>
-                      </div>
-                      <div className="w-full flex">
-                        <div className="w-1/3 font-semibold">Total Hour</div>
-                        <div className="w-1/12 text-center">:</div>
-                        <div className="w-7/12">{selectedRecord.totalHour}</div>
-                      </div>
-                    </div>
-                    <div className="modal-action">
-                      <button
-                        className="btn"
-                        onClick={() =>
-                          document.getElementById(`modal4`).close()
-                        }
-                      >
-                        Close
-                      </button>
-                    </div>
-                  </Card>
-                )}
-              </dialog>
+          <EditFormLembur
+            selectedOvertime={selectedOvertime}
+            setSelectedOvertime={setSelectedOvertime}
+            periode={periode}
+            setPeriode={setPeriode}
+            onEditSuccess={handleEditSuccess}
+          />
+
+          <div className="max-w-[85rem] mx-auto w-full p-4">
+            <h2 className="text-xl font-bold text-black text-center mb-6">
+              Riwayat Pengajuan Lembur
+            </h2>
+            <div className="bg-white rounded-xl shadow-md w-full">
+              <div className="p-6">
+                  <Tabelhplm modal12={handleModalOpen} />
+              </div>
             </div>
           </div>
         </div>

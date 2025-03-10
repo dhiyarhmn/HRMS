@@ -14,7 +14,7 @@ export default function NavigationDirektur() {
 
   const navItems = [
     { href: "/Direktur/home", icon: home, label: "Home" },
-    { href: "/Direktur/cuti", icon: cuti, label: "Cuti" },
+    { href: "/Direktur/Ketidakhadiran", icon: cuti, label: "Ketidakhadiran" },
     { href: "/Direktur/lembur", icon: lembur, label: "Lembur" },
     { href: "/Direktur/gaji", icon: gaji, label: "Gaji" },
     { href: "/Direktur/ruangan", icon: booking, label: "Ruangan" },
@@ -65,7 +65,7 @@ export default function NavigationDirektur() {
               key={index}
               href={item.href}
               className="flex flex-col items-center justify-center text-black font-medium 
-                        w-1/4 md:w-12 h-auto gap-y-1 cursor-pointer p-2 md:p-0
+                        w-1/4  h-auto gap-y-1 cursor-pointer p-2 md:p-0
                         hover:bg-black/10 rounded-lg transition-colors"
             >
               <Image src={item.icon} className="w-5 h-5" alt={item.label} />

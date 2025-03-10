@@ -2,6 +2,7 @@ import React from "react";
 import { Card } from "antd";
 import Image from "next/image";
 import absence from "@/public/absence.gif";
+import overtime from "@/public/overtime.gif";
 import booking from "@/public/booking.gif";
 import salary from "@/public/salary.gif";
 import { useRouter } from "next/navigation";
@@ -16,11 +17,18 @@ export default function HomeStaff() {
 
   const menuItems = [
     {
-      title: "Absensi & Cuti",
+      title: "Ketidakhadiran",
       image: absence,
-      path: "/Staff/cuti",
+      path: "/Staff/Ketidakhadiran",
       bgColor: "bg-first",
       rounded: "rounded-s-badge rounded-br-badge",
+    },
+    {
+      title: "Lembur",
+      image: overtime,
+      path: "/Staff/lembur",
+      bgColor: "bg-second",
+      rounded: "rounded-badge",
     },
     {
       title: "Gaji",
@@ -38,13 +46,13 @@ export default function HomeStaff() {
     },
   ];
   return (
-    <div className="w-full px-4 py-8">
-      <div className="flex flex-col items-center justify-center w-full">
+    <div className="w-full h-screen flex items-center justify-center px-4 py-8">
+      <div className="flex flex-col items-center justify-center w-full max-w-4xl">
         <h1 className="font-bold text-2xl md:text-3xl lg:text-4xl text-center mb-8">
           Silakan Pilih Fitur yang Tersedia
         </h1>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full max-w-7xl">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 w-full">
           {menuItems.map((item, index) => (
             <div
               key={index}

@@ -111,3 +111,36 @@ body {
   left: 0px;
   transform-origin: right;
 }
+
+/* .ant-message {
+  z-index: 9999 !important; 
+}
+
+.ant-modal {
+  z-index: 50;
+} */
+
+/* .custom-message {
+  z-index: 999999 !important; 
+}
+
+.modal {
+  z-index: 1000 !important;
+}
+
+.modal-box {
+  position: relative;
+  z-index: 1; 
+}
+
+.ant-message {
+  z-index: 9999 !important;
+} */
+
+.ant-message {
+  z-index: 9999 !important;
+}
+
+.ant-table-content {
+  @apply overflow-x-auto
+}

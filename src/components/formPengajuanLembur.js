@@ -1,138 +1,121 @@
 import { useEffect, useState } from "react";
-import { TimePicker, InputNumber, Form, Input, Button, Space } from "antd";
-
-const SubmitButton = ({ form, children }) => {
-  const [submittable, setSubmittable] = useState(false);
-
-  // Watch all values
-  const values = Form.useWatch([], form);
-  useEffect(() => {
-    form
-      .validateFields({ validateOnly: true })
-      .then(() => setSubmittable(true))
-      .catch(() => setSubmittable(false));
-  }, [form, values]);
-
-  return (
-    <Button type="primary" htmlType="submit" disabled={!submittable}>
-      {children}
-    </Button>
-  );
-};
+import { TimePicker, Form, Input, Button, Space, message } from "antd";
+import axios from "axios";
+import moment from "moment";
+import dayjs from "dayjs";
 
 export default function FormPengajuanLembur({
-  selectedAbsensi,
-  setSelectedAbsensi,
+  selectedAbsence,
+  setSelectedAbsence,
   periode,
   setPeriode,
 }) {
   const [form] = Form.useForm();
+  const [dataLembur, setDataLembur] = useState();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(
+          "http://127.0.0.1:8000/api/userSession",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        setDataLembur(response.data.data.user);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const resetForm = () => {
+    form.resetFields();
+  };
+
+  useEffect(() => {
+    const initialStartTime = dayjs().set('hour', 17).set('minute', 0).set('second', 0)
+
+    form.setFieldsValue({ start_time: initialStartTime });
+  }, [form]);
 
   const disabledTime = () => ({
-    disabledHours: () => {
-      const disabled = [];
-      for (let i = 8; i < 17; i++) {
-        disabled.push(i);
-      }
-      return disabled;
-    },
+    disabledHours: () => Array.from({ length: 10 }, (_, i) => i + 8),
     disabledMinutes: () => [],
     disabledSeconds: () => [],
   });
 
-  const onChange = (value) => {
-    setSelectedAbsensi(value);
-    console.log("Total Hour:", value);
+  const handleSubmit = async (values) => {
+    const formattedValues = {
+      ...values,
+      start_time: values.start_time ? values.start_time.format("HH:mm") : null,
+      end_time: values.end_time ? values.end_time.format("HH:mm") : null,
+    };
+
+    try {
+      const token = localStorage.getItem("token");
+      await axios.post("http://127.0.0.1:8000/api/overtime/create", formattedValues, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      message.success("Pengajuan lembur berhasil dikirim!");
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+      form.resetFields();
+      document.getElementById("modal8").close();
+    } catch (error) {
+      console.error("Error mengirim data:", error);
+      message.error(error.response?.data?.message || "Gagal mengirim data.");
+    }
   };
 
   return (
-    <dialog id="modal8" className="modal">
-      <div className="modal-box" id="formPengajuanLemburContainer">
+    <dialog id="modal8" className="modal" onClose={resetForm}>
+      <div className="modal-box min-h-[520px]" id="formPengajuanLemburContainer">
         <form method="dialog">
-          <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+          <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" onClick={resetForm}>
             ✕
           </button>
         </form>
-        <h3 className="font-bold text-lg text-center">Form Pengajuan Lembur</h3>
-        <div className="py-4">
-          <Form
-            form={form}
-            layout="vertical"
-            style={{ maxWidth: 600 }}
-            autoComplete="off"
-          >
-            <Form.Item label="NIK">
-              <Input placeholder="345" disabled />
-            </Form.Item>
-            <Form.Item label="Nama">
-              <Input placeholder="Satria Bintang" disabled />
-            </Form.Item>
-            <Form.Item label="Departemen">
-              <Input placeholder="Accounting" disabled />
-            </Form.Item>
-            <Form.Item label="Jabatan">
-              <Input placeholder="Staff" disabled />
-            </Form.Item>
-            <Form.Item
-              name="startTime"
-              label="Start Time"
-              rules={[
-                { required: true, message: "Start Time wajib diisi!" },
-              ]}
-            >
+        <h3 className="font-bold text-lg text-center mb-10">Form Pengajuan Lembur</h3>
+        <div>
+          <Form form={form} layout="vertical" style={{ maxWidth: 600 }} autoComplete="off" onFinish={handleSubmit}>
+            <Form.Item name="start_time" label="Start Time">
               <TimePicker
                 className="w-full max-w-s"
-                onChange={(value) => console.log("Start Time:", value)}
-                getPopupContainer={() =>
-                  document.getElementById("formPengajuanLemburContainer")
-                }
+                getPopupContainer={() => document.getElementById("formPengajuanLemburContainer")}
+                minuteStep={60}
+                format="HH:mm"
+                disabledTime={disabledTime}
+                disabled
+              />
+            </Form.Item>
+            <Form.Item name="end_time" label="End Time" rules={[{ required: true, message: "End Time wajib diisi!" }]}>
+              <TimePicker
+                className="w-full max-w-s"
+                getPopupContainer={() => document.getElementById("formPengajuanLemburContainer")}
                 minuteStep={60}
                 format="HH:mm"
                 disabledTime={disabledTime}
               />
             </Form.Item>
-            <Form.Item
-              name="endTime"
-              label="End Time"
-              rules={[
-                { required: true, message: "End Time wajib diisi!" },
-              ]}
-            >
-              <TimePicker
-                className="w-full max-w-s"
-                onChange={(value) => console.log("End Time:", value)}
-                getPopupContainer={() =>
-                  document.getElementById("formPengajuanLemburContainer")
-                }
-                minuteStep={60}
-                format="HH:mm"
-                disabledTime={disabledTime}
-              />
+            <Form.Item label="Keterangan" name="description" rules={[{ required: true, message: "Keterangan wajib diisi!" }]}>
+              <Input.TextArea placeholder="keterangan" rows={6} className="w-full max-w-s" />
             </Form.Item>
-            <Form.Item
-              name="totalHour"
-              label="Total Hour"
-              rules={[
-                { required: true, message: "Total Hour wajib diisi!" },
-              ]}
-            >
-              <InputNumber
-                min={1}
-                max={14}
-                value={selectedAbsensi || undefined}
-                onChange={onChange}
-                placeholder="Select hours"
-                className="w-full max-w-s"
-              />
-            </Form.Item>
-            <Form.Item>
+            <div className="py-2 flex justify-center">
               <Space>
-                <SubmitButton form={form}>Submit</SubmitButton>
-                <Button htmlType="reset" onClick={() => form.resetFields()}>
-                  Reset
-                </Button>
+                <Button type="primary" htmlType="submit" className="w-[100px]">Submit</Button>
               </Space>
-            </Form.Item>
+            </div>
           </Form>
         </div>
       </div>

@@ -17,7 +17,7 @@ export default function NavigationAdmin() {
 
   const navItems = [
     { href: "/Admin/home", icon: home, label: "Home" },
-    { href: "/Admin/cuti", icon: cuti, label: "Cuti" },
+    { href: "/Admin/Ketidakhadiran", icon: cuti, label: "Ketidakhadiran" },
     { href: "/Admin/lembur", icon: lembur, label: "Lembur" },
     { href: "/Admin/gaji", icon: gaji, label: "Gaji" },
     { href: "/Admin/approval", icon: approval, label: "Approval" },
@@ -67,7 +67,7 @@ export default function NavigationAdmin() {
               key={index}
               href={item.href}
               className="flex flex-col items-center justify-center text-black font-medium 
-                w-1/4 md:w-12 h-auto gap-y-1 cursor-pointer p-2 md:p-0
+                w-1/4  h-auto gap-y-1 cursor-pointer p-2 md:p-0
                 hover:bg-black/10 rounded-lg transition-colors"
             >
               <Image src={item.icon} className="w-5 h-5" alt={item.label} />

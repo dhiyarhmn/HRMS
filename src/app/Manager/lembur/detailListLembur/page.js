@@ -1,22 +1,20 @@
 "use client";
 import Navbar from "@/components/Navbar/navbar";
-import Navigation from "@/components/navigation";
-import Tabelhpl from "@/components/tabelhpl";
+import NavigationManager from "@/components/Manager/navigation/navigationManager";
+import Image from "next/image";
+import dihi from "@/public/logo-dihi.png";
+import { useState, useEffect } from "react";
 import { ArrowLeftOutlined } from "@ant-design/icons";
+import Tabeldlplm from "@/components/Manager/Lembur/tabeldlplm";
 import { Card } from "antd";
-import { useState } from "react";
+import axios from "axios";
+import Link from "next/link";
 
 export default function detailListLembur() {
   // const [selectedData, setSelectedData] = useState(null);
   const [selectedRecord, setSelectedRecord] = useState(null);
-
-  const links = [
-    { href: "/home", text: "Home" },
-    { href: "/Manager/cuti", text: "Cuti" },
-    { href: "/lembur", text: "Lembur" },
-    { href: "/bookroom", text: "Ruangan" },
-    { href: "/gaji", text: "Gaji" },
-  ];
+  const [employeeId, setEmployeeId] = useState(null);
+  const [employeeData, setEmployeeData] = useState(null);
 
   // const openDetailModal = (row) => {
   //   setSelectedData(row);
@@ -28,37 +26,68 @@ export default function detailListLembur() {
     document.getElementById("modal7").showModal();
   };
 
-  // const closeModal = () => {
-  //   document.getElementById("detail_modal").close();
-  //   setSelectedData(null);
-  // };
+  useEffect(() => {
+    // Ambil ID Employee dari URL
+    const queryParams = new URLSearchParams(window.location.search);
+    const id = queryParams.get("id");
+    if (id) {
+      setEmployeeId(id);
+      fetchEmployeeData(id); // Ambil data employee berdasarkan ID
+    }
+  }, []);
+
+  const fetchEmployeeData = async (employeeId) => {
+    try {
+      // Ambil token dari localStorage atau cookies
+      const token = localStorage.getItem("token");
+      // const token = Cookies.get("token"); // Jika token ada di Cookies (gunakan js-cookie)
+
+      const response = await axios.get(
+        "http://127.0.0.1:8000/api/employeeByRole",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // Kirim token dalam header
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      // Cari data employee berdasarkan ID
+      const employee = response.data.data.find(
+        (emp) => emp["ID Employee"] === parseInt(employeeId)
+      );
+
+      if (employee) {
+        setEmployeeData(employee); // Set data employee yang ditemukan
+      } else {
+        console.error("Employee not found");
+      }
+    } catch (error) {
+      console.error("Error fetching employee data:", error);
+    }
+  };
 
   return (
     <div>
-      <Navbar />
-      <Navigation
-        links={links}
-        headerBg="flex mt-8 bg-transparent"
-        navigationBg="bg-third"
-      />
+      <Navbar href={"/Manager/home"} p={"Manager"} />
+        <NavigationManager />
+        <main className="flex-grow px-4 py-6 md:px-6 lg:px-8"></main>
       <section>
-        <div className="flex flex-col w-full h-auto gap-y-8 mt-6 p-8">
-          <div className="w-full flex justify-between items-center">
-            <button
-              className="btn bg-second"
-              onClick={() =>
-                (window.location.href = "/Manager/lembur/listDataLembur")
-              }
+        <div className="flex flex-col w-full h-auto gap-y-8 p-4">
+          <div className="max-w-[82rem] mx-auto w-full">
+            <Link
+              href="/Manager/lembur/listDataLembur"
+              className="btn bg-second w-[100px] flex items-center gap-2 p-4 rounded-full"
             >
               <ArrowLeftOutlined />
-              Kembali
-            </button>
+              Back
+            </Link>
+            <h2 className="text-xl font-bold text-black text-center">
+              Detail List Data Pengajuan Lembur
+            </h2>
           </div>
-          <h2 className="text-xl font-bold text-black text-center">
-            Detail List Data Pengajuan Lembur
-          </h2>
 
-          <div className="w-full bg-second p-4 rounded-lg shadow-md mb-6">
+          <div className="max-w-[82rem] mx-auto w-full bg-second rounded-xl shadow-md p-6 overflow-x-auto">
             <div className="flex justify-between space-x-6 w-full">
               <div className="w-1/2 flex flex-col gap-y-4">
                 <label className="form-control w-full">
@@ -67,8 +96,8 @@ export default function detailListLembur() {
                   </div>
                   <input
                     type="text"
-                    placeholder="123"
                     className="input input-bordered w-full"
+                    value={employeeData ? employeeData.NIK : ""}
                     disabled
                   />
                 </label>
@@ -78,8 +107,8 @@ export default function detailListLembur() {
                   </div>
                   <input
                     type="text"
-                    placeholder="Puti Dhiya"
                     className="input input-bordered w-full"
+                    value={employeeData ? employeeData.Nama : ""}
                     disabled
                   />
                 </label>
@@ -92,8 +121,8 @@ export default function detailListLembur() {
                   </div>
                   <input
                     type="text"
-                    placeholder="Marketing"
                     className="input input-bordered w-full"
+                    value={employeeData ? employeeData.Department : ""}
                     disabled
                   />
                 </label>
@@ -103,8 +132,8 @@ export default function detailListLembur() {
                   </div>
                   <input
                     type="text"
-                    placeholder="Manager"
                     className="input input-bordered w-full"
+                    value={employeeData ? employeeData.Jabatan : ""}
                     disabled
                   />
                 </label>
@@ -112,71 +141,12 @@ export default function detailListLembur() {
             </div>
           </div>
 
-          <div className="flex w-full justify-center">
-            <div className="flex w-full bg-second p-4 rounded-lg">
-              <div className="overflow-x-auto w-full">
-                <Tabelhpl detail={showmodal} />
-                <dialog
-                  id="modal7"
-                  className="modal modal-bottom sm:modal-middle"
-                >
-                  {selectedRecord && (
-                    <Card
-                      title="Detail"
-                      style={{
-                        width: "100%",
-                        maxWidth: 500,
-                      }}
-                      className="w-full md:max-w-md"
-                    >
-                      <form method="dialog">
-                        <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
-                          ✕
-                        </button>
-                      </form>
-                      <div className="p-2 flex flex-wrap">
-                        <div className="w-full flex">
-                          <div className="w-1/3 font-semibold">
-                            Tanggal Pengajuan
-                          </div>
-                          <div className="w-1/12 text-center">:</div>
-                          <div className="w-7/12">
-                            {selectedRecord.tanggalPengajuan}
-                          </div>
-                        </div>
-                        <div className="w-full flex">
-                          <div className="w-1/3 font-semibold">Start Time</div>
-                          <div className="w-1/12 text-center">:</div>
-                          <div className="w-7/12">
-                            {selectedRecord.startTime}
-                          </div>
-                        </div>
-                        <div className="w-full flex">
-                          <div className="w-1/3 font-semibold">End Time</div>
-                          <div className="w-1/12 text-center">:</div>
-                          <div className="w-7/12">{selectedRecord.endTime}</div>
-                        </div>
-                        <div className="w-full flex">
-                          <div className="w-1/3 font-semibold">Total Hour</div>
-                          <div className="w-1/12 text-center">:</div>
-                          <div className="w-7/12">
-                            {selectedRecord.totalHour}
-                          </div>
-                        </div>
-                      </div>
-                      <div className="modal-action">
-                        <button
-                          className="btn"
-                          onClick={() =>
-                            document.getElementById(`modal7`).close()
-                          }
-                        >
-                          Close
-                        </button>
-                      </div>
-                    </Card>
-                  )}
-                </dialog>
+          <div className="max-w-[82rem] mx-auto w-full">
+            <div className="bg-white rounded-xl shadow-md overflow-x-auto w-full">
+              <div className="p-6">
+                <div className="w-full overflow-x-auto">
+                {employeeId && <Tabeldlplm employeeId={employeeId} />}
+                </div>
               </div>
             </div>
           </div>

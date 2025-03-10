@@ -1,6 +1,7 @@
 import { userServices } from "@/api/api";
 import EmployeeChart from "@/components/Admin/EmployeeChart/employeeChart";
 import absence from "@/public/absence.gif";
+import overtime from "@/public/overtime.gif";
 import approval from "@/public/approval.gif";
 import booking from "@/public/booking.gif";
 import generate from "@/public/generate.gif";
@@ -48,7 +49,8 @@ export default function HomeAdmin() {
   }, []);
 
   const menuItems = [
-    { title: "Absensi & Cuti", image: absence, path: "/Admin/cuti" },
+    { title: "Ketidakhadiran", image: absence, path: "/Admin/Ketidakhadiran" },
+    { title: "Lembur", image: overtime, path: "/Admin/lembur" },
     { title: "Gaji", image: salary, path: "/Admin/gaji" },
     { title: "Approval", image: approval, path: "/Admin/approval" },
     { title: "Booking Ruangan", image: booking, path: "/Admin/ruangan" },

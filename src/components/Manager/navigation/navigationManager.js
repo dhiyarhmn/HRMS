@@ -14,21 +14,16 @@ export default function NavigationManager() {
 
   const navItems = [
     { href: "/Manager/home", icon: home, label: "Home" },
-    { href: "/Manager/cuti", icon: cuti, label: "Cuti" },
+    { href: "/Manager/Ketidakhadiran", icon: cuti, label: "Ketidakhadiran" },
     { href: "/Manager/lembur", icon: lembur, label: "Lembur" },
     { href: "/Manager/gaji", icon: gaji, label: "Gaji" },
     { href: "/Manager/ruangan", icon: booking, label: "Ruangan" },
   ];
 
   return (
-    <div className="w-full px-2 sm:px-4">
+    <div className="w-full px-2 sm:px-4 justify-center flex">
       <Header
-        style={{
-          width: "100%",
-          display: "flex",
-          alignItems: "center",
-        }}
-        className="justify-center flex mt-4 sm:mt-8 bg-transparent p-0"
+        className="justify-center flex mt-4 sm:mt-8 bg-transparent p-0 w-max items-center"
       >
         {/* Mobile Menu Button */}
         <button
@@ -56,8 +51,8 @@ export default function NavigationManager() {
         <div
           className={`${
             isMenuOpen ? "flex" : "hidden md:flex"
-          } fixed md:relative bottom-16 md:bottom-0 left-2 right-2 md:left-auto md:right-auto
-                  flex-wrap md:flex-nowrap items-center h-auto md:gap-x-6 lg:gap-x-12 px-4 md:px-8 lg:px-12 py-4 
+          } fixed md:relative bottom-16 md:bottom-0 left-2 right-2 md:left-auto md:right-auto w-max
+                  flex-wrap md:flex-nowrap items-center h-auto md:gap-x-3 lg:gap-x-6 px-4 md:px-8 lg:px-12 py-4 
                   rounded-xl md:rounded-full bg-third border-2 border-black shadow-lg md:shadow-none z-40`}
         >
           {navItems.map((item, index) => (
@@ -65,11 +60,11 @@ export default function NavigationManager() {
               key={index}
               href={item.href}
               className="flex flex-col items-center justify-center text-black font-medium 
-                        w-1/4 md:w-12 h-auto gap-y-1 cursor-pointer p-2 md:p-0
-                        hover:bg-black/10 rounded-lg transition-colors"
+                       h-auto gap-y-1 cursor-pointer md:p-0
+                        hover:bg-black/10 rounded-lg transition-colors w-max !px-2 !py-1"
             >
               <Image src={item.icon} className="w-5 h-5" alt={item.label} />
-              <span className="text-xs sm:text-sm">{item.label}</span>
+              <span className="text-xs sm:text-sm w-max">{item.label}</span>
             </a>
           ))}
         </div>

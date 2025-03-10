@@ -14,7 +14,7 @@ export default function NavigationHRGA() {
 
   const navItems = [
     { href: "/HRGA/home", icon: home, label: "Home" },
-    { href: "/HRGA/cuti", icon: cuti, label: "Cuti" },
+    { href: "/HRGA/Ketidakhadiran", icon: cuti, label: "Ketidakhadiran" },
     { href: "/HRGA/lembur", icon: lembur, label: "Lembur" },
     { href: "/HRGA/gaji", icon: gaji, label: "Gaji" },
     { href: "/HRGA/approval", icon: approval, label: "Approval" },
@@ -65,7 +65,7 @@ export default function NavigationHRGA() {
               key={index}
               href={item.href}
               className="flex flex-col items-center justify-center text-black font-medium 
-                    w-1/4 md:w-12 h-auto gap-y-1 cursor-pointer p-2 md:p-0
+                    w-1/4  h-auto gap-y-1 cursor-pointer p-2 md:p-0
                     hover:bg-black/10 rounded-lg transition-colors"
             >
               <Image src={item.icon} className="w-5 h-5" alt={item.label} />

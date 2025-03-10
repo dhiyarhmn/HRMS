@@ -1,39 +1,41 @@
 "use client";
-import FormPengajuanLembur from "@/components/formPengajuanLembur";
 import Navbar from "@/components/Navbar/navbar";
-import Navigation from "@/components/navigation";
-import Tabelhpls from "@/components/tabelhpls";
-import { PlusOutlined } from "@ant-design/icons";
-import { Card } from "antd";
+import NavigationStaff from "@/components/Staff/navigation/navigationStaff";
+import Image from "next/image";
+import dihi from "@/public/logo-dihi.png";
 import { useState } from "react";
+import { PlusOutlined } from "@ant-design/icons";
+import Tabelhpls from "@/components/Staff/Lembur/tabelhpls";
+import FormPengajuanLembur from "@/components/formPengajuanLembur";
+import EditFormLembur from "@/components/editFormLembur";
+import { Card } from "antd";
 
-export default function cuti() {
-  const [selectedAbsensi, setSelectedAbsensi] = useState("1");
+export default function Ketidakhadiran() {
+  const [selectedOvertime, setSelectedOvertime] = useState("1");
   const [periode, setPeriode] = useState("1");
   const [selectedRecord, setSelectedRecord] = useState(null);
 
-  const links = [
-    { href: "/Staff/home", text: "Home" },
-    { href: "/Staff/cuti", text: "Cuti" },
-    { href: "/Staff/lembur", text: "Lembur" },
-    { href: "/Staff/ruangan", text: "Ruangan" },
-  ];
-
   const showmodal = (record) => {
     setSelectedRecord(record);
-    document.getElementById("modal9").showModal();
+    document.getElementById("modal8").showModal();
+  };
+
+  const handleModalOpen = (record) => {
+    setSelectedOvertime(record);
+    document.getElementById("modal12").showModal();
+  };
+
+  const handleEditSuccess = () => {
+    document.getElementById("modal12").close();
   };
 
   return (
     <div>
-      <Navbar />
-      <Navigation
-        links={links}
-        headerBg="flex mt-8 bg-transparent"
-        navigationBg="bg-third"
-      />
+      <Navbar href={"/Staff/home"} p={"Staff"} />
+      <NavigationStaff />
+      <main className="flex-grow px-4 py-6 md:px-6 lg:px-8"></main>
       <section>
-        <div className="flex flex-col w-full h-auto gap-y-8 mt-6 p-8">
+        <div className="flex flex-col w-full h-auto gap-y-8 p-4">
           <div className="flex justify-center space-x-4 mb-4">
             <button
               className="btn bg-second"
@@ -45,77 +47,29 @@ export default function cuti() {
           </div>
 
           <FormPengajuanLembur
-            selectedAbsensi={selectedAbsensi}
-            setSelectedAbsensi={setSelectedAbsensi}
+            selectedOvertime={selectedOvertime}
+            setSelectedOvertime={setSelectedOvertime}
             periode={periode}
             setPeriode={setPeriode}
           />
 
-          <div className="flex w-full justify-center">
-            <div className="w-full bg-second p-4 rounded-lg">
-              <div className="overflow-x-auto w-full">
-                <Tabelhpls detail={showmodal} />
-                <dialog
-                  id={"modal9"}
-                  className="modal modal-bottom sm:modal-middle"
-                >
-                  {selectedRecord && (
-                    <Card
-                      title="Detail"
-                      style={{
-                        width: "100%",
-                        maxWidth: 500,
-                      }}
-                      className="w-full md:max-w-md"
-                    >
-                      <form method="dialog">
-                        <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
-                          ✕
-                        </button>
-                      </form>
-                      <div className="p-2 flex flex-wrap">
-                        <div className="w-full flex">
-                          <div className="w-1/3 font-semibold">
-                            Tanggal Pengajuan
-                          </div>
-                          <div className="w-1/12 text-center">:</div>
-                          <div className="w-7/12">
-                            {selectedRecord.tanggalPengajuan}
-                          </div>
-                        </div>
-                        <div className="w-full flex">
-                          <div className="w-1/3 font-semibold">Start Time</div>
-                          <div className="w-1/12 text-center">:</div>
-                          <div className="w-7/12">
-                            {selectedRecord.startTime}
-                          </div>
-                        </div>
-                        <div className="w-full flex">
-                          <div className="w-1/3 font-semibold">End Time</div>
-                          <div className="w-1/12 text-center">:</div>
-                          <div className="w-7/12">{selectedRecord.endTime}</div>
-                        </div>
-                        <div className="w-full flex">
-                          <div className="w-1/3 font-semibold">Total Hour</div>
-                          <div className="w-1/12 text-center">:</div>
-                          <div className="w-7/12">
-                            {selectedRecord.totalHour}
-                          </div>
-                        </div>
-                      </div>
-                      <div className="modal-action">
-                        <button
-                          className="btn"
-                          onClick={() =>
-                            document.getElementById(`modal9`).close()
-                          }
-                        >
-                          Close
-                        </button>
-                      </div>
-                    </Card>
-                  )}
-                </dialog>
+          <EditFormLembur
+            selectedOvertime={selectedOvertime}
+            setSelectedOvertime={setSelectedOvertime}
+            periode={periode}
+            setPeriode={setPeriode}
+            onEditSuccess={handleEditSuccess}
+          />
+
+          <div className="max-w-[85rem] mx-auto w-full p-4">
+          <h2 className="text-xl font-bold text-black text-center mb-6">
+              Riwayat Pengajuan Lembur
+            </h2>
+            <div className="bg-white rounded-xl shadow-md overflow-x-auto w-full">
+              <div className="p-6">
+                <div className="w-full overflow-x-auto">
+                  <Tabelhpls modal12={handleModalOpen} />
+                </div>
               </div>
             </div>
           </div>

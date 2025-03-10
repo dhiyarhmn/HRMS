@@ -1,40 +1,36 @@
 "use client";
-import Calendar from "@/components/calendar2";
-import FormPengajuanLembur from "@/components/formPengajuanLembur";
-import Navbar from "@/components/Navbar/navbar";
-import Navigation from "@/components/navigation";
-import { UnorderedListOutlined } from "@ant-design/icons";
+import Image from "next/image";
+import dihi from "@/public/logo-dihi.png";
 import { useState } from "react";
+import Navbar from "@/components/Navbar/navbar";
+import NavigationAdmin from "@/components/Admin/navigation/navigationAdmin";
+import {
+  PlusOutlined,
+  UnorderedListOutlined,
+  CheckOutlined,
+  CalendarOutlined,
+} from "@ant-design/icons";
+// import FormPengajuanLembur from "@/components/formPengajuanLembur";
+import Calendar from "@/components/calendarLembur";
 
 export default function lembur() {
-  const [selectedAbsensi, setSelectedAbsensi] = useState("1");
+  const [selectedAbsence, setSelectedAbsence] = useState("1");
   const [periode, setPeriode] = useState("1");
   const [selectedRecord, setSelectedRecord] = useState(null);
 
-  const links = [
-    { href: "/home", text: "Home" },
-    { href: "/Manager/cuti", text: "Cuti" },
-    { href: "/lembur", text: "Lembur" },
-    { href: "/bookroom", text: "Ruangan" },
-    { href: "/gaji", text: "Gaji" },
-  ];
-
-  const showmodal = (record) => {
-    setSelectedRecord(record);
-    document.getElementById("modal4").showModal();
-  };
+  // const showmodal = (record) => {
+  //   setSelectedRecord(record);
+  //   document.getElementById("modal4").showModal();
+  // };
 
   return (
     <div>
-      <Navbar />
-      <Navigation
-        links={links}
-        headerBg="flex mt-8 bg-transparent"
-        navigationBg="bg-third"
-      />
+      <Navbar href={"/Admin/home"} p={"Admin"} role="admin" />
+      <NavigationAdmin />
+      <main className="flex-grow p-6 space-y-8"></main>
       <section>
-        <div className="flex flex-col w-full h-auto gap-y-8 mt-6 p-8">
-          <div className="flex justify-center space-x-4 mb-4">
+        <div className="flex flex-col w-full h-auto gap-y-8 p-4">
+          <div className="flex justify-center space-x-4">
             <button
               className="btn bg-second"
               onClick={() =>
@@ -46,16 +42,16 @@ export default function lembur() {
             </button>
           </div>
 
-          <FormPengajuanLembur
-            selectedAbsensi={selectedAbsensi}
-            setSelectedAbsensi={setSelectedAbsensi}
-            periode={periode}
-            setPeriode={setPeriode}
-          />
-
-          <div className="flex w-full justify-center bg-second p-4 rounded-lg">
-            <div className="overflow-x-auto w-full">
-              <Calendar />
+          <div className="max-w-[85rem] mx-auto w-full">
+            <h2 className="text-xl font-bold text-black text-center mb-6">
+            Calendar Lembur Pegawai
+            </h2>
+            <div className="bg-white rounded-xl shadow-md overflow-x-auto w-full">
+              <div className="p-6">
+                <div className="w-full overflow-x-auto">
+                  <Calendar />
+                </div>
+              </div>
             </div>
           </div>
         </div>
